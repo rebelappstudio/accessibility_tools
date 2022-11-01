@@ -1,4 +1,4 @@
-# accessibility_checker
+# example
 
 A new Flutter project.
 
