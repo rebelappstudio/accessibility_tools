@@ -38,7 +38,10 @@ class SemanticLabelChecker extends CheckerBase {
         return;
       }
 
-      if (data.label.isEmpty) {
+      final hasLabel =
+          data.label.trim().isNotEmpty || data.tooltip.trim().isNotEmpty;
+
+      if (!hasLabel) {
         final paintBounds = getPaintBounds(node);
         result.add(
           AccessibilityIssue(

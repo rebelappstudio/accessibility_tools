@@ -1,53 +1,28 @@
-import 'dart:async';
 import 'package:accessibility_checker/src/accessibility_issue.dart';
 import 'package:accessibility_checker/src/checkers/checker_base.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
+/// Checks for accessibility issues, updating whenever the semantic tree
+/// changes.
 class IssueChecker extends ChangeNotifier {
-  late final Timer _timer;
-
-  IssueChecker(this.checkers) {
-    _pipelineOwner.ensureSemantics();
-    // _waitForSemanticsOwner();
-
-    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
-      update();
-    });
-  }
+  IssueChecker(this.checkers);
 
   List<CheckerBase> checkers = [];
 
-  PipelineOwner get _pipelineOwner => WidgetsBinding.instance.pipelineOwner;
-
-  void initialize() {
-    _pipelineOwner.ensureSemantics();
-    _waitForSemanticsOwner();
-  }
-
-  void _waitForSemanticsOwner() {
-    final semanticsOwner = _pipelineOwner.semanticsOwner;
-
-    if (semanticsOwner != null) {
-      // semanticsOwner.addListener(_onSemanticsChanged);
-      // update();
-    } else {
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        _waitForSemanticsOwner();
-      });
-    }
-  }
-
-  List<AccessibilityIssue> _issues = [];
+  /// A list of current accessibility issues.
   List<AccessibilityIssue> get issues => _issues;
+  List<AccessibilityIssue> _issues = [];
   void _setIssues(List<AccessibilityIssue> issues) {
     _issues = issues;
     notifyListeners();
   }
 
+  /// Called whenever the semantic tree updates.
   void update() {
-    final root = _pipelineOwner.semanticsOwner?.rootSemanticsNode;
+    final root =
+        WidgetsBinding.instance.pipelineOwner.semanticsOwner?.rootSemanticsNode;
     if (root == null) {
       return;
     }

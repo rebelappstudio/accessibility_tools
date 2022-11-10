@@ -64,12 +64,13 @@ class _MyHomePageState extends State<MyHomePage> {
               icon: const Icon(Icons.abc),
             ),
             ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => const OtherPage()),
-                  );
-                },
-                child: const Text('Other page')),
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const OtherPage()),
+                );
+              },
+              child: const Text('Other page'),
+            ),
           ],
         ),
       ),
@@ -77,7 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
       //   onPressed: _incrementCounter,
       //   tooltip: 'Increment',
       //   child: const Icon(Icons.add),
-      // ), // This trailing comma makes auto-formatting nicer for build methods.
+      // ),
     );
   }
 }
