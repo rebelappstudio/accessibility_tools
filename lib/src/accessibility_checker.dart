@@ -14,6 +14,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 const materialMinTapArea = 48.0;
+const iOSLargestTextScaleFactor = 1.35;
 
 /// A checker for debug mode that highlights accessibility issues.
 ///
@@ -35,12 +36,14 @@ class AccessibilityChecker extends StatefulWidget {
   final Widget? child;
   final double? minTapArea;
   final bool checkSemanticLabels;
+  final bool checkFontOverflows;
 
   const AccessibilityChecker({
     super.key,
     required this.child,
     this.minTapArea = materialMinTapArea,
     this.checkSemanticLabels = true,
+    this.checkFontOverflows = false,
   });
 
   @override
@@ -82,7 +85,10 @@ class _AccessibilityCheckerState extends State<AccessibilityChecker>
     return [
       if (widget.checkSemanticLabels) SemanticLabelChecker(),
       if (minTapArea != null) MinimumTapAreaChecker(minTapArea: minTapArea),
-      FlexOverflowChecker(textScaleFactor: 5.0),
+      if (widget.checkFontOverflows)
+        FlexOverflowChecker(
+          textScaleFactor: iOSLargestTextScaleFactor,
+        ),
     ];
   }
 

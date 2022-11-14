@@ -2,7 +2,7 @@
 
 **Provides hints to ensure your app remains accessible to all.**
 
-Creating an accessible app is incredibly important. But all too often it's forgotten about, or left to later. This package ensures your app is accessible from day one, by keeping an eye on your interface as you build it.
+Creating an accessible app is incredibly important. But too often it's forgotten about, or left to later. This package ensures your app is accessible from day one, by checking your interface as you build it.
 
 <img width="303" alt='A screenshot showing an icon with two failed accessibilty checks: the tooltip reads "Tap area is a missing semantic label" and "Tap area of 40x40 is too small: should be at least 48×48"' src="https://user-images.githubusercontent.com/756862/201646720-c6508f43-2cf9-4a54-a41b-ae7d17b55994.png">
 
@@ -12,8 +12,6 @@ Add `AccessibilityChecker` to your app's `builder` property:
 
 ```dart
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -25,7 +23,7 @@ class MyApp extends StatelessWidget {
 }
 ```
 
-Checks only run in debug mode, and is compiled out of release builds.
+The checker only runs in debug mode, and is compiled out of release builds.
 
 ## Current checkers
 
@@ -33,7 +31,7 @@ Checks only run in debug mode, and is compiled out of release builds.
 
 Ensures buttons (and other tappable widgets) have an associated semantic label.
 
-For example, this button is missing a label:
+For example, this icon button is missing a label:
 
 ```dart
 IconButton(

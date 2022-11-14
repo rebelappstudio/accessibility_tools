@@ -6,6 +6,34 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 
+/*
+
+iOS default font scales:
+
+  Extra small: x0.823
+  Small:       x0.882
+  Medium:      x0.941
+  Large:       x1.12
+  Extra large: x1.24
+  XXL:         x1.35
+
+iOS larger font sizes:
+
+  x1.64
+  x1.94
+  x2.35
+  x2.76
+  x3.12
+
+Android font scales:
+
+  Small:   x0.85
+  Default: x1.00
+  Large:   x1.15
+  Largest: x1.3
+
+*/
+
 class FlexOverflowChecker extends WidgetCheckerBase {
   final double textScaleFactor;
 
@@ -65,7 +93,7 @@ class _FlexOverflowCheckerInjectorState
   }
 
   bool _checkingFontScale = false;
-  double _textScaleFactor = 1.0;
+  double? _textScaleFactor;
 
   void _checkForOverflows() {
     if (!_checkingFontScale) {
@@ -106,13 +134,13 @@ class _FlexOverflowCheckerInjectorState
       transformers.add(_debugTransformDebugCreator);
 
       setState(() {
-        _textScaleFactor = 5.0;
+        _textScaleFactor = 1.35;
 
         // Schedule a new frame to
         SchedulerBinding.instance.addPostFrameCallback((_) {
           setState(() {
             widget.checker.issues = issues;
-            _textScaleFactor = 1.0;
+            _textScaleFactor = null;
 
             // Reset error reporting
             FlutterError.onError = defaultOnError;
