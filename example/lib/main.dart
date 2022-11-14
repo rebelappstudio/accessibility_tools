@@ -62,20 +62,20 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             IconButton(
               onPressed: () {},
-              icon: const Icon(Icons.abc),
+              icon: const Icon(Icons.person),
             ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => const OtherPage()),
-                );
-              },
-              child: const Text('Other page'),
-            ),
-            SizedBox(
-              width: 100,
-              child: Row(children: const [Text('Hello testing')]),
-            )
+            // ElevatedButton(
+            //   onPressed: () {
+            //     Navigator.of(context).push(
+            //       MaterialPageRoute(builder: (_) => const OtherPage()),
+            //     );
+            //   },
+            //   child: const Text('Other page'),
+            // ),
+            // SizedBox(
+            //   width: 100,
+            //   child: Row(children: const [Text('Hello testing')]),
+            // )
           ],
         ),
       ),

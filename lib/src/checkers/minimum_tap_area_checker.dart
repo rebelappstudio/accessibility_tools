@@ -29,11 +29,15 @@ class MinimumTapAreaChecker extends SemanticsNodeChecker {
     if (size.width < minTapArea - delta || size.height < minTapArea - delta) {
       return AccessibilityIssue(
         message:
-            'Tap area of ${size.width}x${size.height} is too small; should be at least ${minTapArea}x$minTapArea',
+            'Tap area of ${_format(size.width)}x${_format(size.height)} is too small:\nshould be at least ${_format(minTapArea)}x${_format(minTapArea)}',
         renderObject: renderObject,
       );
     }
 
     return null;
+  }
+
+  String _format(double val) {
+    return (val % 1 == 0 ? val.toInt() : val).toString();
   }
 }

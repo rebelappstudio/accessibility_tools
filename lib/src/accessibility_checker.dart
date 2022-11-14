@@ -13,7 +13,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-const _defaultMinTapArea = 44.0;
+const materialMinTapArea = 48.0;
 
 /// A checker for debug mode that highlights accessibility issues.
 ///
@@ -39,7 +39,7 @@ class AccessibilityChecker extends StatefulWidget {
   const AccessibilityChecker({
     super.key,
     required this.child,
-    this.minTapArea = _defaultMinTapArea,
+    this.minTapArea = materialMinTapArea,
     this.checkSemanticLabels = true,
   });
 
@@ -142,11 +142,11 @@ class _CheckerOverlayState extends State<CheckerOverlay> {
   bool showOverlays = false;
 
   static Rect _inflateToMinimumSize(Rect rect) {
-    if (rect.shortestSide < _defaultMinTapArea) {
+    if (rect.shortestSide < materialMinTapArea) {
       return Rect.fromCenter(
         center: rect.center,
-        width: max(_defaultMinTapArea, rect.width),
-        height: max(_defaultMinTapArea, rect.height),
+        width: max(materialMinTapArea, rect.width),
+        height: max(materialMinTapArea, rect.height),
       );
     }
 
@@ -170,9 +170,14 @@ class _CheckerOverlayState extends State<CheckerOverlay> {
                 Positioned.fromRect(
                   rect: _inflateToMinimumSize(entry.key),
                   child: Material(
+                    color: Colors.transparent,
                     child: Tooltip(
                       padding: const EdgeInsets.all(10),
                       message: entry.value.map((e) => e.message).join('\n\n'),
+                      decoration: const BoxDecoration(
+                        color: Colors.blue,
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                      ),
                       textStyle: const TextStyle(
                         fontSize: 15,
                         color: Colors.white,
