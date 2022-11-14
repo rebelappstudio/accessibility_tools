@@ -1,15 +1,17 @@
 import 'dart:math';
 import 'dart:ui' as ui;
 import 'package:accessibility_checker/src/accessibility_issue.dart';
-import 'package:accessibility_checker/src/checker.dart';
+import 'package:accessibility_checker/src/checker_manager.dart';
 import 'package:accessibility_checker/src/checkers/checker_base.dart';
+import 'package:accessibility_checker/src/checkers/flex_overflow_checker.dart';
 import 'package:accessibility_checker/src/checkers/minimum_tap_area_checker.dart';
+import 'package:accessibility_checker/src/checkers/mixin.dart';
 import 'package:accessibility_checker/src/checkers/semantic_label_checker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 const _defaultMinTapArea = 44.0;
 
@@ -17,7 +19,20 @@ const _defaultMinTapArea = 44.0;
 ///
 /// Issues are highlighted by a red box.
 class AccessibilityChecker extends StatefulWidget {
-  final Widget child;
+  static TransitionBuilder builder({
+    bool checkSemanticLabels = true,
+  }) {
+    return (context, child) {
+      return child != null
+          ? AccessibilityChecker(
+              checkSemanticLabels: checkSemanticLabels,
+              child: child,
+            )
+          : const SizedBox();
+    };
+  }
+
+  final Widget? child;
   final double? minTapArea;
   final bool checkSemanticLabels;
 
@@ -32,29 +47,18 @@ class AccessibilityChecker extends StatefulWidget {
   State<AccessibilityChecker> createState() => _AccessibilityCheckerState();
 }
 
-class _AccessibilityCheckerState extends State<AccessibilityChecker> {
-  late final IssueChecker _checker;
-  late final _SemanticsClient _client;
-
-  @override
-  void initState() {
-    super.initState();
-    _client = _SemanticsClient(WidgetsBinding.instance.pipelineOwner)
-      ..addListener(_update);
-    _checker = IssueChecker(_getCheckers());
-  }
+class _AccessibilityCheckerState extends State<AccessibilityChecker>
+    with SemanticUpdateMixin {
+  late CheckerManager _checker = CheckerManager(_getCheckers());
 
   @override
   void dispose() {
-    _client
-      ..removeListener(_update)
-      ..dispose();
     _checker.dispose();
-
     super.dispose();
   }
 
-  void _update() {
+  @override
+  void didUpdateSemantics() {
     SchedulerBinding.instance.addPostFrameCallback((Duration _) {
       // Semantic information are only available at the end of a frame and our
       // only chance to paint them on the screen is the next frame. To achieve
@@ -67,7 +71,8 @@ class _AccessibilityCheckerState extends State<AccessibilityChecker> {
 
   @override
   void didUpdateWidget(covariant AccessibilityChecker oldWidget) {
-    _checker.checkers = _getCheckers();
+    _checker.dispose();
+    _checker = CheckerManager(_getCheckers());
     super.didUpdateWidget(oldWidget);
   }
 
@@ -77,35 +82,50 @@ class _AccessibilityCheckerState extends State<AccessibilityChecker> {
     return [
       if (widget.checkSemanticLabels) SemanticLabelChecker(),
       if (minTapArea != null) MinimumTapAreaChecker(minTapArea: minTapArea),
+      FlexOverflowChecker(textScaleFactor: 5.0),
     ];
   }
 
+  late final _isTest = WidgetsBinding.instance is TestWidgetsFlutterBinding;
+
   @override
   Widget build(BuildContext context) {
-    if (!kIsWeb && kDebugMode) {
-      return Directionality(
-        textDirection: ui.TextDirection.ltr,
-        child: Overlay(
-          initialEntries: [
-            OverlayEntry(
-              builder: (_) {
-                return CheckerOverlay(
-                  checker: _checker,
-                  child: widget.child,
-                );
-              },
-            ),
-          ],
-        ),
-      );
+    if (!kDebugMode || kIsWeb || _isTest) {
+      return widget.child!;
     }
 
-    return widget.child;
+    final actualChild = widget.child;
+    if (actualChild == null) {
+      return const SizedBox();
+    }
+
+    Widget child = actualChild;
+    for (final checker in _checker.checkers) {
+      if (checker is WidgetCheckerBase) {
+        child = checker.build(context, child);
+      }
+    }
+
+    return Directionality(
+      textDirection: ui.TextDirection.ltr,
+      child: Overlay(
+        initialEntries: [
+          OverlayEntry(
+            builder: (_) {
+              return CheckerOverlay(
+                checker: _checker,
+                child: child,
+              );
+            },
+          ),
+        ],
+      ),
+    );
   }
 }
 
 class CheckerOverlay extends StatefulWidget {
-  final IssueChecker checker;
+  final CheckerManager checker;
   final Widget child;
 
   const CheckerOverlay({
@@ -119,7 +139,7 @@ class CheckerOverlay extends StatefulWidget {
 }
 
 class _CheckerOverlayState extends State<CheckerOverlay> {
-  bool _showOverlays = false;
+  bool showOverlays = false;
 
   static Rect _inflateToMinimumSize(Rect rect) {
     if (rect.shortestSide < _defaultMinTapArea) {
@@ -139,12 +159,13 @@ class _CheckerOverlayState extends State<CheckerOverlay> {
       animation: widget.checker,
       builder: (context, _) {
         final issues = List<AccessibilityIssue>.from(widget.checker.issues);
-        final rects = issues.groupListsBy((issue) => issue.rect);
+        final rects =
+            issues.groupListsBy((issue) => issue.renderObject.getGlobalRect());
 
         return Stack(
           children: [
             Positioned.fill(child: widget.child),
-            if (_showOverlays)
+            if (showOverlays)
               for (final entry in rects.entries)
                 Positioned.fromRect(
                   rect: _inflateToMinimumSize(entry.key),
@@ -177,15 +198,13 @@ class _CheckerOverlayState extends State<CheckerOverlay> {
               Positioned(
                 bottom: 10,
                 right: 10,
-                child: _MediaQueryFromWindow(
-                  child: SafeArea(
-                    child: _WarningButton(
-                      issues: issues,
-                      onPressed: () {
-                        setState(() => _showOverlays = !_showOverlays);
-                      },
-                      toggled: _showOverlays,
-                    ),
+                child: SafeArea(
+                  child: _WarningButton(
+                    issues: issues,
+                    onPressed: () {
+                      setState(() => showOverlays = !showOverlays);
+                    },
+                    toggled: showOverlays,
                   ),
                 ),
               ),
@@ -231,119 +250,5 @@ class _WarningButton extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-class _SemanticsClient extends ChangeNotifier {
-  late final SemanticsHandle _semanticsHandle;
-
-  _SemanticsClient(PipelineOwner pipelineOwner) {
-    _semanticsHandle = pipelineOwner.ensureSemantics(
-      listener: notifyListeners,
-    );
-  }
-
-  @override
-  void dispose() {
-    _semanticsHandle.dispose();
-    super.dispose();
-  }
-}
-
-/// Provides a [MediaQuery] which is built and updated using the latest
-/// [WidgetsBinding.window] values.
-///
-/// Receives `window` updates by listening to [WidgetsBinding].
-///
-/// The standalone widget ensures that it rebuilds **only** [MediaQuery] and
-/// its dependents when `window` changes, instead of rebuilding the entire
-/// widget tree.
-///
-/// It is used by [WidgetsApp] if no other [MediaQuery] is available above it.
-///
-/// See also:
-///
-///  * [MediaQuery], which establishes a subtree in which media queries resolve
-///    to a [MediaQueryData].
-class _MediaQueryFromWindow extends StatefulWidget {
-  /// Creates a [_MediaQueryFromWindow] that provides a [MediaQuery] to its
-  /// descendants using the `window` to keep [MediaQueryData] up to date.
-  ///
-  /// The [child] must not be null.
-  const _MediaQueryFromWindow({
-    required this.child,
-  });
-
-  /// {@macro flutter.widgets.ProxyWidget.child}
-  final Widget child;
-
-  @override
-  State<_MediaQueryFromWindow> createState() => _MediaQueryFromWindowState();
-}
-
-class _MediaQueryFromWindowState extends State<_MediaQueryFromWindow>
-    with WidgetsBindingObserver {
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addObserver(this);
-  }
-
-  // ACCESSIBILITY
-
-  @override
-  void didChangeAccessibilityFeatures() {
-    setState(() {
-      // The properties of window have changed. We use them in our build
-      // function, so we need setState(), but we don't cache anything locally.
-    });
-  }
-
-  // METRICS
-
-  @override
-  void didChangeMetrics() {
-    setState(() {
-      // The properties of window have changed. We use them in our build
-      // function, so we need setState(), but we don't cache anything locally.
-    });
-  }
-
-  @override
-  void didChangeTextScaleFactor() {
-    setState(() {
-      // The textScaleFactor property of window has changed. We reference
-      // window in our build function, so we need to call setState(), but
-      // we don't need to cache anything locally.
-    });
-  }
-
-  // RENDERING
-  @override
-  void didChangePlatformBrightness() {
-    setState(() {
-      // The platformBrightness property of window has changed. We reference
-      // window in our build function, so we need to call setState(), but
-      // we don't need to cache anything locally.
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    MediaQueryData data =
-        MediaQueryData.fromWindow(WidgetsBinding.instance.window);
-    if (!kReleaseMode) {
-      data = data.copyWith(platformBrightness: debugBrightnessOverride);
-    }
-    return MediaQuery(
-      data: data,
-      child: widget.child,
-    );
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
   }
 }

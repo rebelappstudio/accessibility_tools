@@ -1,15 +1,20 @@
 import 'package:accessibility_checker/src/accessibility_issue.dart';
 import 'package:accessibility_checker/src/checkers/checker_base.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 /// Checks for accessibility issues, updating whenever the semantic tree
 /// changes.
-class IssueChecker extends ChangeNotifier {
-  IssueChecker(this.checkers);
+class CheckerManager extends ChangeNotifier {
+  CheckerManager(this.checkers) {
+    for (final checker in checkers) {
+      checker.addListener(_updateIssues);
+    }
+  }
 
-  List<CheckerBase> checkers = [];
+  final Iterable<CheckerBase> checkers;
 
   /// A list of current accessibility issues.
   List<AccessibilityIssue> get issues => _issues;
@@ -27,27 +32,29 @@ class IssueChecker extends ChangeNotifier {
       return;
     }
 
-    final nodesMap = _getNodesMap();
+    final renderObjects = _getRenderObjectsWithSemantics();
 
-    final newIssues = checkers
-        .map((checker) => checker.getIssues(root, nodesMap))
-        .expand((e) => e)
-        .toList();
+    for (final checker in checkers) {
+      checker.didUpdateSemantics(renderObjects);
+    }
+  }
 
+  void _updateIssues() {
+    final newIssues = checkers.map((e) => e.issues).flattened.toList();
     final issuesHaveChanged = !listEquals(issues, newIssues);
     _setIssues(newIssues);
 
     if (newIssues.isNotEmpty && issuesHaveChanged) {
-      _logAccessibilityIssues(newIssues, nodesMap);
+      _logAccessibilityIssues(newIssues);
     }
   }
 
-  static Map<SemanticsNode, RenderObject> _getNodesMap() {
-    final nodesMap = <SemanticsNode, RenderObject>{};
+  static List<RenderObject> _getRenderObjectsWithSemantics() {
+    final renderObjects = <RenderObject>[];
     late final RenderObjectVisitor visitor;
     visitor = (child) {
       if (child.debugSemantics != null) {
-        nodesMap[child.debugSemantics!] = child;
+        renderObjects.add(child);
       }
 
       child.visitChildrenForSemantics(visitor);
@@ -56,13 +63,10 @@ class IssueChecker extends ChangeNotifier {
     WidgetsBinding.instance.renderViewElement?.renderObject
         ?.visitChildrenForSemantics(visitor);
 
-    return nodesMap;
+    return renderObjects;
   }
 
-  void _logAccessibilityIssues(
-    List<AccessibilityIssue> issues,
-    Map<SemanticsNode, RenderObject> nodesMap,
-  ) {
+  void _logAccessibilityIssues(List<AccessibilityIssue> issues) {
     debugPrint(
       '==========================\n'
       'ACCESSIBILITY ISSUES FOUND\n'
@@ -71,7 +75,7 @@ class IssueChecker extends ChangeNotifier {
 
     int i = 0;
     for (final issue in issues) {
-      final creator = nodesMap[issue.node]?.debugCreator;
+      final creator = issue.renderObject.debugCreator;
 
       i++;
 

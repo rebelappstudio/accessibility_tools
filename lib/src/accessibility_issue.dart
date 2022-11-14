@@ -3,25 +3,22 @@ import 'package:flutter/semantics.dart';
 
 class AccessibilityIssue {
   AccessibilityIssue({
-    required this.rect,
     required this.message,
-    required this.node,
-    required this.element,
+    required this.renderObject,
   });
 
-  final Rect rect;
   final String message;
-  final SemanticsNode node;
-  final Element? element;
+  final RenderObject renderObject;
+  SemanticsNode? get semanticsNode => renderObject.debugSemantics;
 
   @override
-  int get hashCode => node.hashCode ^ message.hashCode;
+  int get hashCode => semanticsNode.hashCode ^ message.hashCode;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is AccessibilityIssue &&
           runtimeType == other.runtimeType &&
-          node == other.node &&
+          semanticsNode == other.semanticsNode &&
           message == other.message;
 }
