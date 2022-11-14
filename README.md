@@ -1,14 +1,12 @@
 # accessibility_checker
 
-**Provides useful hints during development to ensure your app remains accessible to all.**
+**Provides hints to ensure your app remains accessible to all.**
 
 Creating an accessible app is incredibly important. But all too often it's forgotten about, or left to later. This package ensures your app is accessible from day one, by keeping an eye on your interface as you build it.
 
-It only runs in debug mode, and will get compiled out of release builds.
-
 ## Getting Started
 
-Add `AccessibilityChecker` to your app widget's builder property:
+Add `AccessibilityChecker` to your app's `builder` property:
 
 ```dart
 class MyApp extends StatelessWidget {
@@ -25,11 +23,15 @@ class MyApp extends StatelessWidget {
 }
 ```
 
+Checks only run in debug mode, and is compiled out of release builds.
+
+*TODO: Screenshots*
+
 ## Current checkers
 
 ### Semantic label checker
 
-Ensures buttons (and any other tappable widget) have an associated semantic label.
+Ensures buttons (and other tappable widgets) have an associated semantic label.
 
 For example, this button is missing a label:
 
