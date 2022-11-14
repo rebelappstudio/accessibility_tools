@@ -1,16 +1,67 @@
 # accessibility_checker
 
-A new Flutter project.
+**Provides useful hints during development to ensure your app remains accessible to all.**
+
+Creating an accessible app is incredibly important. But all too often it's forgotten about, or left to later. This package ensures your app is accessible from day one, by keeping an eye on your interface as you build it.
+
+It only runs in debug mode, and will get compiled out of release builds.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+Add `AccessibilityChecker` to your app widget's builder property:
 
-A few resources to get you started if this is your first Flutter project:
+```dart
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      // *** Add this line ***
+      builder: (context, child) => AccessibilityChecker(child: child),
+      home: HomePage(),
+    );
+  }
+}
+```
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Current checkers
+
+### Semantic label checker
+
+Ensures buttons (and any other tappable widget) have an associated semantic label.
+
+For example, this button is missing a label:
+
+```dart
+IconButton(
+  onPressed: () => login(),
+  icon: Icon(Icons.person),
+)
+```
+
+Adding a semantic label would fix this: `Icon(Icons.person, semanticLabel: 'Login')`.
+
+### Tap area checker
+
+Makes sure all tappable widgets are large enough to easily tap. Defaults to the Material Design minimum of 48x48.
+
+### Large font overflow checker
+
+Experimental: ensures that no flex widgets, such as `Column` and `Row`, overflow when a user is using larger font sizes. This checker is experimental, and disabled by default, and can be enabled via `AccessibilityChecker(checkFontOverflows: true)`.
+
+## Configuration
+
+Checkers are enabled or disabled with properties on the `AccessibilityChecker` widget:
+
+```dart
+AccessibilityChecker(
+  // Set to null to disable tap area checking
+  minTapArea: 50,
+  // Check for semantic labels
+  checkSemanticLabels: false,
+  // Check for flex overflows
+  checkFontOverflows: true,
+  child: child,
+)
+```
