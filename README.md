@@ -4,6 +4,8 @@
 
 Creating an accessible app is incredibly important. But all too often it's forgotten about, or left to later. This package ensures your app is accessible from day one, by keeping an eye on your interface as you build it.
 
+<img width="303" alt='A screenshot showing an icon with two failed accessibilty checks: the tooltip reads "Tap area is a missing semantic label" and "Tap area of 40x40 is too small: should be at least 48×48"' src="https://user-images.githubusercontent.com/756862/201646720-c6508f43-2cf9-4a54-a41b-ae7d17b55994.png">
+
 ## Getting Started
 
 Add `AccessibilityChecker` to your app's `builder` property:
@@ -24,8 +26,6 @@ class MyApp extends StatelessWidget {
 ```
 
 Checks only run in debug mode, and is compiled out of release builds.
-
-*TODO: Screenshots*
 
 ## Current checkers
 
