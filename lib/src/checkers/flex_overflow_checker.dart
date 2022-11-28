@@ -158,7 +158,7 @@ class _FlexOverflowCheckerInjectorState
   bool _isOverflowError(FlutterErrorDetails error) {
     final summaryList = error.summary.value;
 
-    if (summaryList is List) {
+    if (summaryList is List<Object?>) {
       final summary = summaryList.firstOrNull;
       if (summary is String &&
           summary.startsWith('A RenderFlex overflowed by')) {

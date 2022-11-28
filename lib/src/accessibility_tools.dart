@@ -135,10 +135,10 @@ class CheckerOverlay extends StatefulWidget {
   final Widget child;
 
   const CheckerOverlay({
-    Key? key,
+    super.key,
     required this.checker,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
   State<CheckerOverlay> createState() => _CheckerOverlayState();
@@ -233,11 +233,10 @@ class _WarningButton extends StatelessWidget {
   final VoidCallback onPressed;
 
   const _WarningButton({
-    Key? key,
     required this.issues,
     required this.onPressed,
     required this.toggled,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
