@@ -1,12 +1,12 @@
 import 'dart:math';
 import 'dart:ui' as ui;
-import 'package:accessibility_checker/src/accessibility_issue.dart';
-import 'package:accessibility_checker/src/checker_manager.dart';
-import 'package:accessibility_checker/src/checkers/checker_base.dart';
-import 'package:accessibility_checker/src/checkers/flex_overflow_checker.dart';
-import 'package:accessibility_checker/src/checkers/minimum_tap_area_checker.dart';
-import 'package:accessibility_checker/src/checkers/mixin.dart';
-import 'package:accessibility_checker/src/checkers/semantic_label_checker.dart';
+import 'package:accessibility_tools/src/accessibility_issue.dart';
+import 'package:accessibility_tools/src/checker_manager.dart';
+import 'package:accessibility_tools/src/checkers/checker_base.dart';
+import 'package:accessibility_tools/src/checkers/flex_overflow_checker.dart';
+import 'package:accessibility_tools/src/checkers/minimum_tap_area_checker.dart';
+import 'package:accessibility_tools/src/checkers/mixin.dart';
+import 'package:accessibility_tools/src/checkers/semantic_label_checker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
@@ -19,13 +19,13 @@ const iOSLargestTextScaleFactor = 1.35;
 /// A checker for debug mode that highlights accessibility issues.
 ///
 /// Issues are highlighted by a red box.
-class AccessibilityChecker extends StatefulWidget {
+class AccessibilityTools extends StatefulWidget {
   static TransitionBuilder builder({
     bool checkSemanticLabels = true,
   }) {
     return (context, child) {
       return child != null
-          ? AccessibilityChecker(
+          ? AccessibilityTools(
               checkSemanticLabels: checkSemanticLabels,
               child: child,
             )
@@ -38,7 +38,7 @@ class AccessibilityChecker extends StatefulWidget {
   final bool checkSemanticLabels;
   final bool checkFontOverflows;
 
-  const AccessibilityChecker({
+  const AccessibilityTools({
     super.key,
     required this.child,
     this.minTapArea = materialMinTapArea,
@@ -47,10 +47,10 @@ class AccessibilityChecker extends StatefulWidget {
   });
 
   @override
-  State<AccessibilityChecker> createState() => _AccessibilityCheckerState();
+  State<AccessibilityTools> createState() => _AccessibilityToolsState();
 }
 
-class _AccessibilityCheckerState extends State<AccessibilityChecker>
+class _AccessibilityToolsState extends State<AccessibilityTools>
     with SemanticUpdateMixin {
   late CheckerManager _checker = CheckerManager(_getCheckers());
 
@@ -73,7 +73,7 @@ class _AccessibilityCheckerState extends State<AccessibilityChecker>
   }
 
   @override
-  void didUpdateWidget(covariant AccessibilityChecker oldWidget) {
+  void didUpdateWidget(covariant AccessibilityTools oldWidget) {
     _checker.dispose();
     _checker = CheckerManager(_getCheckers());
     super.didUpdateWidget(oldWidget);

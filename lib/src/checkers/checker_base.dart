@@ -1,5 +1,5 @@
 import 'dart:ui' as ui;
-import 'package:accessibility_checker/src/accessibility_issue.dart';
+import 'package:accessibility_tools/src/accessibility_issue.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/semantics.dart';

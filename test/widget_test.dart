@@ -1,4 +1,4 @@
-// import 'package:accessibility_checker/src/accessibility_checker.dart';
+// import 'package:accessibility_tools/src/accessibility_tools.dart';
 // import 'package:flutter/material.dart';
 // import 'package:flutter_test/flutter_test.dart';
 
@@ -82,7 +82,7 @@
 
 //   @override
 //   Widget build(BuildContext context) {
-//     return AccessibilityChecker(
+//     return AccessibilityTools(
 //       child: MaterialApp(
 //         home: Scaffold(
 //           body: Center(child: child),

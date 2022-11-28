@@ -1,6 +1,6 @@
 {
-    "name": "accessibility_checker",
-    "short_name": "accessibility_checker",
+    "name": "accessibility_tools",
+    "short_name": "accessibility_tools",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

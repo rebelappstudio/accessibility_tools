@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:accessibility_checker/accessibility_checker.dart';
+import 'package:accessibility_tools/accessibility_tools.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       builder: (context, child) {
-        return AccessibilityChecker(child: child);
+        return AccessibilityTools(child: child);
       },
       title: 'Flutter Demo',
       theme: ThemeData(

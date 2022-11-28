@@ -1,5 +1,5 @@
 import 'dart:ui' as ui;
-import 'package:accessibility_checker/src/accessibility_issue.dart';
+import 'package:accessibility_tools/src/accessibility_issue.dart';
 import 'package:flutter/rendering.dart';
 import 'checker_base.dart';
 

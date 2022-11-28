@@ -1,4 +1,4 @@
-package com.example.accessibility_checker
+package com.example.accessibility_tools
 
 import io.flutter.embedding.android.FlutterActivity
 

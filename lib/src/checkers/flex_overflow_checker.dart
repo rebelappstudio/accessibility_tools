@@ -1,6 +1,6 @@
-import 'package:accessibility_checker/src/accessibility_issue.dart';
-import 'package:accessibility_checker/src/checkers/checker_base.dart';
-import 'package:accessibility_checker/src/checkers/mixin.dart';
+import 'package:accessibility_tools/src/accessibility_issue.dart';
+import 'package:accessibility_tools/src/checkers/checker_base.dart';
+import 'package:accessibility_tools/src/checkers/mixin.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
