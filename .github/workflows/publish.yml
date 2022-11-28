@@ -19,10 +19,12 @@ jobs:
         run: flutter pub get
       - name: Run tests
         run: flutter test
-      - name: Setup Pub Credentials
+      - name: Create pub credentials
         shell: bash
         env:
           PUB_DEV_CREDENTIAL_JSON: ${{ secrets.PUB_DEV_CREDENTIAL_JSON }}
         run: mkdir -p $XDG_CONFIG_HOME/dart && echo '${{ secrets.PUB_CREDENTIALS }}' > "$XDG_CONFIG_HOME/dart/pub-credentials.json"
-      - name: Check Publish Warnings
+      - name: Check publishing warnings
         run: flutter pub publish --dry-run
+      - name: Publish to pub.dev
+        run: flutter pub publish
