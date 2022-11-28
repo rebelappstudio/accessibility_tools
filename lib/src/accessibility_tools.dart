@@ -20,6 +20,9 @@ const iOSLargestTextScaleFactor = 1.35;
 ///
 /// Issues are highlighted by a red box.
 class AccessibilityTools extends StatefulWidget {
+  @visibleForTesting
+  static bool debugRunCheckersInTests = false;
+
   static TransitionBuilder builder({
     bool checkSemanticLabels = true,
   }) {
@@ -96,7 +99,9 @@ class _AccessibilityToolsState extends State<AccessibilityTools>
 
   @override
   Widget build(BuildContext context) {
-    if (!kDebugMode || kIsWeb || _isTest) {
+    if (!kDebugMode ||
+        kIsWeb ||
+        (!AccessibilityTools.debugRunCheckersInTests && _isTest)) {
       return widget.child!;
     }
 
@@ -253,17 +258,13 @@ class _WarningButton extends StatelessWidget {
             hoverElevation: toggled ? 0 : 10,
             onPressed: onPressed,
             backgroundColor: toggled ? Colors.orange : Colors.red,
-            child: Stack(
-              children: [
-                Icon(
-                  Icons.accessibility_new,
-                  size: 25,
-                  color: toggled ? Colors.white : Colors.yellow,
-                  semanticLabel: toggled
-                      ? 'Hide accessibility issues'
-                      : 'Show accessibility issues',
-                ),
-              ],
+            child: Icon(
+              Icons.accessibility_new,
+              size: 25,
+              color: toggled ? Colors.white : Colors.yellow,
+              semanticLabel: toggled
+                  ? 'Hide accessibility issues'
+                  : 'Show accessibility issues',
             ),
           ),
         ),
