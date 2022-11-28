@@ -6,6 +6,8 @@ Creating an accessible app is incredibly important. But too often it's forgotten
 
 <img width="303" alt='A screenshot showing an icon with two failed accessibility checks: the tooltip reads "Tap area is a missing semantic label" and "Tap area of 40x40 is too small: should be at least 48×48"' src="https://user-images.githubusercontent.com/756862/201646720-c6508f43-2cf9-4a54-a41b-ae7d17b55994.png">
 
+From [Rebel App Studio][rebel_home]
+
 ## Getting Started
 
 Add `AccessibilityTools` to your app's `builder` property:
@@ -65,3 +67,5 @@ AccessibilityTools(
   child: child,
 )
 ```
+
+[rebel_home]: https://rebelappstudio.com/
