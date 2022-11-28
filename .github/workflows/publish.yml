@@ -5,16 +5,24 @@ on:
     types: [published]
 
 jobs:
-  publish:
+  build:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v1
       - name: Publish
-        uses: sakebook/actions-flutter-pub-publisher@v1.4.1
+        uses: subosito/flutter-action@v2.8.0
         with:
-          credential: ${{ secrets.PUB_DEV_CREDENTIAL_JSON }}
-          flutter_package: true
-          skip_test: false
-          dry_run: true
+          channel: "stable"
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Run tests
+        run: flutter test
+      - name: Setup Pub Credentials
+        shell: bash
+        env:
+          PUB_DEV_CREDENTIAL_JSON: ${{ secrets.PUB_DEV_CREDENTIAL_JSON }}
+        run: mkdir -p $XDG_CONFIG_HOME/dart && echo '${{ secrets.PUB_CREDENTIALS }}' > "$XDG_CONFIG_HOME/dart/pub-credentials.json"
+      - name: Check Publish Warnings
+        run: flutter pub publish --dry-run
