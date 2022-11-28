@@ -13,7 +13,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-const materialMinTapArea = 48.0;
+const defaultMinTapArea = 44.0;
 const iOSLargestTextScaleFactor = 1.35;
 
 /// A checker for debug mode that highlights accessibility issues.
@@ -41,7 +41,7 @@ class AccessibilityTools extends StatefulWidget {
   const AccessibilityTools({
     super.key,
     required this.child,
-    this.minTapArea = materialMinTapArea,
+    this.minTapArea = defaultMinTapArea,
     this.checkSemanticLabels = true,
     this.checkFontOverflows = false,
   });
@@ -148,11 +148,11 @@ class _CheckerOverlayState extends State<CheckerOverlay> {
   bool showOverlays = false;
 
   static Rect _inflateToMinimumSize(Rect rect) {
-    if (rect.shortestSide < materialMinTapArea) {
+    if (rect.shortestSide < defaultMinTapArea) {
       return Rect.fromCenter(
         center: rect.center,
-        width: max(materialMinTapArea, rect.width),
-        height: max(materialMinTapArea, rect.height),
+        width: max(defaultMinTapArea, rect.width),
+        height: max(defaultMinTapArea, rect.height),
       );
     }
 
@@ -165,8 +165,9 @@ class _CheckerOverlayState extends State<CheckerOverlay> {
       animation: widget.checker,
       builder: (context, _) {
         final issues = List<AccessibilityIssue>.from(widget.checker.issues);
-        final rects =
-            issues.groupListsBy((issue) => issue.renderObject.getGlobalRect());
+        final rects = issues
+            .where((element) => element.renderObject.attached)
+            .groupListsBy((issue) => issue.renderObject.getGlobalRect());
 
         return Stack(
           children: [
@@ -240,23 +241,31 @@ class _WarningButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 44,
-      width: 44,
+    return SizedBox.square(
+      dimension: defaultMinTapArea,
       child: Tooltip(
         message: issues.length == 1
             ? 'Accessibility issue found'
             : '${issues.length} accessibility issues found',
-        child: FloatingActionButton(
-          onPressed: onPressed,
-          backgroundColor: toggled ? Colors.orange : Colors.red,
-          child: Icon(
-            Icons.warning,
-            size: 25,
-            color: toggled ? Colors.white : Colors.yellow,
-            semanticLabel: toggled
-                ? 'Hide accessibility issues'
-                : 'Show accessibility issues',
+        child: Transform.translate(
+          offset: toggled ? const Offset(1, 1) : Offset.zero,
+          child: FloatingActionButton(
+            elevation: toggled ? 0 : 10,
+            hoverElevation: toggled ? 0 : 10,
+            onPressed: onPressed,
+            backgroundColor: toggled ? Colors.orange : Colors.red,
+            child: Stack(
+              children: [
+                Icon(
+                  Icons.accessibility_new,
+                  size: 25,
+                  color: toggled ? Colors.white : Colors.yellow,
+                  semanticLabel: toggled
+                      ? 'Hide accessibility issues'
+                      : 'Show accessibility issues',
+                ),
+              ],
+            ),
           ),
         ),
       ),

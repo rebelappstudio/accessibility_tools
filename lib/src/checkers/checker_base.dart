@@ -96,6 +96,8 @@ abstract class WidgetCheckerBase extends CheckerBase {
 extension RenderObjectExtension on RenderObject {
   @protected
   Rect getGlobalRect() {
+    assert(attached);
+
     final translation = getTransformTo(null).getTranslation();
     final offset = Offset(translation.x, translation.y);
     return paintBounds.shift(offset);
