@@ -1,6 +1,6 @@
 # accessibility_tools
 
-**Checkers and tools to ensure your app remains accessible to all.**
+**Checkers and tools to ensure your app is accessible to all.**
 
 Creating an accessible app is incredibly important. But too often it's forgotten about, or left to later. This package ensures your app is accessible from day one, by checking your interface as you build it.
 
