@@ -1,0 +1,31 @@
+name: Pull requests
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Test on Flutter stable channel
+        uses: subosito/flutter-action@v2.8.0
+        with:
+          channel: "stable"
+      - run: flutter pub get
+      - run: flutter test --coverage
+
+      - name: Test on Flutter master channel
+        uses: subosito/flutter-action@v2.8.0
+        with:
+          channel: "main"
+      - run: flutter clean
+      - run: flutter pub get
+      - run: flutter test
+
+      - name: Codecov
+        uses: codecov/codecov-action@v3.1.1
