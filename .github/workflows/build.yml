@@ -24,6 +24,12 @@ jobs:
       - name: Analyze
         run: flutter analyze
 
+      - name: Check for unused code
+        run: |
+          flutter pub global activate dart_code_metrics 
+          flutter pub global run dart_code_metrics:metrics check-unused-files lib test --fatal-unused
+          flutter pub global run dart_code_metrics:metrics check-unused-code lib test --fatal-unused
+
       - name: Test on Flutter stable channel
         run: flutter test --coverage
 
