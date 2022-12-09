@@ -31,10 +31,9 @@ mixin SemanticUpdateMixin<T extends StatefulWidget> on State<T> {
 
 class SemanticsClient extends ChangeNotifier {
   SemanticsClient(PipelineOwner pipelineOwner) {
-    semanticsHandle = pipelineOwner.ensureSemantics(
-      listener: notifyListeners,
-    );
+    semanticsHandle = pipelineOwner.ensureSemantics(listener: notifyListeners);
   }
+
   late final SemanticsHandle semanticsHandle;
 
   @override

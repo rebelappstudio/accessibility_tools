@@ -7,6 +7,7 @@ import 'checker_base.dart';
 /// Modified from package:flutter_test/lib/src/accessibility.dart
 class MinimumTapAreaChecker extends SemanticsNodeChecker {
   MinimumTapAreaChecker({required this.minTapArea});
+
   final double minTapArea;
 
   @override

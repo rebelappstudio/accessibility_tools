@@ -29,6 +29,7 @@ class AccessibilityTools extends StatefulWidget {
     this.checkSemanticLabels = true,
     this.checkFontOverflows = false,
   });
+
   @visibleForTesting
   static bool debugRunCheckersInTests = false;
 
@@ -142,6 +143,7 @@ class CheckerOverlay extends StatefulWidget {
     required this.checker,
     required this.child,
   });
+
   final CheckerManager checker;
   final Widget child;
 
@@ -238,6 +240,7 @@ class _WarningButton extends StatelessWidget {
     required this.onPressed,
     required this.toggled,
   });
+
   final bool toggled;
   final List<AccessibilityIssue> issues;
   final VoidCallback onPressed;

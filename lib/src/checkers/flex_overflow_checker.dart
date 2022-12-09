@@ -37,6 +37,7 @@ Android font scales:
 
 class FlexOverflowChecker extends WidgetCheckerBase {
   FlexOverflowChecker({required this.textScaleFactor});
+
   final double textScaleFactor;
 
   @override
