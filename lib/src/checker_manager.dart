@@ -1,9 +1,10 @@
-import 'package:accessibility_tools/src/accessibility_issue.dart';
-import 'package:accessibility_tools/src/checkers/checker_base.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+
+import 'accessibility_issue.dart';
+import 'checkers/checker_base.dart';
 
 /// Checks for accessibility issues, updating whenever the semantic tree
 /// changes.

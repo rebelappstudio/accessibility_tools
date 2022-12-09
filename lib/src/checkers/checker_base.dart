@@ -1,9 +1,11 @@
 import 'dart:ui' as ui;
-import 'package:accessibility_tools/src/accessibility_issue.dart';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter/widgets.dart';
+
+import '../accessibility_issue.dart';
 
 abstract class CheckerBase extends ChangeNotifier {
   List<AccessibilityIssue> _issues = [];
@@ -51,7 +53,8 @@ abstract class CheckerBase extends ChangeNotifier {
   }
 
   bool shouldIgnore(Element? element) {
-    // Stupid hack to not highlight the inspector button as an accessibility issue
+    // Stupid hack to not highlight the inspector button as an accessibility
+    // issue
     if (element != null) {
       final inspectorButtonChain = [
         'FloatingActionButton',
@@ -96,7 +99,7 @@ abstract class WidgetCheckerBase extends CheckerBase {
 extension RenderObjectExtension on RenderObject {
   @protected
   Rect getGlobalRect() {
-    assert(attached);
+    assert(attached, 'RenderObject must be attached to get global rect');
 
     final translation = getTransformTo(null).getTranslation();
     final offset = Offset(translation.x, translation.y);

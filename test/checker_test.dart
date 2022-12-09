@@ -45,12 +45,12 @@ void main() {
 }
 
 class TestApp extends StatelessWidget {
-  final Widget child;
-
   const TestApp({
     super.key,
     required this.child,
   });
+
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {

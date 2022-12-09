@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 
+@immutable
 class AccessibilityIssue {
-  AccessibilityIssue({
+  const AccessibilityIssue({
     required this.message,
     required this.renderObject,
   });

@@ -1,17 +1,19 @@
 import 'dart:math';
 import 'dart:ui' as ui;
-import 'package:accessibility_tools/src/accessibility_issue.dart';
-import 'package:accessibility_tools/src/checker_manager.dart';
-import 'package:accessibility_tools/src/checkers/checker_base.dart';
-import 'package:accessibility_tools/src/checkers/flex_overflow_checker.dart';
-import 'package:accessibility_tools/src/checkers/minimum_tap_area_checker.dart';
-import 'package:accessibility_tools/src/checkers/mixin.dart';
-import 'package:accessibility_tools/src/checkers/semantic_label_checker.dart';
+
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import 'accessibility_issue.dart';
+import 'checker_manager.dart';
+import 'checkers/checker_base.dart';
+import 'checkers/flex_overflow_checker.dart';
+import 'checkers/minimum_tap_area_checker.dart';
+import 'checkers/mixin.dart';
+import 'checkers/semantic_label_checker.dart';
 
 const defaultMinTapArea = 44.0;
 const iOSLargestTextScaleFactor = 1.35;
@@ -20,6 +22,13 @@ const iOSLargestTextScaleFactor = 1.35;
 ///
 /// Issues are highlighted by a red box.
 class AccessibilityTools extends StatefulWidget {
+  const AccessibilityTools({
+    super.key,
+    required this.child,
+    this.minTapArea = defaultMinTapArea,
+    this.checkSemanticLabels = true,
+    this.checkFontOverflows = false,
+  });
   @visibleForTesting
   static bool debugRunCheckersInTests = false;
 
@@ -40,14 +49,6 @@ class AccessibilityTools extends StatefulWidget {
   final double? minTapArea;
   final bool checkSemanticLabels;
   final bool checkFontOverflows;
-
-  const AccessibilityTools({
-    super.key,
-    required this.child,
-    this.minTapArea = defaultMinTapArea,
-    this.checkSemanticLabels = true,
-    this.checkFontOverflows = false,
-  });
 
   @override
   State<AccessibilityTools> createState() => _AccessibilityToolsState();
@@ -136,14 +137,13 @@ class _AccessibilityToolsState extends State<AccessibilityTools>
 }
 
 class CheckerOverlay extends StatefulWidget {
-  final CheckerManager checker;
-  final Widget child;
-
   const CheckerOverlay({
     super.key,
     required this.checker,
     required this.child,
   });
+  final CheckerManager checker;
+  final Widget child;
 
   @override
   State<CheckerOverlay> createState() => _CheckerOverlayState();
@@ -233,15 +233,14 @@ class _CheckerOverlayState extends State<CheckerOverlay> {
 }
 
 class _WarningButton extends StatelessWidget {
-  final bool toggled;
-  final List<AccessibilityIssue> issues;
-  final VoidCallback onPressed;
-
   const _WarningButton({
     required this.issues,
     required this.onPressed,
     required this.toggled,
   });
+  final bool toggled;
+  final List<AccessibilityIssue> issues;
+  final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
