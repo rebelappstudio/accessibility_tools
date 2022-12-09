@@ -171,7 +171,7 @@ class _CheckerOverlayState extends State<CheckerOverlay> {
     return AnimatedBuilder(
       animation: widget.checker,
       builder: (context, _) {
-        final issues = List<AccessibilityIssue>.from(widget.checker.issues);
+        final issues = List<AccessibilityIssue>.of(widget.checker.issues);
         final rects = issues
             .where((element) => element.renderObject.attached)
             .groupListsBy((issue) => issue.renderObject.getGlobalRect());

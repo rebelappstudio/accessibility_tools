@@ -1,4 +1,7 @@
 analyzer:
+  plugins:
+    - dart_code_metrics
+
   language:
     strict-casts: true
     strict-inference: true
@@ -195,3 +198,31 @@ linter:
     - use_to_and_as_if_applicable
     - valid_regexps
     - void_checks
+
+dart_code_metrics:
+  rules:
+    # Common
+    - avoid-collection-methods-with-unrelated-types
+    - avoid-nested-conditional-expressions:
+        acceptable-level: 2
+    - avoid-redundant-async
+    - avoid-unnecessary-conditionals
+    - avoid-unnecessary-type-assertions
+    - avoid-unnecessary-type-casts
+    - avoid-unrelated-type-assertions
+    - no-boolean-literal-compare
+    - no-equal-then-else
+    - prefer-async-await
+    - prefer-enums-by-name
+    - prefer-iterable-of
+    - prefer-last
+    - prefer-moving-to-variable:
+        allowed-duplicated-chains: 3
+    # Flutter
+    - always-remove-listener
+    - avoid-expanded-as-spacer
+    - avoid-unnecessary-setstate
+    - avoid-wrapping-in-padding
+    - check-for-equals-in-render-object-setters
+    - consistent-update-render-object
+    - prefer-correct-edge-insets-constructor

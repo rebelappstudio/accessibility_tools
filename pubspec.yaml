@@ -16,3 +16,6 @@ dependencies:
 
 flutter:
   uses-material-design: true
+
+dev_dependencies:
+  dart_code_metrics: ^5.2.1

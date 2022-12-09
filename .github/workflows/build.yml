@@ -24,11 +24,21 @@ jobs:
       - name: Analyze
         run: flutter analyze
 
+      - name: Dart Code Metrics
+        uses: dart-code-checker/dart-code-metrics-action@v3.0.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          folders: lib test
+          pull_request_comment: true
+          check_unused_files: true
+          fatal_warnings: true
+          fatal_performance: true
+          fatal_style: true
+
       - name: Check for unused code
         run: |
-          flutter pub global activate dart_code_metrics 
-          flutter pub global run dart_code_metrics:metrics check-unused-files lib test --fatal-unused
-          flutter pub global run dart_code_metrics:metrics check-unused-code lib test --fatal-unused
+          flutter pub run dart_code_metrics:metrics check-unused-code lib test
+          flutter pub run dart_code_metrics:metrics check-unnecessary-nullable lib test
 
       - name: Test on Flutter stable channel
         run: flutter test --coverage
