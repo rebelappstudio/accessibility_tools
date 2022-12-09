@@ -19,6 +19,9 @@ jobs:
       - run: flutter pub get
       - run: flutter test --coverage
 
+      - name: Codecov
+        uses: codecov/codecov-action@v3.1.1
+
       - name: Test on Flutter master channel
         uses: subosito/flutter-action@v2.8.0
         with:
@@ -26,6 +29,3 @@ jobs:
       - run: flutter clean
       - run: flutter pub get
       - run: flutter test
-
-      - name: Codecov
-        uses: codecov/codecov-action@v3.1.1
