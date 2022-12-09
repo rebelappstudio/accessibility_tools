@@ -29,7 +29,6 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           folders: lib test
-          pull_request_comment: true
           check_unused_files: true
           fatal_warnings: true
           fatal_performance: true
