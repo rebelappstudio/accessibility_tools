@@ -45,8 +45,15 @@ class FlexOverflowChecker extends WidgetCheckerBase {
 
   @override
   Widget build(BuildContext context, Widget child) {
+
+
+
     return _FlexOverflowCheckerInjector(
-      checker: this,
+      checker:
+      
+      
+      
+            this,
       child: child,
     );
   }
