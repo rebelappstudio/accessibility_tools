@@ -12,6 +12,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Check format
+        run: flutter format --set-exit-if-changed .
+
+      - name: Analyze
+        run: flutter analyze
+
       - name: Test on Flutter stable channel
         uses: subosito/flutter-action@v2.8.0
         with:
@@ -21,6 +27,9 @@ jobs:
 
       - name: Codecov
         uses: codecov/codecov-action@v3.1.1
+        with:
+          files: ./coverage/lcov.info
+          fail_ci_if_error: true
 
       - name: Test on Flutter master channel
         uses: subosito/flutter-action@v2.8.0
