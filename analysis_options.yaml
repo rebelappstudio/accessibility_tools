@@ -206,7 +206,6 @@ dart_code_metrics:
     - avoid-nested-conditional-expressions:
         acceptable-level: 2
     - avoid-redundant-async
-    - avoid-unnecessary-conditionals
     - avoid-unnecessary-type-assertions
     - avoid-unnecessary-type-casts
     - avoid-unrelated-type-assertions
