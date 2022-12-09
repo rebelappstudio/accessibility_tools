@@ -1,0 +1,42 @@
+name: Pull requests
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: subosito/flutter-action@v2.8.0
+      - uses: actions/checkout@v2
+        with:
+          channel: "stable"
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Check format
+        run: flutter format --set-exit-if-changed .
+
+      - name: Analyze
+        run: flutter analyze
+
+      - name: Test on Flutter stable channel
+        run: flutter test --coverage
+
+      - name: Upload code coverage
+        uses: codecov/codecov-action@v3.1.1
+        with:
+          files: ./coverage/lcov.info
+          fail_ci_if_error: true
+
+      - name: Test on Flutter master channel
+        uses: subosito/flutter-action@v2.8.0
+        with:
+          channel: "master"
+      - run: flutter clean
+      - run: flutter pub get
+      - run: flutter test
