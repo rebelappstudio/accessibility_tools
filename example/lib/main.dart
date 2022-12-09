@@ -16,7 +16,9 @@ class MyApp extends StatelessWidget {
         return AccessibilityTools(child: child);
       },
       title: 'Flutter Demo',
-      theme: ThemeData(
+
+
+            theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
@@ -25,7 +27,11 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
+  const MyHomePage({Key? key,
+  
+  
+  
+   required this.title}) : super(key: key);
 
   final String title;
 
