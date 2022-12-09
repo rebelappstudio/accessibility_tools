@@ -24,6 +24,12 @@ jobs:
       - name: Analyze
         run: flutter analyze
 
+      - name: Check for unused code
+        run: flutter pub run dart_code_metrics:metrics check-unused-code lib test
+
+      - name: Check for unnecessary nullables
+        run: flutter pub run dart_code_metrics:metrics check-unnecessary-nullable lib test
+
       - name: Dart Code Metrics
         uses: dart-code-checker/dart-code-metrics-action@v3.0.0
         with:
@@ -32,11 +38,6 @@ jobs:
           fatal_warnings: true
           fatal_performance: true
           fatal_style: true
-
-      - name: Check for unused code
-        run: |
-          flutter pub run dart_code_metrics:metrics check-unused-code lib test
-          flutter pub run dart_code_metrics:metrics check-unnecessary-nullable lib test
 
       - name: Test on Flutter stable channel
         run: flutter test --coverage
