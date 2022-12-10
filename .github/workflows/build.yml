@@ -11,18 +11,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: subosito/flutter-action@v2.8.0
       - uses: actions/checkout@v2
+      - uses: subosito/flutter-action@v2.8.0
         with:
           channel: "stable"
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Check format
-        run: flutter format --set-exit-if-changed .
-
       - name: Analyze
-        run: flutter analyze
+        uses: zgosalvez/github-actions-analyze-dart@v2
+        with:
+          fail-on-warnings: true
+
+      - name: Check for unused code
+        run: flutter pub run dart_code_metrics:metrics check-unused-code lib test
+
+      - name: Check for unnecessary nullables
+        run: flutter pub run dart_code_metrics:metrics check-unnecessary-nullable lib test
+
+      - name: Dart Code Metrics
+        uses: dart-code-checker/dart-code-metrics-action@v3.0.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          check_unused_files: true
+          fatal_warnings: true
+          fatal_performance: true
+          fatal_style: true
 
       - name: Test on Flutter stable channel
         run: flutter test --coverage

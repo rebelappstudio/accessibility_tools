@@ -1,13 +1,14 @@
-import 'package:accessibility_tools/src/accessibility_issue.dart';
-import 'package:accessibility_tools/src/checkers/checker_base.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
+import '../accessibility_issue.dart';
+import 'checker_base.dart';
+
 /// Modified from package:flutter_test/lib/src/accessibility.dart
 class MinimumTapAreaChecker extends SemanticsNodeChecker {
-  final double minTapArea;
-
   MinimumTapAreaChecker({required this.minTapArea});
+
+  final double minTapArea;
 
   @override
   AccessibilityIssue? checkNode(SemanticsNode node, RenderObject renderObject) {
@@ -21,15 +22,17 @@ class MinimumTapAreaChecker extends SemanticsNodeChecker {
     final element = renderObject.getCreatorElement();
 
     if (element?.size != null && element?.size != size) {
-      // Item size doesn't match tap area height - it's probably partially off screen
+      // Item size doesn't match tap area height - it's probably partially off
+      // screen
       return null;
     }
 
     const delta = 0.001;
     if (size.width < minTapArea - delta || size.height < minTapArea - delta) {
       return AccessibilityIssue(
-        message:
-            'Tap area of ${_format(size.width)}x${_format(size.height)} is too small:\nshould be at least ${_format(minTapArea)}x${_format(minTapArea)}',
+        message: '''
+Tap area of ${_format(size.width)}x${_format(size.height)} is too small:
+should be at least ${_format(minTapArea)}x${_format(minTapArea)}''',
         renderObject: renderObject,
       );
     }

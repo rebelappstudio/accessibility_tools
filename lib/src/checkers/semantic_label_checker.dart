@@ -1,6 +1,8 @@
 import 'dart:ui' as ui;
-import 'package:accessibility_tools/src/accessibility_issue.dart';
+
 import 'package:flutter/rendering.dart';
+
+import '../accessibility_issue.dart';
 import 'checker_base.dart';
 
 class SemanticLabelChecker extends SemanticsNodeChecker {

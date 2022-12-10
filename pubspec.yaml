@@ -8,14 +8,14 @@ environment:
   flutter: ">=1.17.0"
 
 dependencies:
+  collection: ^1.16.0
   flutter:
     sdk: flutter
   flutter_test:
     sdk: flutter
-  collection: ^1.16.0
-
-dev_dependencies:
-  flutter_lints: ^2.0.0
 
 flutter:
   uses-material-design: true
+
+dev_dependencies:
+  dart_code_metrics: ^5.2.1

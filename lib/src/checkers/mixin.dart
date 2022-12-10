@@ -21,9 +21,7 @@ mixin SemanticUpdateMixin<T extends StatefulWidget> on State<T> {
   void _update() {
     SchedulerBinding.instance.addPostFrameCallback((Duration _) {
       if (mounted) {
-        setState(() {
-          didUpdateSemantics();
-        });
+        setState(didUpdateSemantics);
       }
     });
   }
@@ -32,13 +30,11 @@ mixin SemanticUpdateMixin<T extends StatefulWidget> on State<T> {
 }
 
 class SemanticsClient extends ChangeNotifier {
-  late final SemanticsHandle semanticsHandle;
-
   SemanticsClient(PipelineOwner pipelineOwner) {
-    semanticsHandle = pipelineOwner.ensureSemantics(
-      listener: notifyListeners,
-    );
+    semanticsHandle = pipelineOwner.ensureSemantics(listener: notifyListeners);
   }
+
+  late final SemanticsHandle semanticsHandle;
 
   @override
   void dispose() {

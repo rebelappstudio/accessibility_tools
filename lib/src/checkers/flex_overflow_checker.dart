@@ -1,10 +1,11 @@
-import 'package:accessibility_tools/src/accessibility_issue.dart';
-import 'package:accessibility_tools/src/checkers/checker_base.dart';
-import 'package:accessibility_tools/src/checkers/mixin.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
+
+import '../accessibility_issue.dart';
+import 'checker_base.dart';
+import 'mixin.dart';
 
 /*
 
@@ -35,9 +36,9 @@ Android font scales:
 */
 
 class FlexOverflowChecker extends WidgetCheckerBase {
-  final double textScaleFactor;
-
   FlexOverflowChecker({required this.textScaleFactor});
+
+  final double textScaleFactor;
 
   @override
   void didUpdateSemantics(List<RenderObject> semanticRenderObjects) {}
@@ -52,13 +53,12 @@ class FlexOverflowChecker extends WidgetCheckerBase {
 }
 
 class _FlexOverflowCheckerInjector extends StatefulWidget {
-  final Widget child;
-  final FlexOverflowChecker checker;
-
   const _FlexOverflowCheckerInjector({
     required this.child,
     required this.checker,
   });
+  final Widget child;
+  final FlexOverflowChecker checker;
 
   @override
   State<_FlexOverflowCheckerInjector> createState() =>
