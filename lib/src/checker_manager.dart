@@ -76,22 +76,69 @@ class CheckerManager extends ChangeNotifier {
 
     int i = 0;
     for (final issue in issues) {
-      final creator = issue.renderObject.debugCreator;
+      final creator = issue.getDebugCreator();
 
       i++;
 
       debugPrint('Accessibility issue $i: ${issue.message}\n');
 
-      if (creator is DebugCreator) {
-        final chain = creator.element.debugGetDiagnosticChain();
-
-        if (chain.length > 1) {
-          debugPrint(
-            '  Widget: ${creator.element.debugGetDiagnosticChain()[1]}\n'
-            '  ${creator.element.describeOwnershipChain('Widget location')}\n',
-          );
-        }
+      if (creator != null) {
+        final diagnosticsNodes =
+            debugTransformDebugCreator([DiagnosticsDebugCreator(creator)]);
+        debugPrint(diagnosticsNodes.map((e) => e.toStringDeep()).join('\n'));
       }
     }
+  }
+}
+
+CreationLocation? getCreationLocation(Element element) {
+  // debugIsWidgetLocalCreation
+  final node = element.widget.toDiagnosticsNode();
+  final inspectorDelegate = InspectorSerializationDelegate(
+    service: WidgetInspectorService.instance,
+  );
+  final props = inspectorDelegate.additionalNodeProperties(node);
+  final location = props['creationLocation'];
+  if (location is Map<String, Object?>) {
+    return CreationLocation.fromJsonMap(
+      props['creationLocation'] as Map<String, Object?>,
+    );
+  }
+
+  return null;
+}
+
+class CreationLocation {
+  const CreationLocation({
+    required this.file,
+    required this.line,
+    required this.column,
+    this.name,
+  });
+
+  /// File path of the location.
+  final String file;
+
+  /// 1-based line number.
+  final int line;
+
+  /// 1-based column number.
+  final int column;
+
+  /// Optional name of the parameter or function at this location.
+  final String? name;
+
+  static CreationLocation fromJsonMap(Map<String, Object?> json) {
+    return CreationLocation(
+      file: json['file'] as String,
+      line: json['line'] as int,
+      column: json['column'] as int,
+      name: json['name'] as String?,
+    );
+  }
+
+  @override
+  String toString() {
+    return [file, line, column].join(':');
   }
 }

@@ -30,21 +30,9 @@ class AccessibilityTools extends StatefulWidget {
     this.checkFontOverflows = false,
   });
 
+  /// Forces accessibility checkers to run when running from a test.
   @visibleForTesting
   static bool debugRunCheckersInTests = false;
-
-  static TransitionBuilder builder({
-    bool checkSemanticLabels = true,
-  }) {
-    return (context, child) {
-      return child != null
-          ? AccessibilityTools(
-              checkSemanticLabels: checkSemanticLabels,
-              child: child,
-            )
-          : const SizedBox();
-    };
-  }
 
   final Widget? child;
   final double? minTapArea;
