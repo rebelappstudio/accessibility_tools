@@ -107,20 +107,20 @@ class _AccessibilityToolsState extends State<AccessibilityTools>
       }
     }
 
-    return Directionality(
+    return Stack(
       textDirection: ui.TextDirection.ltr,
-      child: Overlay(
-        initialEntries: [
-          OverlayEntry(
-            builder: (_) {
-              return CheckerOverlay(
-                checker: _checker,
-                child: child,
-              );
-            },
-          ),
-        ],
-      ),
+      children: [
+        child,
+        Overlay(
+          initialEntries: [
+            OverlayEntry(
+              builder: (_) {
+                return CheckerOverlay(checker: _checker);
+              },
+            ),
+          ],
+        ),
+      ],
     );
   }
 }
@@ -129,11 +129,9 @@ class CheckerOverlay extends StatefulWidget {
   const CheckerOverlay({
     super.key,
     required this.checker,
-    required this.child,
   });
 
   final CheckerManager checker;
-  final Widget child;
 
   @override
   State<CheckerOverlay> createState() => _CheckerOverlayState();
@@ -166,7 +164,6 @@ class _CheckerOverlayState extends State<CheckerOverlay> {
 
         return Stack(
           children: [
-            Positioned.fill(child: widget.child),
             if (showOverlays)
               for (final entry in rects.entries)
                 Positioned.fromRect(
