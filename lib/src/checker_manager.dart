@@ -68,30 +68,35 @@ class CheckerManager extends ChangeNotifier {
   }
 
   void _logAccessibilityIssues(List<AccessibilityIssue> issues) {
-    debugPrint(
-      '==========================\n'
-      'ACCESSIBILITY ISSUES FOUND\n'
-      '==========================\n',
-    );
+    debugPrint('''
+==========================
+ACCESSIBILITY ISSUES FOUND
+==========================
+''');
 
-    int i = 0;
+    var i = 1;
+
     for (final issue in issues) {
-      final creator = issue.renderObject.debugCreator;
-
-      i++;
-
       debugPrint('Accessibility issue $i: ${issue.message}\n');
 
-      if (creator is DebugCreator) {
-        final chain = creator.element.debugGetDiagnosticChain();
-
-        if (chain.length > 1) {
-          debugPrint(
-            '  Widget: ${creator.element.debugGetDiagnosticChain()[1]}\n'
-            '  ${creator.element.describeOwnershipChain('Widget location')}\n',
-          );
-        }
+      final creator = issue.getDebugCreator();
+      if (creator != null) {
+        debugPrint(creator.toWidgetCreatorString());
       }
+
+      i++;
     }
+  }
+}
+
+extension on DebugCreator {
+  /// Returns a string description of the widget this [DebugCreator] is
+  /// associated with, including the location in the source code the widget was
+  /// created.
+  String toWidgetCreatorString() {
+    final diagnosticsNodes = debugTransformDebugCreator(
+      [DiagnosticsDebugCreator(this)],
+    );
+    return diagnosticsNodes.map((e) => e.toStringDeep()).join('\n');
   }
 }
