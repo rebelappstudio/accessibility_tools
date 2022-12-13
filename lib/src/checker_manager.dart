@@ -68,77 +68,35 @@ class CheckerManager extends ChangeNotifier {
   }
 
   void _logAccessibilityIssues(List<AccessibilityIssue> issues) {
-    debugPrint(
-      '==========================\n'
-      'ACCESSIBILITY ISSUES FOUND\n'
-      '==========================\n',
-    );
+    debugPrint('''
+==========================
+ACCESSIBILITY ISSUES FOUND
+==========================
+''');
 
-    int i = 0;
+    var i = 1;
+
     for (final issue in issues) {
-      final creator = issue.getDebugCreator();
-
-      i++;
-
       debugPrint('Accessibility issue $i: ${issue.message}\n');
 
+      final creator = issue.getDebugCreator();
       if (creator != null) {
-        final diagnosticsNodes =
-            debugTransformDebugCreator([DiagnosticsDebugCreator(creator)]);
-        debugPrint(diagnosticsNodes.map((e) => e.toStringDeep()).join('\n'));
+        debugPrint(creator.toWidgetCreatorString());
       }
+
+      i++;
     }
   }
 }
 
-CreationLocation? getCreationLocation(Element element) {
-  // debugIsWidgetLocalCreation
-  final node = element.widget.toDiagnosticsNode();
-  final inspectorDelegate = InspectorSerializationDelegate(
-    service: WidgetInspectorService.instance,
-  );
-  final props = inspectorDelegate.additionalNodeProperties(node);
-  final location = props['creationLocation'];
-  if (location is Map<String, Object?>) {
-    return CreationLocation.fromJsonMap(
-      props['creationLocation'] as Map<String, Object?>,
+extension on DebugCreator {
+  /// Returns a string description of the widget this [DebugCreator] is
+  /// associated with, including the location in the source code the widget was
+  /// created.
+  String toWidgetCreatorString() {
+    final diagnosticsNodes = debugTransformDebugCreator(
+      [DiagnosticsDebugCreator(this)],
     );
-  }
-
-  return null;
-}
-
-class CreationLocation {
-  const CreationLocation({
-    required this.file,
-    required this.line,
-    required this.column,
-    this.name,
-  });
-
-  /// File path of the location.
-  final String file;
-
-  /// 1-based line number.
-  final int line;
-
-  /// 1-based column number.
-  final int column;
-
-  /// Optional name of the parameter or function at this location.
-  final String? name;
-
-  static CreationLocation fromJsonMap(Map<String, Object?> json) {
-    return CreationLocation(
-      file: json['file'] as String,
-      line: json['line'] as int,
-      column: json['column'] as int,
-      name: json['name'] as String?,
-    );
-  }
-
-  @override
-  String toString() {
-    return [file, line, column].join(':');
+    return diagnosticsNodes.map((e) => e.toStringDeep()).join('\n');
   }
 }
