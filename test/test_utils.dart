@@ -1,3 +1,4 @@
+import 'package:accessibility_tools/accessibility_tools.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -17,18 +18,29 @@ void expectAccessibilityWarning(
   final tooltip = find.byWidgetPredicate((w) =>
       w is Tooltip && w.message == 'Tap area is a missing semantic label');
 
-  final container =
-      find.descendant(of: tooltip, matching: find.byType(Container)).first;
+  final warningBox =
+      find.descendant(of: tooltip, matching: find.byType(WarningBox)).first;
+
+  final warningBoxPainter =
+      find.descendant(of: warningBox, matching: find.byType(CustomPaint)).first;
 
   final buttonRenderObject = tester.renderObject(finder) as RenderBox;
-  final box = tester.renderObject(container) as RenderBox;
+  final box = tester.renderObject(warningBoxPainter) as RenderBox;
 
-  expect(box.size, buttonRenderObject.size);
+  const borderSize = 5.0;
+
+  expect(
+    box.size,
+    buttonRenderObject.size + const Offset(borderSize, borderSize),
+  );
 
   final errorBoxPosition = box.localToGlobal(box.size.center(Offset.zero));
   final buttonPosition =
       buttonRenderObject.localToGlobal(box.size.center(Offset.zero));
-  expect(errorBoxPosition, buttonPosition);
+  expect(
+    errorBoxPosition,
+    buttonPosition - const Offset(borderSize / 2, borderSize / 2),
+  );
 }
 
 /// Returns the diagnostic location of the widget.
