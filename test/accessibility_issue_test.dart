@@ -59,7 +59,7 @@ class TestRenderObject extends RenderObject {
   TestRenderObject(this.debugSemantics);
 
   @override
-  final SemanticsNode? debugSemantics;
+  final SemanticsNode debugSemantics;
 
   @override
   void debugAssertDoesMeetConstraints() {}
