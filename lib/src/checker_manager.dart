@@ -9,11 +9,7 @@ import 'checkers/checker_base.dart';
 /// Checks for accessibility issues, updating whenever the semantic tree
 /// changes.
 class CheckerManager extends ChangeNotifier {
-  CheckerManager(this.checkers) {
-    for (final checker in checkers) {
-      checker.addListener(_updateIssues);
-    }
-  }
+  CheckerManager(this.checkers);
 
   final Iterable<CheckerBase> checkers;
 
@@ -38,11 +34,14 @@ class CheckerManager extends ChangeNotifier {
     for (final checker in checkers) {
       checker.didUpdateSemantics(renderObjects);
     }
+
+    _updateIssues();
   }
 
   void _updateIssues() {
     final newIssues = checkers.map((e) => e.issues).flattened.toList();
     final issuesHaveChanged = !listEquals(issues, newIssues);
+
     _setIssues(newIssues);
 
     if (newIssues.isNotEmpty && issuesHaveChanged) {

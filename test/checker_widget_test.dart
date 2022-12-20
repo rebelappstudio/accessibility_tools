@@ -25,4 +25,18 @@ void main() {
       expect(find.text('two'), findsOneWidget);
     },
   );
+
+  test('WarningBoxPainter repaints correctly', () {
+    final painter = WarningBoxPainter(borderWidth: 1);
+
+    expect(
+      painter.shouldRepaint(WarningBoxPainter(borderWidth: 1)),
+      isFalse,
+    );
+
+    expect(
+      painter.shouldRepaint(WarningBoxPainter(borderWidth: 2)),
+      isTrue,
+    );
+  });
 }

@@ -10,6 +10,7 @@ class AccessibilityIssue {
 
   final String message;
   final RenderObject renderObject;
+
   SemanticsNode? get semanticsNode => renderObject.debugSemantics;
 
   @override

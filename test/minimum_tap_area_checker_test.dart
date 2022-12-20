@@ -10,54 +10,46 @@ void main() {
   });
 
   testWidgets(
-    'Shows warning for ElevatedButton without semantic label',
+    'Shows warning for a small tap area on mobile',
     (WidgetTester tester) async {
+      final tapKey = UniqueKey();
+
       await tester.pumpWidget(
         TestApp(
-          child: ElevatedButton(
-            child: const SizedBox(),
-            onPressed: () {},
+          child: SizedBox(
+            width: 10,
+            height: 10,
+            child: GestureDetector(
+              key: tapKey,
+              child: const Text('Tap area'),
+              onTap: () {},
+            ),
           ),
         ),
       );
 
       await showAccessibilityIssues(tester);
 
+      debugDumpApp();
+
       expectAccessibilityWarning(
         tester,
-        erroredWidgetFinder: find.byType(ElevatedButton),
-        tooltipMessage: 'Tap area is a missing semantic label',
+        erroredWidgetFinder: find.byKey(tapKey),
+        tooltipMessage:
+            'Tap area of 10x10 is too small:\nshould be at least 44x44',
       );
     },
   );
 
   testWidgets(
-    'Shows warning for GestureDetector without semantic label',
+    'Shows warning for a small tap area on desktop',
     (WidgetTester tester) async {
-      const gestureDetectorKey = Key('GestureDetector');
-
-      await tester.pumpWidget(
-        TestApp(
-          child: GestureDetector(
-            key: gestureDetectorKey,
-            child: const SizedBox(width: 100, height: 100),
-            onTap: () {},
-          ),
-        ),
-      );
-
-      await showAccessibilityIssues(tester);
-
-      expectAccessibilityWarning(
-        tester,
-        erroredWidgetFinder: find.byKey(gestureDetectorKey),
-        tooltipMessage: 'Tap area is a missing semantic label',
-      );
+      // TODO
     },
   );
 
   testWidgets(
-    'Prints console warning for tap area without semantic label',
+    'Prints console warning for a tap area that is too small',
     (WidgetTester tester) async {
       final log = await recordDebugPrint(() async {
         await tester.pumpWidget(
@@ -87,7 +79,7 @@ ${getWidgetLocationDescription(tester, find.byType(ElevatedButton))}
   );
 
   testWidgets(
-    "Doesn't show warning for ElevatedButton with semantic label",
+    "Doesn't show warning for tap area that's big enough",
     (WidgetTester tester) async {
       await tester.pumpWidget(
         TestApp(

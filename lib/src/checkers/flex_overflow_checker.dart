@@ -86,12 +86,6 @@ class _FlexOverflowCheckerInjectorState
     );
   }
 
-  Iterable<DiagnosticsNode> _debugTransformDebugCreator(
-    Iterable<DiagnosticsNode> properties,
-  ) {
-    return properties;
-  }
-
   bool _checkingFontScale = false;
   double? _textScaleFactor;
 
@@ -131,7 +125,6 @@ class _FlexOverflowCheckerInjectorState
       if (removeTransform) {
         transformers.remove(debugTransformDebugCreator);
       }
-      transformers.add(_debugTransformDebugCreator);
 
       setState(() {
         _textScaleFactor = 1.35;
@@ -147,8 +140,6 @@ class _FlexOverflowCheckerInjectorState
             if (removeTransform) {
               transformers.add(debugTransformDebugCreator);
             }
-
-            transformers.remove(_debugTransformDebugCreator);
           });
         });
       });
