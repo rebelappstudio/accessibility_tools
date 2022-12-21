@@ -3,7 +3,30 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+class TestApp extends StatelessWidget {
+  const TestApp({
+    super.key,
+    required this.child,
+  });
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      builder: (context, child) => AccessibilityTools(
+        checkFontOverflows: true,
+        child: child,
+      ),
+      home: Scaffold(
+        body: Center(child: child),
+      ),
+    );
+  }
+}
+
 Future<void> showAccessibilityIssues(WidgetTester tester) async {
+  await tester.pump();
   await tester.pump();
   await tester.pump();
   await tester.tap(find.byIcon(Icons.accessibility_new));
@@ -12,31 +35,41 @@ Future<void> showAccessibilityIssues(WidgetTester tester) async {
 
 void expectAccessibilityWarning(
   WidgetTester tester, {
-  required Finder finder,
+  required Finder erroredWidgetFinder,
   required String tooltipMessage,
 }) {
-  final tooltip = find.byWidgetPredicate((w) =>
-      w is Tooltip && w.message == 'Tap area is a missing semantic label');
-
-  final warningBox =
-      find.descendant(of: tooltip, matching: find.byType(WarningBox)).first;
-
-  final warningBoxPainter =
-      find.descendant(of: warningBox, matching: find.byType(CustomPaint)).first;
-
-  final buttonRenderObject = tester.renderObject(finder) as RenderBox;
-  final box = tester.renderObject(warningBoxPainter) as RenderBox;
-
-  const borderSize = 5.0;
-
-  expect(
-    box.size,
-    buttonRenderObject.size + const Offset(borderSize, borderSize),
+  final warningBoxFinder = find.byWidgetPredicate(
+    (widget) => widget is WarningBox && widget.message == tooltipMessage,
   );
 
-  final errorBoxPosition = box.localToGlobal(box.size.center(Offset.zero));
-  final buttonPosition =
-      buttonRenderObject.localToGlobal(box.size.center(Offset.zero));
+  expect(warningBoxFinder, findsOneWidget,
+      reason: "Couldn't find warning box with tooltip $tooltipMessage");
+
+  // Verify accessibility tooltip
+  final warningBox = tester.renderObject(
+    find.descendant(
+      of: find.byType(WarningBox),
+      matching: find.byType(CustomPaint),
+    ),
+  ) as RenderBox;
+
+  final buttonRenderBox = tester.renderObject<RenderBox>(erroredWidgetFinder);
+  const borderSize = 5.0;
+
+  // Verify size of warning box
+  expect(
+    warningBox.size,
+    buttonRenderBox.size + const Offset(borderSize, borderSize),
+  );
+
+  final errorBoxPosition = warningBox.localToGlobal(
+    warningBox.size.center(Offset.zero),
+  );
+
+  final buttonPosition = buttonRenderBox.localToGlobal(
+    warningBox.size.center(Offset.zero),
+  );
+
   expect(
     errorBoxPosition,
     buttonPosition - const Offset(borderSize / 2, borderSize / 2),

@@ -13,7 +13,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       builder: (context, child) {
-        return AccessibilityTools(child: child);
+        return AccessibilityTools(
+          checkFontOverflows: true,
+          child: child,
+        );
       },
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -50,10 +53,10 @@ class _MyHomePageState extends State<MyHomePage> {
               },
               child: const Text('Other page'),
             ),
-            // SizedBox(
-            //   width: 100,
-            //   child: Row(children: const [Text('Hello testing')]),
-            // ),
+            SizedBox(
+              width: 100,
+              child: Row(children: const [Text('Hello testing')]),
+            ),
           ],
         ),
       ),

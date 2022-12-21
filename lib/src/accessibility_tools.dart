@@ -171,26 +171,12 @@ class _CheckerOverlayState extends State<CheckerOverlay> {
                 Positioned.fromRect(
                   rect: _inflateToMinimumSize(entry.key)
                       .inflate(errorBorderWidth),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: Tooltip(
-                      padding: const EdgeInsets.all(10),
-                      message: entry.value.map((e) => e.message).join('\n\n'),
-                      decoration: const BoxDecoration(
-                        color: Colors.blue,
-                        borderRadius: BorderRadius.all(Radius.circular(8)),
-                      ),
-                      textStyle: const TextStyle(
-                        fontSize: 15,
-                        color: Colors.white,
-                      ),
-                      child: WarningBox(
-                        borderWidth: errorBorderWidth,
-                        size: Size(
-                          max(5, entry.key.width) + errorBorderWidth,
-                          max(5, entry.key.height) + errorBorderWidth,
-                        ),
-                      ),
+                  child: WarningBox(
+                    borderWidth: errorBorderWidth,
+                    message: entry.value.map((e) => e.message).join('\n\n'),
+                    size: Size(
+                      max(5, entry.key.width) + errorBorderWidth,
+                      max(5, entry.key.height) + errorBorderWidth,
                     ),
                   ),
                 ),
@@ -261,26 +247,43 @@ class WarningBox extends StatelessWidget {
     super.key,
     required this.size,
     required this.borderWidth,
+    required this.message,
   });
 
   final Size size;
   final double borderWidth;
+  final String message;
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: CustomPaint(
-        size: size,
-        painter: _WarningBoxPainter(
-          borderWidth: borderWidth,
+    return Material(
+      color: Colors.transparent,
+      child: Tooltip(
+        padding: const EdgeInsets.all(10),
+        message: message,
+        decoration: const BoxDecoration(
+          color: Colors.blue,
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+        ),
+        textStyle: const TextStyle(
+          fontSize: 15,
+          color: Colors.white,
+        ),
+        child: Center(
+          child: CustomPaint(
+            size: size,
+            painter: WarningBoxPainter(
+              borderWidth: borderWidth,
+            ),
+          ),
         ),
       ),
     );
   }
 }
 
-class _WarningBoxPainter extends CustomPainter {
-  _WarningBoxPainter({required this.borderWidth});
+class WarningBoxPainter extends CustomPainter {
+  WarningBoxPainter({required this.borderWidth});
 
   final double borderWidth;
 
@@ -307,7 +310,7 @@ class _WarningBoxPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return false;
+  bool shouldRepaint(WarningBoxPainter oldDelegate) {
+    return oldDelegate.borderWidth != borderWidth;
   }
 }
