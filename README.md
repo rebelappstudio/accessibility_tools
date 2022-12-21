@@ -10,6 +10,10 @@ To show the issue tooltip, hover over the widget or long-press it.
 
 From [Rebel App Studio][rebel_home]
 
+[![pub](https://img.shields.io/pub/v/accessibility_tools.svg?label=pub.dev&color=blue)](https://pub.dev/packages/accessibility_tools)
+[![License: MIT](https://img.shields.io/badge/License-MIT-purple.svg)](https://opensource.org/licenses/MIT)
+[![codecov](https://codecov.io/gh/rebelappstudio/accessibility_tools/branch/main/graph/badge.svg?token=GSOA9QVWB8)](https://codecov.io/gh/rebelappstudio/accessibility_tools)
+
 ## Getting Started
 
 Add `AccessibilityTools` to your app's `builder` property:
