@@ -57,6 +57,17 @@ class _MyHomePageState extends State<MyHomePage> {
               width: 100,
               child: Row(children: const [Text('Hello testing')]),
             ),
+            Padding(
+              padding: const EdgeInsets.all(50.0),
+              child: SizedBox(
+                width: 40,
+                height: 40,
+                child: InkWell(
+                  onTap: () {},
+                  child: const Icon(Icons.person),
+                ),
+              ),
+            ),
           ],
         ),
       ),
