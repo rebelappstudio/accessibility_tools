@@ -30,31 +30,6 @@ abstract class CheckerBase extends ChangeNotifier {
 
     return paintBounds;
   }
-
-  // TODO: Re-enable
-  // bool shouldIgnore(Element? element) {
-  //   // Stupid hack to not highlight the inspector button as an accessibility
-  //   // issue
-  //   if (element != null) {
-  //     final inspectorButtonChain = [
-  //       'FloatingActionButton',
-  //       'Positioned',
-  //       'Stack',
-  //       'WidgetInspector',
-  //     ];
-
-  //     final chain = element
-  //         .debugGetDiagnosticChain()
-  //         .map((e) => e.toStringShort())
-  //         .skip(1)
-  //         .take(inspectorButtonChain.length)
-  //         .toList();
-
-  //     return listEquals(chain, inspectorButtonChain);
-  //   }
-
-  //   return false;
-  // }
 }
 
 abstract class SemanticsNodeChecker extends CheckerBase {

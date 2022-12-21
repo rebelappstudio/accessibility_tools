@@ -42,13 +42,6 @@ void main() {
   );
 
   testWidgets(
-    'Shows warning for a small tap area on desktop',
-    (WidgetTester tester) async {
-      // TODO
-    },
-  );
-
-  testWidgets(
     'Prints console warning for a tap area that is too small',
     (WidgetTester tester) async {
       final log = await recordDebugPrint(() async {
