@@ -1,6 +1,6 @@
 name: accessibility_tools
 description: Checkers and tools to ensure your app is accessible to all.
-version: 0.0.1-dev.0
+version: 0.0.1
 homepage: https://github.com/rebelappstudio/accessibility_tools/
 
 environment:
