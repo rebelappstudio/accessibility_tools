@@ -1,7 +1,6 @@
 import 'dart:ui' as ui;
 
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter/widgets.dart';
 
@@ -18,26 +17,6 @@ abstract class CheckerBase extends ChangeNotifier {
   void didUpdateSemantics(List<RenderObject> semanticRenderObjects);
 
   @protected
-  Element? getCreatorElement(
-    Map<SemanticsNode, RenderObject> nodesMap,
-    SemanticsNode node,
-  ) {
-    final creator = nodesMap[node]?.debugCreator;
-    if (creator is DebugCreator) {
-      return creator.element;
-    }
-
-    return null;
-  }
-
-  @protected
-  Rect? getRect(RenderObject renderObject, SemanticsNode node) {
-    final translation = renderObject.getTransformTo(null).getTranslation();
-    final offset = Offset(translation.x, translation.y);
-    return renderObject.paintBounds.shift(offset);
-  }
-
-  @protected
   Rect getPaintBounds(SemanticsNode node) {
     Rect paintBounds = node.rect;
     SemanticsNode? current = node;
@@ -50,30 +29,6 @@ abstract class CheckerBase extends ChangeNotifier {
     }
 
     return paintBounds;
-  }
-
-  bool shouldIgnore(Element? element) {
-    // Stupid hack to not highlight the inspector button as an accessibility
-    // issue
-    if (element != null) {
-      final inspectorButtonChain = [
-        'FloatingActionButton',
-        'Positioned',
-        'Stack',
-        'WidgetInspector',
-      ];
-
-      final chain = element
-          .debugGetDiagnosticChain()
-          .map((e) => e.toStringShort())
-          .skip(1)
-          .take(inspectorButtonChain.length)
-          .toList();
-
-      return listEquals(chain, inspectorButtonChain);
-    }
-
-    return false;
   }
 }
 

@@ -4,9 +4,15 @@
 
 Creating an accessible app is incredibly important. But too often it's forgotten about, or left to later. This package ensures your app is accessible from day one, by checking your interface as you build it.
 
-<img width="303" alt='A screenshot showing an icon with two failed accessibility checks: the tooltip reads "Tap area is a missing semantic label" and "Tap area of 40x40 is too small: should be at least 48×48"' src="https://user-images.githubusercontent.com/756862/201646720-c6508f43-2cf9-4a54-a41b-ae7d17b55994.png">
+<img width="303" alt='A screenshot showing an icon with two failed accessibility checks: the tooltip reads "Tap area is missing a semantic label" and "Tap area of 40x40 is too small: should be at least 48×48"' src="https://user-images.githubusercontent.com/756862/208949704-1b1f9211-2ae4-428d-a410-b58f03115b6a.png">
+
+To show the issue tooltip, hover over the widget or long-press it.
 
 From [Rebel App Studio][rebel_home]
+
+[![pub](https://img.shields.io/pub/v/accessibility_tools.svg?label=pub.dev&color=blue)](https://pub.dev/packages/accessibility_tools)
+[![License: MIT](https://img.shields.io/badge/License-MIT-purple.svg)](https://opensource.org/licenses/MIT)
+[![codecov](https://codecov.io/gh/rebelappstudio/accessibility_tools/branch/main/graph/badge.svg?token=GSOA9QVWB8)](https://codecov.io/gh/rebelappstudio/accessibility_tools)
 
 ## Getting Started
 

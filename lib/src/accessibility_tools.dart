@@ -30,21 +30,9 @@ class AccessibilityTools extends StatefulWidget {
     this.checkFontOverflows = false,
   });
 
+  /// Forces accessibility checkers to run when running from a test.
   @visibleForTesting
   static bool debugRunCheckersInTests = false;
-
-  static TransitionBuilder builder({
-    bool checkSemanticLabels = true,
-  }) {
-    return (context, child) {
-      return child != null
-          ? AccessibilityTools(
-              checkSemanticLabels: checkSemanticLabels,
-              child: child,
-            )
-          : const SizedBox();
-    };
-  }
 
   final Widget? child;
   final MinimumTapAreas? minTapAreas;
@@ -178,39 +166,21 @@ class _CheckerOverlayState extends State<CheckerOverlay> {
             .where((element) => element.renderObject.attached)
             .groupListsBy((issue) => issue.renderObject.getGlobalRect());
 
+        const errorBorderWidth = 5.0;
+
         return Stack(
           children: [
             if (showOverlays)
               for (final entry in rects.entries)
                 Positioned.fromRect(
-                  rect: _inflateToMinimumSize(entry.key),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: Tooltip(
-                      padding: const EdgeInsets.all(10),
-                      message: entry.value.map((e) => e.message).join('\n\n'),
-                      decoration: const BoxDecoration(
-                        color: Colors.blue,
-                        borderRadius: BorderRadius.all(Radius.circular(8)),
-                      ),
-                      textStyle: const TextStyle(
-                        fontSize: 15,
-                        color: Colors.white,
-                      ),
-                      child: Center(
-                        child: Container(
-                          alignment: Alignment.center,
-                          height: max(5, entry.key.height),
-                          width: max(5, entry.key.width),
-                          decoration: BoxDecoration(
-                            color: Colors.red.withAlpha(150),
-                            border: Border.all(
-                              color: Colors.yellow,
-                              width: 3,
-                            ),
-                          ),
-                        ),
-                      ),
+                  rect: _inflateToMinimumSize(entry.key)
+                      .inflate(errorBorderWidth),
+                  child: WarningBox(
+                    borderWidth: errorBorderWidth,
+                    message: entry.value.map((e) => e.message).join('\n\n'),
+                    size: Size(
+                      max(5, entry.key.width) + errorBorderWidth,
+                      max(5, entry.key.height) + errorBorderWidth,
                     ),
                   ),
                 ),
@@ -273,5 +243,78 @@ class _WarningButton extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class WarningBox extends StatelessWidget {
+  const WarningBox({
+    super.key,
+    required this.size,
+    required this.borderWidth,
+    required this.message,
+  });
+
+  final Size size;
+  final double borderWidth;
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: Tooltip(
+        padding: const EdgeInsets.all(10),
+        message: message,
+        decoration: const BoxDecoration(
+          color: Colors.blue,
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+        ),
+        textStyle: const TextStyle(
+          fontSize: 15,
+          color: Colors.white,
+        ),
+        child: Center(
+          child: CustomPaint(
+            size: size,
+            painter: WarningBoxPainter(
+              borderWidth: borderWidth,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class WarningBoxPainter extends CustomPainter {
+  WarningBoxPainter({required this.borderWidth});
+
+  final double borderWidth;
+
+  static const Color _black = Color(0xBF000000);
+  static const Color _yellow = Color(0xBFFFFF00);
+
+  static final Paint _indicatorPaint = Paint()
+    ..style = PaintingStyle.stroke
+    ..shader = ui.Gradient.linear(
+      Offset.zero,
+      const Offset(10.0, 10.0),
+      <Color>[_black, _yellow, _yellow, _black],
+      <double>[0.25, 0.25, 0.75, 0.75],
+      TileMode.repeated,
+    )
+    ..strokeWidth = 5.0;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    canvas.drawRect(
+      Rect.fromLTWH(0, 0, size.width, size.height),
+      _indicatorPaint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(WarningBoxPainter oldDelegate) {
+    return oldDelegate.borderWidth != borderWidth;
   }
 }

@@ -21,7 +21,7 @@ class SemanticLabelChecker extends SemanticsNodeChecker {
 
       if (!hasLabel) {
         return AccessibilityIssue(
-          message: 'Tap area is a missing semantic label',
+          message: 'Tap area is missing a semantic label',
           renderObject: renderObject,
         );
       }
