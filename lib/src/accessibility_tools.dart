@@ -15,7 +15,7 @@ import 'checkers/minimum_tap_area_checker.dart';
 import 'checkers/mixin.dart';
 import 'checkers/semantic_label_checker.dart';
 
-const _defaultMinTapArea = 48.0;
+const _warningBoxMinSize = 48.0;
 const iOSLargestTextScaleFactor = 1.35;
 
 /// A checker for debug mode that highlights accessibility issues.
@@ -145,11 +145,11 @@ class _CheckerOverlayState extends State<CheckerOverlay> {
   bool showOverlays = false;
 
   static Rect _inflateToMinimumSize(Rect rect) {
-    if (rect.shortestSide < _defaultMinTapArea) {
+    if (rect.shortestSide < _warningBoxMinSize) {
       return Rect.fromCenter(
         center: rect.center,
-        width: max(_defaultMinTapArea, rect.width),
-        height: max(_defaultMinTapArea, rect.height),
+        width: max(_warningBoxMinSize, rect.width),
+        height: max(_warningBoxMinSize, rect.height),
       );
     }
 
@@ -219,7 +219,7 @@ class _WarningButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox.square(
-      dimension: _defaultMinTapArea,
+      dimension: _warningBoxMinSize,
       child: Tooltip(
         message: issues.length == 1
             ? 'Accessibility issue found'
