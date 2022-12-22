@@ -1,4 +1,5 @@
-import 'package:accessibility_tools/src/accessibility_tools.dart';
+import 'package:accessibility_tools/accessibility_tools.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -16,6 +17,7 @@ void main() {
 
       await tester.pumpWidget(
         TestApp(
+          minimumTapAreas: const MinimumTapAreas(desktop: 0, mobile: 50),
           child: SizedBox(
             width: 10,
             height: 10,
@@ -30,14 +32,47 @@ void main() {
 
       await showAccessibilityIssues(tester);
 
-      debugDumpApp();
+      expectAccessibilityWarning(
+        tester,
+        erroredWidgetFinder: find.byKey(tapKey),
+        tooltipMessage:
+            'Tap area of 10x10 is too small:\nshould be at least 50x50',
+      );
+    },
+  );
+
+  testWidgets(
+    'Shows warning for a small tap area on desktop',
+    (WidgetTester tester) async {
+      debugDefaultTargetPlatformOverride = TargetPlatform.macOS;
+
+      final tapKey = UniqueKey();
+
+      await tester.pumpWidget(
+        TestApp(
+          minimumTapAreas: const MinimumTapAreas(desktop: 100, mobile: 0),
+          child: SizedBox(
+            width: 50,
+            height: 50,
+            child: GestureDetector(
+              key: tapKey,
+              child: const Text('Tap area'),
+              onTap: () {},
+            ),
+          ),
+        ),
+      );
+
+      await showAccessibilityIssues(tester);
 
       expectAccessibilityWarning(
         tester,
         erroredWidgetFinder: find.byKey(tapKey),
         tooltipMessage:
-            'Tap area of 10x10 is too small:\nshould be at least 44x44',
+            'Tap area of 50x50 is too small:\nshould be at least 100x100',
       );
+
+      debugDefaultTargetPlatformOverride = null;
     },
   );
 
@@ -96,4 +131,21 @@ ${getWidgetLocationDescription(tester, find.byType(ElevatedButton))}
       );
     },
   );
+
+  test('MinimumTapAreas.forPlatform returns correct values per platform', () {
+    const desktopValue = 10.0;
+    const mobileValue = 20.0;
+    const tapAreas = MinimumTapAreas(
+      desktop: desktopValue,
+      mobile: mobileValue,
+    );
+
+    expect(tapAreas.forPlatform(TargetPlatform.iOS), mobileValue);
+    expect(tapAreas.forPlatform(TargetPlatform.android), mobileValue);
+    expect(tapAreas.forPlatform(TargetPlatform.fuchsia), mobileValue);
+
+    expect(tapAreas.forPlatform(TargetPlatform.macOS), desktopValue);
+    expect(tapAreas.forPlatform(TargetPlatform.windows), desktopValue);
+    expect(tapAreas.forPlatform(TargetPlatform.linux), desktopValue);
+  });
 }

@@ -15,7 +15,7 @@ import 'checkers/minimum_tap_area_checker.dart';
 import 'checkers/mixin.dart';
 import 'checkers/semantic_label_checker.dart';
 
-const defaultMinTapArea = 44.0;
+const _warningBoxMinSize = 48.0;
 const iOSLargestTextScaleFactor = 1.35;
 
 /// A checker for debug mode that highlights accessibility issues.
@@ -25,7 +25,7 @@ class AccessibilityTools extends StatefulWidget {
   const AccessibilityTools({
     super.key,
     required this.child,
-    this.minTapArea = defaultMinTapArea,
+    this.minimumTapAreas = MinimumTapAreas.material,
     this.checkSemanticLabels = true,
     this.checkFontOverflows = false,
   });
@@ -35,7 +35,7 @@ class AccessibilityTools extends StatefulWidget {
   static bool debugRunCheckersInTests = false;
 
   final Widget? child;
-  final double? minTapArea;
+  final MinimumTapAreas? minimumTapAreas;
   final bool checkSemanticLabels;
   final bool checkFontOverflows;
 
@@ -73,11 +73,15 @@ class _AccessibilityToolsState extends State<AccessibilityTools>
   }
 
   List<CheckerBase> _getCheckers() {
-    final minTapArea = widget.minTapArea;
+    final minTapAreas = widget.minimumTapAreas;
+    final targetPlatform = Theme.of(context).platform;
 
     return [
       if (widget.checkSemanticLabels) SemanticLabelChecker(),
-      if (minTapArea != null) MinimumTapAreaChecker(minTapArea: minTapArea),
+      if (minTapAreas != null)
+        MinimumTapAreaChecker(
+          minTapArea: minTapAreas.forPlatform(targetPlatform),
+        ),
       if (widget.checkFontOverflows)
         FlexOverflowChecker(
           textScaleFactor: iOSLargestTextScaleFactor,
@@ -141,11 +145,11 @@ class _CheckerOverlayState extends State<CheckerOverlay> {
   bool showOverlays = false;
 
   static Rect _inflateToMinimumSize(Rect rect) {
-    if (rect.shortestSide < defaultMinTapArea) {
+    if (rect.shortestSide < _warningBoxMinSize) {
       return Rect.fromCenter(
         center: rect.center,
-        width: max(defaultMinTapArea, rect.width),
-        height: max(defaultMinTapArea, rect.height),
+        width: max(_warningBoxMinSize, rect.width),
+        height: max(_warningBoxMinSize, rect.height),
       );
     }
 
@@ -215,7 +219,7 @@ class _WarningButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox.square(
-      dimension: defaultMinTapArea,
+      dimension: _warningBoxMinSize,
       child: Tooltip(
         message: issues.length == 1
             ? 'Accessibility issue found'
