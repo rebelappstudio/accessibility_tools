@@ -26,7 +26,7 @@ void main() {
       expectAccessibilityWarning(
         tester,
         erroredWidgetFinder: find.byType(ElevatedButton),
-        tooltipMessage: 'Tap area is a missing semantic label',
+        tooltipMessage: 'Tap area is missing a semantic label',
       );
     },
   );
@@ -51,7 +51,7 @@ void main() {
       expectAccessibilityWarning(
         tester,
         erroredWidgetFinder: find.byKey(gestureDetectorKey),
-        tooltipMessage: 'Tap area is a missing semantic label',
+        tooltipMessage: 'Tap area is missing a semantic label',
       );
     },
   );
@@ -77,7 +77,7 @@ void main() {
 ACCESSIBILITY ISSUES FOUND
 ==========================
 
-Accessibility issue 1: Tap area is a missing semantic label
+Accessibility issue 1: Tap area is missing a semantic label
 
 ${getWidgetLocationDescription(tester, find.byType(ElevatedButton))}
 ''';
@@ -106,7 +106,7 @@ ${getWidgetLocationDescription(tester, find.byType(ElevatedButton))}
       expect(
         find.byWidgetPredicate((w) =>
             w is Tooltip &&
-            w.message == 'Tap area is a missing semantic label'),
+            w.message == 'Tap area is missing a semantic label'),
         findsNothing,
       );
     },
