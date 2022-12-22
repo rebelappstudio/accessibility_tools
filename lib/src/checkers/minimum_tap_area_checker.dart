@@ -11,7 +11,8 @@ class MinimumTapAreas {
     required this.desktop,
   });
 
-  /// The minimum tap areas as defined by the Material Design guidelines.
+  /// The minimum tap areas as defined by the Material Design guidelines:
+  /// https://m3.material.io/foundations/accessible-design/accessibility-basics#28032e45-c598-450c-b355-f9fe737b1cd8
   ///
   /// 48 on mobile devices with touch screens, and 28 on desktop devices.
   static const MinimumTapAreas material = MinimumTapAreas(
@@ -19,7 +20,8 @@ class MinimumTapAreas {
     desktop: 28,
   );
 
-  /// The minimum tap areas as defined by the Apple Human Interface Guidelines.
+  /// The minimum tap areas as defined by the Apple Human Interface Guidelines:
+  /// https://developer.apple.com/design/human-interface-guidelines/foundations/accessibility/#buttons-and-controls
   ///
   /// 44 on mobile devices with touch screens, and 28 on desktop devices.
   static const MinimumTapAreas cupertino = MinimumTapAreas(

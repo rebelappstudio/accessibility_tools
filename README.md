@@ -52,7 +52,7 @@ Adding a semantic label would fix this: `Icon(Icons.person, semanticLabel: 'Logi
 
 ### Tap area checker
 
-Makes sure all tappable widgets are large enough to easily tap. Defaults to the Material Design minimum of 48x48.
+Makes sure all tappable widgets are large enough to easily tap. Defaults to the [Material Design minimum](https://m3.material.io/foundations/accessible-design/accessibility-basics#28032e45-c598-450c-b355-f9fe737b1cd8) of 48x48 on mobile devices, and 44x44 on desktop devices.
 
 ### Large font overflow checker
 
@@ -65,7 +65,7 @@ Checkers are enabled or disabled with properties on the `AccessibilityTools` wid
 ```dart
 AccessibilityTools(
   // Set to null to disable tap area checking
-  minTapArea: 50,
+  minimumTapAreas: MinimumTapAreas.material,
   // Check for semantic labels
   checkSemanticLabels: false,
   // Check for flex overflows
