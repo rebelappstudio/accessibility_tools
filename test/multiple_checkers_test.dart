@@ -36,7 +36,7 @@ void main() {
 Tap area is missing a semantic label
 
 Tap area of 10x10 is too small:
-should be at least 44x44''',
+should be at least 48x48''',
       );
     },
   );
@@ -69,7 +69,7 @@ Accessibility issue 1: Tap area is missing a semantic label
 
 ${getWidgetLocationDescription(tester, find.byKey(tapKey))}
 Accessibility issue 2: Tap area of 10x10 is too small:
-should be at least 44x44
+should be at least 48x48
 
 ${getWidgetLocationDescription(tester, find.byKey(tapKey))}
 ''';

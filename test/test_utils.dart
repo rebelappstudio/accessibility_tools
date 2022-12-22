@@ -1,4 +1,5 @@
 import 'package:accessibility_tools/accessibility_tools.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -7,15 +8,18 @@ class TestApp extends StatelessWidget {
   const TestApp({
     super.key,
     required this.child,
+    this.minTapAreas = MinimumTapAreas.material,
   });
 
   final Widget child;
+  final MinimumTapAreas? minTapAreas;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       builder: (context, child) => AccessibilityTools(
         checkFontOverflows: true,
+        minTapAreas: minTapAreas,
         child: child,
       ),
       home: Scaffold(
@@ -42,13 +46,19 @@ void expectAccessibilityWarning(
     (widget) => widget is WarningBox && widget.message == tooltipMessage,
   );
 
-  expect(warningBoxFinder, findsOneWidget,
-      reason: "Couldn't find warning box with tooltip $tooltipMessage");
+  expect(
+    warningBoxFinder,
+    findsOneWidget,
+    reason: '''
+Couldn't find warning box with tooltip '$tooltipMessage'.
+          
+${debugWarningBoxesText(tester)}''',
+  );
 
   // Verify accessibility tooltip
   final warningBox = tester.renderObject(
     find.descendant(
-      of: find.byType(WarningBox),
+      of: warningBoxFinder,
       matching: find.byType(CustomPaint),
     ),
   ) as RenderBox;
@@ -74,6 +84,19 @@ void expectAccessibilityWarning(
     errorBoxPosition,
     buttonPosition - const Offset(borderSize / 2, borderSize / 2),
   );
+}
+
+/// Utility to debug failing tests which gets the text of all warning boxes.
+String debugWarningBoxesText(WidgetTester tester) {
+  final warningBoxes = tester.widgetList<WarningBox>(find.byType(WarningBox));
+
+  return '''
+Found ${warningBoxes.length} warning boxes:
+
+${warningBoxes.mapIndexed((i, warningBox) {
+    return "  * Error ${i + 1}: '${warningBox.message}'";
+  }).join('\n')}
+  ''';
 }
 
 /// Returns the diagnostic location of the widget.
