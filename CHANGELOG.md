@@ -1,4 +1,4 @@
-## 0.0.1
+## 0.1.0
 
 * Fixed an issue that could prevent an app rebuilding
 * Improved error messages
