@@ -8,18 +8,18 @@ class TestApp extends StatelessWidget {
   const TestApp({
     super.key,
     required this.child,
-    this.minTapAreas = MinimumTapAreas.material,
+    this.minimumTapAreas = MinimumTapAreas.material,
   });
 
   final Widget child;
-  final MinimumTapAreas? minTapAreas;
+  final MinimumTapAreas? minimumTapAreas;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       builder: (context, child) => AccessibilityTools(
         checkFontOverflows: true,
-        minTapAreas: minTapAreas,
+        minimumTapAreas: minimumTapAreas,
         child: child,
       ),
       home: Scaffold(

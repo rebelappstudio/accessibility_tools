@@ -17,7 +17,7 @@ void main() {
 
       await tester.pumpWidget(
         TestApp(
-          minTapAreas: const MinimumTapAreas(desktop: 0, mobile: 50),
+          minimumTapAreas: const MinimumTapAreas(desktop: 0, mobile: 50),
           child: SizedBox(
             width: 10,
             height: 10,
@@ -50,7 +50,7 @@ void main() {
 
       await tester.pumpWidget(
         TestApp(
-          minTapAreas: const MinimumTapAreas(desktop: 100, mobile: 0),
+          minimumTapAreas: const MinimumTapAreas(desktop: 100, mobile: 0),
           child: SizedBox(
             width: 50,
             height: 50,

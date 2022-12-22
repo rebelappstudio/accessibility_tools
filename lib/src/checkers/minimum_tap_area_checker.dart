@@ -4,7 +4,7 @@ import 'package:flutter/rendering.dart';
 import '../accessibility_issue.dart';
 import 'checker_base.dart';
 
-/// Defines the minimum tap size per-platform.
+/// Defines the minimum tap size per device type.
 class MinimumTapAreas {
   const MinimumTapAreas({
     required this.mobile,

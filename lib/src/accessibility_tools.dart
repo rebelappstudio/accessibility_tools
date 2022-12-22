@@ -25,7 +25,7 @@ class AccessibilityTools extends StatefulWidget {
   const AccessibilityTools({
     super.key,
     required this.child,
-    this.minTapAreas = MinimumTapAreas.material,
+    this.minimumTapAreas = MinimumTapAreas.material,
     this.checkSemanticLabels = true,
     this.checkFontOverflows = false,
   });
@@ -35,7 +35,7 @@ class AccessibilityTools extends StatefulWidget {
   static bool debugRunCheckersInTests = false;
 
   final Widget? child;
-  final MinimumTapAreas? minTapAreas;
+  final MinimumTapAreas? minimumTapAreas;
   final bool checkSemanticLabels;
   final bool checkFontOverflows;
 
@@ -73,14 +73,14 @@ class _AccessibilityToolsState extends State<AccessibilityTools>
   }
 
   List<CheckerBase> _getCheckers() {
-    final minTapArea = widget.minTapAreas;
+    final minTapAreas = widget.minimumTapAreas;
     final targetPlatform = Theme.of(context).platform;
 
     return [
       if (widget.checkSemanticLabels) SemanticLabelChecker(),
-      if (minTapArea != null)
+      if (minTapAreas != null)
         MinimumTapAreaChecker(
-          minTapArea: minTapArea.forPlatform(targetPlatform),
+          minTapArea: minTapAreas.forPlatform(targetPlatform),
         ),
       if (widget.checkFontOverflows)
         FlexOverflowChecker(
