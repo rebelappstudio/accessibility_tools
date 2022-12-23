@@ -111,4 +111,38 @@ ${getWidgetLocationDescription(tester, find.byType(ElevatedButton))}
       );
     },
   );
+
+  testWidgets(
+    "Doesn't show warning for Flutter widget inspector button",
+    (WidgetTester tester) async {
+      // This test can be removed when this PR is released in Flutter stable:
+      // https://github.com/flutter/flutter/pull/117584
+
+      await tester.pumpWidget(
+        MaterialApp(
+          builder: (context, child) => AccessibilityTools(child: child),
+          home: WidgetInspector(
+            child: const Scaffold(),
+            selectButtonBuilder: (context, onPressed) {
+              return FloatingActionButton(
+                onPressed: onPressed,
+                child: const Icon(Icons.search),
+              );
+            },
+          ),
+        ),
+      );
+
+      // Tap the scaffold to show the inspector button
+      await tester.tap(find.byType(Scaffold), warnIfMissed: false);
+      await tester.pump();
+
+      // Verify inspector button is shown
+      expect(find.byIcon(Icons.search), findsOneWidget);
+      await tester.pump();
+
+      // Verify no accessibility issues found
+      expect(find.byIcon(Icons.accessibility_new), findsNothing);
+    },
+  );
 }
