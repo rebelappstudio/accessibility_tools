@@ -15,7 +15,11 @@ class SemanticLabelChecker extends SemanticsNodeChecker {
     }
 
     final data = node.getSemanticsData();
-    if (data.isTappable) {
+
+    // TextFields are checked by [TextFieldLabelChecker]
+    final isTextField = data.hasFlag(SemanticsFlag.isTextField);
+
+    if (data.isTappable && !isTextField) {
       final hasLabel =
           data.label.trim().isNotEmpty || data.tooltip.trim().isNotEmpty;
 
