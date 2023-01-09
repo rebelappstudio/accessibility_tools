@@ -11,10 +11,10 @@ import 'accessibility_issue.dart';
 import 'checker_manager.dart';
 import 'checkers/checker_base.dart';
 import 'checkers/flex_overflow_checker.dart';
-import 'checkers/text_field_label_checker.dart';
 import 'checkers/minimum_tap_area_checker.dart';
 import 'checkers/mixin.dart';
 import 'checkers/semantic_label_checker.dart';
+import 'checkers/text_field_label_checker.dart';
 
 const _warningBoxMinSize = 48.0;
 const iOSLargestTextScaleFactor = 1.35;
