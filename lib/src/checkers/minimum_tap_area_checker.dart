@@ -1,6 +1,7 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:intl/intl.dart';
 
 import '../accessibility_issue.dart';
 import 'checker_base.dart';
@@ -90,5 +91,12 @@ should be at least ${format(minTapArea)}x${format(minTapArea)}''',
   }
 
   @visibleForTesting
-  static String format(double val) => NumberFormat('#.##').format(val);
+  static String format(double val) {
+    // Round to N places after decimal point where N is 2
+    final mod = pow(10, 2);
+    final rounded = (val * mod).roundToDouble() / mod;
+    return (rounded - rounded.toInt()) == 0
+        ? rounded.toStringAsFixed(0)
+        : rounded.toStringAsFixed(2);
+  }
 }

@@ -13,7 +13,6 @@ dependencies:
     sdk: flutter
   flutter_test:
     sdk: flutter
-  intl: ^0.18.0
 
 flutter:
   uses-material-design: true

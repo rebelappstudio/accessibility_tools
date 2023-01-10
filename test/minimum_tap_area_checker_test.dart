@@ -160,7 +160,7 @@ ${getWidgetLocationDescription(tester, find.byType(ElevatedButton))}
       expect(format(0.00), '0');
       expect(format(100.00), '100');
       expect(format(100.01), '100.01');
-      expect(format(100.10), '100.1');
+      expect(format(100.10), '100.10');
       expect(format(99.99), '99.99');
       expect(format(99.999), '100');
       expect(format(100 / 3 /* 33.3(3) */), '33.33');
