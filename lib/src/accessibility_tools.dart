@@ -28,7 +28,7 @@ class AccessibilityTools extends StatefulWidget {
     required this.child,
     this.minimumTapAreas = MinimumTapAreas.material,
     this.checkSemanticLabels = true,
-    this.checkMissingTextFieldHints = true,
+    this.checkMissingTextFieldLabels = true,
     this.checkFontOverflows = false,
   });
 
@@ -39,7 +39,7 @@ class AccessibilityTools extends StatefulWidget {
   final Widget? child;
   final MinimumTapAreas? minimumTapAreas;
   final bool checkSemanticLabels;
-  final bool checkMissingTextFieldHints;
+  final bool checkMissingTextFieldLabels;
   final bool checkFontOverflows;
 
   @override
@@ -89,7 +89,7 @@ class _AccessibilityToolsState extends State<AccessibilityTools>
         FlexOverflowChecker(
           textScaleFactor: iOSLargestTextScaleFactor,
         ),
-      if (widget.checkMissingTextFieldHints) TextFieldLabelChecker(),
+      if (widget.checkMissingTextFieldLabels) TextFieldLabelChecker(),
     ];
   }
 
