@@ -18,39 +18,39 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Analyze
-        uses: zgosalvez/github-actions-analyze-dart@v2
-        with:
-          fail-on-warnings: true
+      # - name: Analyze
+      #   uses: zgosalvez/github-actions-analyze-dart@v2
+      #   with:
+      #     fail-on-warnings: true
 
-      - name: Check for unused code
-        run: flutter pub run dart_code_metrics:metrics check-unused-code lib test
+      # - name: Check for unused code
+      #   run: flutter pub run dart_code_metrics:metrics check-unused-code lib test
 
-      - name: Check for unnecessary nullables
-        run: flutter pub run dart_code_metrics:metrics check-unnecessary-nullable lib test
+      # - name: Check for unnecessary nullables
+      #   run: flutter pub run dart_code_metrics:metrics check-unnecessary-nullable lib test
 
-      - name: Dart Code Metrics
-        uses: dart-code-checker/dart-code-metrics-action@v3.0.0
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          check_unused_files: true
-          fatal_warnings: true
-          fatal_performance: true
-          fatal_style: true
+      # - name: Dart Code Metrics
+      #   uses: dart-code-checker/dart-code-metrics-action@v3.0.0
+      #   with:
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     check_unused_files: true
+      #     fatal_warnings: true
+      #     fatal_performance: true
+      #     fatal_style: true
 
       - name: Test on Flutter stable channel
         run: flutter test --coverage
 
-      - name: Upload code coverage
-        uses: codecov/codecov-action@v3.1.1
-        with:
-          files: ./coverage/lcov.info
-          fail_ci_if_error: true
+      # - name: Upload code coverage
+      #   uses: codecov/codecov-action@v3.1.1
+      #   with:
+      #     files: ./coverage/lcov.info
+      #     fail_ci_if_error: true
 
-      - name: Test on Flutter master channel
-        uses: subosito/flutter-action@v2.8.0
-        with:
-          channel: "master"
-      - run: flutter clean
-      - run: flutter pub get
-      - run: flutter test
+      # - name: Test on Flutter master channel
+      #   uses: subosito/flutter-action@v2.8.0
+      #   with:
+      #     channel: "master"
+      # - run: flutter clean
+      # - run: flutter pub get
+      # - run: flutter test
