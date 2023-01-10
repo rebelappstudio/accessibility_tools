@@ -8,6 +8,7 @@ on:
 
 jobs:
   code-metrics:
+    name: Run code metrics
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -20,7 +21,8 @@ jobs:
           fatal_performance: true
           fatal_style: true
 
-  test-stable:
+  analyze-test:
+    name: Analyse and test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -51,7 +53,8 @@ jobs:
           files: ./coverage/lcov.info
           fail_ci_if_error: true
 
-  test-master:
+  test-flutter-master:
+    name: Test on Flutter master channel
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
