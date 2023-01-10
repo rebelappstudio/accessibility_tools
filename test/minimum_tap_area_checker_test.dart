@@ -1,4 +1,5 @@
 import 'package:accessibility_tools/accessibility_tools.dart';
+import 'package:accessibility_tools/src/checkers/minimum_tap_area_checker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -148,4 +149,22 @@ ${getWidgetLocationDescription(tester, find.byType(ElevatedButton))}
     expect(tapAreas.forPlatform(TargetPlatform.windows), desktopValue);
     expect(tapAreas.forPlatform(TargetPlatform.linux), desktopValue);
   });
+
+  test(
+    'Formatted size is not too long (max 2 places after decimal point)',
+    () {
+      const format = MinimumTapAreaChecker.format;
+      expect(format(100), '100');
+      expect(format(1), '1');
+      expect(format(0), '0');
+      expect(format(0.00), '0');
+      expect(format(100.00), '100');
+      expect(format(100.01), '100.01');
+      expect(format(100.10), '100.10');
+      expect(format(99.99), '99.99');
+      expect(format(99.999), '100');
+      expect(format(100 / 3 /* 33.3(3) */), '33.33');
+      expect(format(100 / 6 /* 16.6(6) */), '16.67');
+    },
+  );
 }
