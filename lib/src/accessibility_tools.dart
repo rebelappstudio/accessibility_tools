@@ -14,6 +14,7 @@ import 'checkers/flex_overflow_checker.dart';
 import 'checkers/minimum_tap_area_checker.dart';
 import 'checkers/mixin.dart';
 import 'checkers/semantic_label_checker.dart';
+import 'checkers/text_field_label_checker.dart';
 
 const _warningBoxMinSize = 48.0;
 const iOSLargestTextScaleFactor = 1.35;
@@ -27,6 +28,7 @@ class AccessibilityTools extends StatefulWidget {
     required this.child,
     this.minimumTapAreas = MinimumTapAreas.material,
     this.checkSemanticLabels = true,
+    this.checkMissingTextFieldLabels = true,
     this.checkFontOverflows = false,
   });
 
@@ -37,6 +39,7 @@ class AccessibilityTools extends StatefulWidget {
   final Widget? child;
   final MinimumTapAreas? minimumTapAreas;
   final bool checkSemanticLabels;
+  final bool checkMissingTextFieldLabels;
   final bool checkFontOverflows;
 
   @override
@@ -86,6 +89,7 @@ class _AccessibilityToolsState extends State<AccessibilityTools>
         FlexOverflowChecker(
           textScaleFactor: iOSLargestTextScaleFactor,
         ),
+      if (widget.checkMissingTextFieldLabels) TextFieldLabelChecker(),
     ];
   }
 

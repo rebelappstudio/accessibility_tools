@@ -58,6 +58,10 @@ Makes sure all tappable widgets are large enough to easily tap. Defaults to the 
 
 Experimental: ensures that no flex widgets, such as `Column` and `Row`, overflow when a user is using larger font sizes. This checker is experimental, and disabled by default, and can be enabled via `AccessibilityTools(checkFontOverflows: true)`.
 
+### Text field label checker
+
+Makes sure text fields (`TextField`, `TextFormField`, `Autocomplete` etc) have hints or some sort of text labels.
+
 ## Configuration
 
 Checkers are enabled or disabled with properties on the `AccessibilityTools` widget:
