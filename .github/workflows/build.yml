@@ -18,10 +18,10 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      # - name: Analyze
-      #   uses: zgosalvez/github-actions-analyze-dart@v2
-      #   with:
-      #     fail-on-warnings: true
+      - name: Analyze
+        uses: zgosalvez/github-actions-analyze-dart@v2
+        with:
+          fail-on-warnings: true
 
       # - name: Check for unused code
       #   run: flutter pub run dart_code_metrics:metrics check-unused-code lib test
