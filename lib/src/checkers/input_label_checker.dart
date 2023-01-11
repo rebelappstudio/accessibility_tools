@@ -30,11 +30,7 @@ class InputLabelChecker extends SemanticsNodeChecker {
       return _getSwitchIssue(renderObject);
     }
 
-    return AccessibilityIssue(
-      message: 'Control widget is missing a semantic label.',
-      resolutionGuidance: semanticLabelMessage(''),
-      renderObject: renderObject,
-    );
+    return null;
   }
 
   AccessibilityIssue? _getTextFieldIssue(RenderObject renderObject) {
