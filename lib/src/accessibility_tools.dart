@@ -11,10 +11,10 @@ import 'accessibility_issue.dart';
 import 'checker_manager.dart';
 import 'checkers/checker_base.dart';
 import 'checkers/flex_overflow_checker.dart';
+import 'checkers/input_label_checker.dart';
 import 'checkers/minimum_tap_area_checker.dart';
 import 'checkers/mixin.dart';
 import 'checkers/semantic_label_checker.dart';
-import 'checkers/text_field_label_checker.dart';
 
 const _warningBoxMinSize = 48.0;
 const iOSLargestTextScaleFactor = 1.35;
@@ -28,8 +28,9 @@ class AccessibilityTools extends StatefulWidget {
     required this.child,
     this.minimumTapAreas = MinimumTapAreas.material,
     this.checkSemanticLabels = true,
-    this.checkMissingTextFieldLabels = true,
+    this.checkMissingInputLabels = true,
     this.checkFontOverflows = false,
+    this.printResolutionGuidance = true,
   });
 
   /// Forces accessibility checkers to run when running from a test.
@@ -39,8 +40,9 @@ class AccessibilityTools extends StatefulWidget {
   final Widget? child;
   final MinimumTapAreas? minimumTapAreas;
   final bool checkSemanticLabels;
-  final bool checkMissingTextFieldLabels;
   final bool checkFontOverflows;
+  final bool checkMissingInputLabels;
+  final bool printResolutionGuidance;
 
   @override
   State<AccessibilityTools> createState() => _AccessibilityToolsState();
@@ -48,7 +50,10 @@ class AccessibilityTools extends StatefulWidget {
 
 class _AccessibilityToolsState extends State<AccessibilityTools>
     with SemanticUpdateMixin {
-  late CheckerManager _checker = CheckerManager(_getCheckers());
+  late CheckerManager _checker = CheckerManager(
+    checkers: _getCheckers(),
+    printResolutionGuidance: widget.printResolutionGuidance,
+  );
 
   @override
   void dispose() {
@@ -71,7 +76,10 @@ class _AccessibilityToolsState extends State<AccessibilityTools>
   @override
   void didUpdateWidget(covariant AccessibilityTools oldWidget) {
     _checker.dispose();
-    _checker = CheckerManager(_getCheckers());
+    _checker = CheckerManager(
+      checkers: _getCheckers(),
+      printResolutionGuidance: _checker.printResolutionGuidance,
+    );
     super.didUpdateWidget(oldWidget);
   }
 
@@ -89,7 +97,7 @@ class _AccessibilityToolsState extends State<AccessibilityTools>
         FlexOverflowChecker(
           textScaleFactor: iOSLargestTextScaleFactor,
         ),
-      if (widget.checkMissingTextFieldLabels) TextFieldLabelChecker(),
+      if (widget.checkMissingInputLabels) InputLabelChecker(),
     ];
   }
 

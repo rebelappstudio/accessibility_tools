@@ -66,6 +66,15 @@ class _MyHomePageState extends State<MyHomePage> {
               padding: EdgeInsets.all(16),
               child: TextField(),
             ),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  Checkbox(value: false, onChanged: (_) {}),
+                  const Text('Checkbox without label'),
+                ],
+              ),
+            ),
           ],
         ),
       ),

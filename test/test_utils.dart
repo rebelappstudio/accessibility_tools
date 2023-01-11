@@ -9,10 +9,12 @@ class TestApp extends StatelessWidget {
     super.key,
     required this.child,
     this.minimumTapAreas = MinimumTapAreas.material,
+    this.printResolutionGuidance = false,
   });
 
   final Widget child;
   final MinimumTapAreas? minimumTapAreas;
+  final bool printResolutionGuidance;
 
   @override
   Widget build(BuildContext context) {
@@ -20,6 +22,7 @@ class TestApp extends StatelessWidget {
       builder: (context, child) => AccessibilityTools(
         checkFontOverflows: true,
         minimumTapAreas: minimumTapAreas,
+        printResolutionGuidance: printResolutionGuidance,
         child: child,
       ),
       home: Scaffold(

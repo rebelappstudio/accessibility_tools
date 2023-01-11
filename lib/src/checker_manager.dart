@@ -9,9 +9,13 @@ import 'checkers/checker_base.dart';
 /// Checks for accessibility issues, updating whenever the semantic tree
 /// changes.
 class CheckerManager extends ChangeNotifier {
-  CheckerManager(this.checkers);
+  CheckerManager({
+    required this.checkers,
+    required this.printResolutionGuidance,
+  });
 
   final Iterable<CheckerBase> checkers;
+  final bool printResolutionGuidance;
 
   /// A list of current accessibility issues.
   List<AccessibilityIssue> get issues => _issues;
@@ -77,6 +81,8 @@ ACCESSIBILITY ISSUES FOUND
 
     for (final issue in issues) {
       debugPrint('Accessibility issue $i: ${issue.message}\n');
+
+      if (printResolutionGuidance) debugPrint(issue.resolutionGuidance);
 
       final creator = issue.getDebugCreator();
       if (creator != null) {

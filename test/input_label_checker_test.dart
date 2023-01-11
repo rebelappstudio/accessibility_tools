@@ -29,7 +29,7 @@ void main() {
       expectAccessibilityWarning(
         tester,
         erroredWidgetFinder: find.byKey(key),
-        tooltipMessage: 'Text field is missing a label',
+        tooltipMessage: 'Text field is missing a label.',
       );
     },
   );
@@ -50,7 +50,7 @@ void main() {
     expectAccessibilityWarning(
       tester,
       erroredWidgetFinder: find.byKey(key),
-      tooltipMessage: 'Text field is missing a label',
+      tooltipMessage: 'Text field is missing a label.',
     );
   });
 
@@ -70,7 +70,7 @@ void main() {
     expectAccessibilityWarning(
       tester,
       erroredWidgetFinder: find.byKey(key),
-      tooltipMessage: 'Text field is missing a label',
+      tooltipMessage: 'Text field is missing a label.',
     );
   });
 
@@ -92,7 +92,7 @@ void main() {
       expectAccessibilityWarning(
         tester,
         erroredWidgetFinder: find.byKey(key),
-        tooltipMessage: "Text field's label is blank",
+        tooltipMessage: 'Text field is missing a label.',
       );
     },
   );
@@ -113,7 +113,7 @@ void main() {
     expectAccessibilityWarning(
       tester,
       erroredWidgetFinder: find.byKey(key),
-      tooltipMessage: 'Text field is missing a label',
+      tooltipMessage: 'Text field is missing a label.',
     );
   });
 
@@ -134,7 +134,7 @@ void main() {
     expectAccessibilityWarning(
       tester,
       erroredWidgetFinder: find.byKey(key),
-      tooltipMessage: 'Text field is missing a label',
+      tooltipMessage: 'Text field is missing a label.',
     );
   });
 
@@ -156,7 +156,7 @@ void main() {
       expectAccessibilityWarning(
         tester,
         erroredWidgetFinder: find.byKey(key),
-        tooltipMessage: "Text field's label is blank",
+        tooltipMessage: 'Text field is missing a label.',
       );
     },
   );
@@ -179,7 +179,7 @@ void main() {
       expectAccessibilityWarning(
         tester,
         erroredWidgetFinder: find.byKey(key),
-        tooltipMessage: 'Text field is missing a label',
+        tooltipMessage: 'Text field is missing a label.',
       );
     },
   );
@@ -196,6 +196,7 @@ void main() {
           ),
         ),
       );
+      await tester.pumpAndSettle();
 
       expect(find.byIcon(Icons.accessibility_new), findsNothing);
       expect(find.byWidgetPredicate((w) => w is Tooltip), findsNothing);
@@ -216,6 +217,7 @@ void main() {
           ),
         ),
       );
+      await tester.pumpAndSettle();
 
       expect(find.byIcon(Icons.accessibility_new), findsNothing);
       expect(find.byWidgetPredicate((w) => w is Tooltip), findsNothing);
@@ -234,6 +236,7 @@ void main() {
           ),
         ),
       );
+      await tester.pumpAndSettle();
 
       expect(find.byIcon(Icons.accessibility_new), findsNothing);
       expect(find.byWidgetPredicate((w) => w is Tooltip), findsNothing);
@@ -254,6 +257,7 @@ void main() {
           ),
         ),
       );
+      await tester.pumpAndSettle();
 
       expect(find.byIcon(Icons.accessibility_new), findsNothing);
       expect(find.byWidgetPredicate((w) => w is Tooltip), findsNothing);
@@ -283,7 +287,7 @@ void main() {
       expectAccessibilityWarning(
         tester,
         erroredWidgetFinder: find.byKey(key),
-        tooltipMessage: 'Text field is missing a label',
+        tooltipMessage: 'Text field is missing a label.',
       );
     },
   );
@@ -305,6 +309,7 @@ void main() {
           ),
         ),
       );
+      await tester.pumpAndSettle();
 
       expect(find.byIcon(Icons.accessibility_new), findsNothing);
       expect(find.byWidgetPredicate((w) => w is Tooltip), findsNothing);
@@ -317,6 +322,7 @@ void main() {
       final log = await recordDebugPrint(() async {
         await tester.pumpWidget(
           const TestApp(
+            printResolutionGuidance: false,
             child: TextField(
               decoration: InputDecoration(hintText: null),
             ),
@@ -331,7 +337,7 @@ void main() {
 ACCESSIBILITY ISSUES FOUND
 ==========================
 
-Accessibility issue 1: Text field is missing a label
+Accessibility issue 1: Text field is missing a label.
 
 ${getWidgetLocationDescription(tester, find.byType(TextField))}
 ''';
@@ -339,4 +345,123 @@ ${getWidgetLocationDescription(tester, find.byType(TextField))}
       expect(log, expectedLog);
     },
   );
+
+  testWidgets('Shows warning for Checkbox', (tester) async {
+    final key = UniqueKey();
+    await tester.pumpWidget(
+      TestApp(
+        child: Checkbox(
+          key: key,
+          onChanged: (_) {},
+          value: false,
+        ),
+      ),
+    );
+
+    await showAccessibilityIssues(tester);
+
+    expectAccessibilityWarning(
+      tester,
+      erroredWidgetFinder: find.byKey(key),
+      tooltipMessage: 'Control widget is missing a semantic label.',
+    );
+  });
+
+  testWidgets("Doesn't show warning for CheckboxListTile", (tester) async {
+    final key = UniqueKey();
+    await tester.pumpWidget(
+      TestApp(
+        child: CheckboxListTile(
+          key: key,
+          onChanged: (_) {},
+          value: false,
+          title: const Text('Checkbox'),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byIcon(Icons.accessibility_new), findsNothing);
+    expect(find.byWidgetPredicate((w) => w is Tooltip), findsNothing);
+  });
+
+  testWidgets('Shows warning for Radio', (tester) async {
+    final key = UniqueKey();
+    await tester.pumpWidget(
+      TestApp(
+        child: Radio(
+          key: key,
+          groupValue: 'group',
+          onChanged: (_) {},
+          value: false,
+        ),
+      ),
+    );
+
+    await showAccessibilityIssues(tester);
+
+    expectAccessibilityWarning(
+      tester,
+      erroredWidgetFinder: find.byKey(key),
+      tooltipMessage: 'Control widget is missing a semantic label.',
+    );
+  });
+
+  testWidgets("Doesn't show warning for RadioListTile", (tester) async {
+    final key = UniqueKey();
+    await tester.pumpWidget(
+      TestApp(
+        child: RadioListTile(
+          key: key,
+          groupValue: 'group',
+          onChanged: (_) {},
+          value: false,
+          title: const Text('Radio'),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byIcon(Icons.accessibility_new), findsNothing);
+    expect(find.byWidgetPredicate((w) => w is Tooltip), findsNothing);
+  });
+
+  testWidgets('Shows warning for Switch', (tester) async {
+    final key = UniqueKey();
+    await tester.pumpWidget(
+      TestApp(
+        child: Switch(
+          key: key,
+          onChanged: (_) {},
+          value: false,
+        ),
+      ),
+    );
+
+    await showAccessibilityIssues(tester);
+
+    expectAccessibilityWarning(
+      tester,
+      erroredWidgetFinder: find.byKey(key),
+      tooltipMessage: 'Control widget is missing a semantic label.',
+    );
+  });
+
+  testWidgets("Doesn't show warning for SwitchListTile", (tester) async {
+    final key = UniqueKey();
+    await tester.pumpWidget(
+      TestApp(
+        child: SwitchListTile(
+          key: key,
+          onChanged: (_) {},
+          value: false,
+          title: const Text('Switch'),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byIcon(Icons.accessibility_new), findsNothing);
+    expect(find.byWidgetPredicate((w) => w is Tooltip), findsNothing);
+  });
 }

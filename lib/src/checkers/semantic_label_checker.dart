@@ -15,17 +15,22 @@ class SemanticLabelChecker extends SemanticsNodeChecker {
     }
 
     final data = node.getSemanticsData();
-
-    // TextFields are checked by [TextFieldLabelChecker]
-    final isTextField = data.hasFlag(SemanticsFlag.isTextField);
-
-    if (data.isTappable && !isTextField) {
+    if (data.isTappable && !data.isFormWidget) {
       final hasLabel =
           data.label.trim().isNotEmpty || data.tooltip.trim().isNotEmpty;
 
       if (!hasLabel) {
         return AccessibilityIssue(
           message: 'Tap area is missing a semantic label',
+          resolutionGuidance: semanticLabelMessage('''
+Consider adding a semantic label. For example,
+
+InkWell(
+  child: Icon(
+    Icons.wifi,
+    semanticLabel: 'Open Wi-Fi settings',
+  ),
+),'''),
           renderObject: renderObject,
         );
       }
@@ -33,4 +38,15 @@ class SemanticLabelChecker extends SemanticsNodeChecker {
 
     return null;
   }
+}
+
+String semanticLabelMessage(String message) {
+  return '''
+Semantic labels are used by screen readers to enable visually impaired users to
+get spoken feedback about the contents of the screen and interact with the UI.
+
+$message
+
+Read more about screen readers: https://docs.flutter.dev/development/accessibility-and-localization/accessibility?tab=talkback#screen-readers
+''';
 }

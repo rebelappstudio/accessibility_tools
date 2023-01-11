@@ -76,4 +76,10 @@ extension SemanticsDataExtension on SemanticsData {
     return hasAction(ui.SemanticsAction.longPress) ||
         hasAction(ui.SemanticsAction.tap);
   }
+
+  bool get isFormWidget {
+    return hasFlag(SemanticsFlag.isTextField) ||
+        hasFlag(SemanticsFlag.hasCheckedState) ||
+        hasFlag(SemanticsFlag.hasToggledState);
+  }
 }
