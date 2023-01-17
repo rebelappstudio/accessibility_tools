@@ -53,8 +53,20 @@ TextField(
       renderObject: renderObject,
       message: 'Control widget is missing a semantic label.',
       resolutionGuidance: semanticLabelMessage('''
-Consider using widgets with title or label. For example, CheckboxTile instead
-of Checkbox:
+Consider providing semantics label or using widgets with title or label. 
+For example, screen reader users may have difficulties understanding what this
+checkbox does:
+
+Checkbox()
+
+Providing a label gives more context:
+
+Semantics(
+  label: 'Show password',
+  Checkbox(),
+),
+
+Another option is to use CheckboxListTile instead:
 
 CheckboxListTile(
   title: Text('Show password)',

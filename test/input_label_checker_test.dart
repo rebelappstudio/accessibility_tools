@@ -367,6 +367,26 @@ ${getWidgetLocationDescription(tester, find.byType(TextField))}
     );
   });
 
+  testWidgets("Doesn't show warning for Checkbox with a label", (tester) async {
+    final key = UniqueKey();
+    await tester.pumpWidget(
+      TestApp(
+        child: Semantics(
+          label: 'Checkbox',
+          child: Checkbox(
+            key: key,
+            onChanged: (_) {},
+            value: false,
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byIcon(Icons.accessibility_new), findsNothing);
+    expect(find.byWidgetPredicate((w) => w is Tooltip), findsNothing);
+  });
+
   testWidgets("Doesn't show warning for CheckboxListTile", (tester) async {
     final key = UniqueKey();
     await tester.pumpWidget(
