@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -79,8 +81,8 @@ class MinimumTapAreaChecker extends SemanticsNodeChecker {
     if (size.width < minTapArea - delta || size.height < minTapArea - delta) {
       return AccessibilityIssue(
         message: '''
-Tap area of ${_format(size.width)}x${_format(size.height)} is too small:
-should be at least ${_format(minTapArea)}x${_format(minTapArea)}''',
+Tap area of ${format(size.width)}x${format(size.height)} is too small:
+should be at least ${format(minTapArea)}x${format(minTapArea)}''',
         renderObject: renderObject,
       );
     }
@@ -88,7 +90,13 @@ should be at least ${_format(minTapArea)}x${_format(minTapArea)}''',
     return null;
   }
 
-  String _format(double val) {
-    return (val % 1 == 0 ? val.toInt() : val).toString();
+  @visibleForTesting
+  static String format(double val) {
+    // Round to N places after decimal point where N is 2
+    final mod = pow(10, 2);
+    final rounded = (val * mod).roundToDouble() / mod;
+    return (rounded - rounded.toInt()) == 0
+        ? rounded.toStringAsFixed(0)
+        : rounded.toStringAsFixed(2);
   }
 }
