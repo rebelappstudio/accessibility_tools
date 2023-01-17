@@ -14,6 +14,7 @@ class MyApp extends StatelessWidget {
       builder: (context, child) {
         return AccessibilityTools(
           checkFontOverflows: true,
+          checkTextContrast: true,
           child: child,
         );
       },
@@ -39,6 +40,13 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            const ColoredBox(
+              color: Colors.white,
+              child: Text(
+                'Light gray text on white background',
+                style: TextStyle(color: Colors.black12),
+              ),
+            ),
             ElevatedButton(
               onPressed: () {
                 Navigator.of(context).push(

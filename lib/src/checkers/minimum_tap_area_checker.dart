@@ -61,6 +61,11 @@ class MinimumTapAreaChecker extends SemanticsNodeChecker {
   final double minTapArea;
 
   @override
+  List<CheckerUpdateType> get updateType => [
+        CheckerUpdateType.onSemanticsUpdate,
+      ];
+
+  @override
   AccessibilityIssue? checkNode(SemanticsNode node, RenderObject renderObject) {
     if (node.isMergedIntoParent || !node.getSemanticsData().isTappable) {
       return null;

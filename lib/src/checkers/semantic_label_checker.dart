@@ -7,6 +7,11 @@ import 'checker_base.dart';
 
 class SemanticLabelChecker extends SemanticsNodeChecker {
   @override
+  List<CheckerUpdateType> get updateType => [
+        CheckerUpdateType.onSemanticsUpdate,
+      ];
+
+  @override
   AccessibilityIssue? checkNode(SemanticsNode node, RenderObject renderObject) {
     if (node.isMergedIntoParent ||
         node.isInvisible ||

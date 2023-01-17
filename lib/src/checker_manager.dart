@@ -9,20 +9,39 @@ import 'checkers/checker_base.dart';
 /// Checks for accessibility issues, updating whenever the semantic tree
 /// changes.
 class CheckerManager extends ChangeNotifier {
-  CheckerManager(this.checkers);
+  CheckerManager(this.checkers) {
+    // Rebuild values (list of [issues]) when dependencies change
+    for (final checker in checkers) {
+      checker.addListener(notifyListeners);
+    }
+  }
 
   final Iterable<CheckerBase> checkers;
-
-  /// A list of current accessibility issues.
-  List<AccessibilityIssue> get issues => _issues;
   List<AccessibilityIssue> _issues = [];
-  void _setIssues(List<AccessibilityIssue> issues) {
-    _issues = issues;
-    notifyListeners();
+
+  List<AccessibilityIssue> get issues {
+    final newIssues = checkers.map((e) => e.issues).flattened.toList();
+    final issuesHaveChanged = !listEquals(_issues, newIssues);
+
+    if (newIssues.isNotEmpty && issuesHaveChanged) {
+      _issues = newIssues;
+      _logAccessibilityIssues(_issues);
+    }
+
+    return _issues;
+  }
+
+  @override
+  void dispose() {
+    for (final checker in checkers) {
+      checker.removeListener(notifyListeners);
+    }
+
+    super.dispose();
   }
 
   /// Called whenever the semantic tree updates.
-  void update() {
+  void update(CheckerUpdateType updateType) {
     final root =
         WidgetsBinding.instance.pipelineOwner.semanticsOwner?.rootSemanticsNode;
     if (root == null) {
@@ -31,22 +50,10 @@ class CheckerManager extends ChangeNotifier {
 
     final renderObjects = _getRenderObjectsWithSemantics();
 
-    for (final checker in checkers) {
-      checker.didUpdateSemantics(renderObjects);
-    }
-
-    _updateIssues();
-  }
-
-  void _updateIssues() {
-    final newIssues = checkers.map((e) => e.issues).flattened.toList();
-    final issuesHaveChanged = !listEquals(issues, newIssues);
-
-    _setIssues(newIssues);
-
-    if (newIssues.isNotEmpty && issuesHaveChanged) {
-      _logAccessibilityIssues(newIssues);
-    }
+    // Let checkers process new objects. This updates list of their issues
+    checkers
+        .where((checker) => checker.updateType.contains(updateType))
+        .forEach((checker) => checker.didUpdateSemantics(renderObjects));
   }
 
   static List<RenderObject> _getRenderObjectsWithSemantics() {

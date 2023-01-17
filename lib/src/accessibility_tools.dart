@@ -14,6 +14,7 @@ import 'checkers/flex_overflow_checker.dart';
 import 'checkers/minimum_tap_area_checker.dart';
 import 'checkers/mixin.dart';
 import 'checkers/semantic_label_checker.dart';
+import 'checkers/text_contrast_checker.dart';
 
 const _warningBoxMinSize = 48.0;
 const iOSLargestTextScaleFactor = 1.35;
@@ -28,6 +29,7 @@ class AccessibilityTools extends StatefulWidget {
     this.minimumTapAreas = MinimumTapAreas.material,
     this.checkSemanticLabels = true,
     this.checkFontOverflows = false,
+    this.checkTextContrast = false,
   });
 
   /// Forces accessibility checkers to run when running from a test.
@@ -38,6 +40,7 @@ class AccessibilityTools extends StatefulWidget {
   final MinimumTapAreas? minimumTapAreas;
   final bool checkSemanticLabels;
   final bool checkFontOverflows;
+  final bool checkTextContrast;
 
   @override
   State<AccessibilityTools> createState() => _AccessibilityToolsState();
@@ -55,21 +58,30 @@ class _AccessibilityToolsState extends State<AccessibilityTools>
 
   @override
   void didUpdateSemantics() {
-    SchedulerBinding.instance.addPostFrameCallback((Duration _) {
-      // Semantic information are only available at the end of a frame and our
-      // only chance to paint them on the screen is the next frame. To achieve
-      // this, we call setState() in a post-frame callback.
-      if (mounted) {
-        _checker.update();
-      }
-    });
+    _scheduleUpdate(CheckerUpdateType.onSemanticsUpdate);
   }
 
   @override
   void didUpdateWidget(covariant AccessibilityTools oldWidget) {
     _checker.dispose();
     _checker = CheckerManager(_getCheckers());
+
+    // Some checkers need to be called not only when semantics update but also
+    // on widget update
+    _scheduleUpdate(CheckerUpdateType.onWidgetUpdate);
+
     super.didUpdateWidget(oldWidget);
+  }
+
+  void _scheduleUpdate(CheckerUpdateType updateType) {
+    SchedulerBinding.instance.addPostFrameCallback((Duration _) {
+      // Semantic information are only available at the end of a frame and our
+      // only chance to paint them on the screen is the next frame. To achieve
+      // this, we call setState() in a post-frame callback.
+      if (mounted) {
+        _checker.update(updateType);
+      }
+    });
   }
 
   List<CheckerBase> _getCheckers() {
@@ -86,6 +98,7 @@ class _AccessibilityToolsState extends State<AccessibilityTools>
         FlexOverflowChecker(
           textScaleFactor: iOSLargestTextScaleFactor,
         ),
+      if (widget.checkTextContrast) TextContrastChecker(),
     ];
   }
 

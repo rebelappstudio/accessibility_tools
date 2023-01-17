@@ -50,6 +50,11 @@ class FlexOverflowChecker extends WidgetCheckerBase {
       child: child,
     );
   }
+
+  @override
+  List<CheckerUpdateType> get updateType => [
+        CheckerUpdateType.onSemanticsUpdate,
+      ];
 }
 
 class _FlexOverflowCheckerInjector extends StatefulWidget {
