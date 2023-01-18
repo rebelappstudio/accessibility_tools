@@ -107,7 +107,6 @@ should be at least ${format(minTapArea)}x${format(minTapArea)}''',
     assert(delta >= 0, 'Delta must not be negative');
     final Size windowPhysicalSize =
         window.physicalSize * window.devicePixelRatio;
-    print(paintBounds);
     return paintBounds.top < -delta ||
         paintBounds.left < -delta ||
         paintBounds.bottom > windowPhysicalSize.height + delta ||
