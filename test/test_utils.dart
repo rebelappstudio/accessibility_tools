@@ -9,16 +9,19 @@ class TestApp extends StatelessWidget {
     super.key,
     required this.child,
     this.minimumTapAreas = MinimumTapAreas.material,
+    this.checkTextContrast = false,
   });
 
   final Widget child;
   final MinimumTapAreas? minimumTapAreas;
+  final bool checkTextContrast;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       builder: (context, child) => AccessibilityTools(
         checkFontOverflows: true,
+        checkTextContrast: checkTextContrast,
         minimumTapAreas: minimumTapAreas,
         child: child,
       ),

@@ -17,11 +17,9 @@ const double _contrastTolerance = -0.01;
 /// Default text size when text size can't be extracted from the widget
 const double _kDefaultFontSize = 12.0;
 
-// TODO result is broken when accesibility tools rectangle is displayed?
-// TODO not working when two widgets are too close
-// TODO doesn't work with editable text
-// TODO add header comment
-//
+/// Checks contrast of a text element and returns an [AccessibilityIssue] if
+/// contrast is too low
+///
 /// Based on https://github.com/flutter/flutter/blob/5d96d619d88d6e7305fc3cae474db6762941b2fe/packages/flutter_test/lib/src/accessibility.dart
 class TextContrastChecker extends AsyncSemanticsNodeChecker {
   ui.Image? _image;

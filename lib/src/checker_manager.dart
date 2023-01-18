@@ -12,7 +12,7 @@ class CheckerManager extends ChangeNotifier {
   CheckerManager(this.checkers) {
     // Rebuild values (list of [issues]) when dependencies change
     for (final checker in checkers) {
-      checker.addListener(notifyListeners);
+      checker.addListener(_updateIssues);
     }
   }
 
@@ -20,24 +20,30 @@ class CheckerManager extends ChangeNotifier {
   List<AccessibilityIssue> _issues = [];
 
   List<AccessibilityIssue> get issues {
-    final newIssues = checkers.map((e) => e.issues).flattened.toList();
-    final issuesHaveChanged = !listEquals(_issues, newIssues);
-
-    if (newIssues.isNotEmpty && issuesHaveChanged) {
-      _issues = newIssues;
-      _logAccessibilityIssues(_issues);
-    }
-
     return _issues;
   }
 
   @override
   void dispose() {
     for (final checker in checkers) {
-      checker.removeListener(notifyListeners);
+      checker.removeListener(_updateIssues);
     }
 
     super.dispose();
+  }
+
+  void _updateIssues() {
+    final newIssues = checkers.map((e) => e.issues).flattened.toList();
+    final issuesHaveChanged = !listEquals(
+      _issues.sortedBy<num>((e) => e.hashCode),
+      newIssues.sortedBy<num>((e) => e.hashCode),
+    );
+
+    if (newIssues.isNotEmpty && issuesHaveChanged) {
+      _issues = newIssues;
+      _logAccessibilityIssues(_issues);
+      notifyListeners();
+    }
   }
 
   /// Called whenever the semantic tree updates.
