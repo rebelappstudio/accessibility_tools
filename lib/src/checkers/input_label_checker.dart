@@ -15,11 +15,16 @@ class InputLabelChecker extends SemanticsNodeChecker {
   AccessibilityIssue? checkNode(SemanticsNode node, RenderObject renderObject) {
     if (node.isMergedIntoParent ||
         node.isInvisible ||
-        !node.getSemanticsData().isFormWidget) {
+        node.hasFlag(SemanticsFlag.isHidden)) {
       return null;
     }
 
-    final hasLabel = node.label.trim().isNotEmpty;
+    final data = node.getSemanticsData();
+    if (!data.isFormWidget) {
+      return null;
+    }
+
+    final hasLabel = data.label.trim().isNotEmpty;
     if (hasLabel) return null;
 
     if (node.hasFlag(SemanticsFlag.isTextField)) {
@@ -30,10 +35,26 @@ class InputLabelChecker extends SemanticsNodeChecker {
       return _getSwitchIssue(renderObject);
     }
 
-    return null;
+    return _getDefaultIssue(renderObject);
   }
 
-  AccessibilityIssue? _getTextFieldIssue(RenderObject renderObject) {
+  AccessibilityIssue _getDefaultIssue(RenderObject renderObject) {
+    return AccessibilityIssue(
+      message: 'Control widget is missing a semantic label.',
+      resolutionGuidance: '''
+Consider adding a label to the widgets if it allows or using Semantics widget to
+prive a label:
+
+Semantics(
+  label: 'Show password',
+  child: MyWidget(),
+)
+''',
+      renderObject: renderObject,
+    );
+  }
+
+  AccessibilityIssue _getTextFieldIssue(RenderObject renderObject) {
     return AccessibilityIssue(
       message: 'Text field is missing a label.',
       renderObject: renderObject,
@@ -48,7 +69,7 @@ TextField(
     );
   }
 
-  AccessibilityIssue? _getCheckboxRadioIssue(RenderObject renderObject) {
+  AccessibilityIssue _getCheckboxRadioIssue(RenderObject renderObject) {
     return AccessibilityIssue(
       renderObject: renderObject,
       message: 'Control widget is missing a semantic label.',
@@ -74,7 +95,7 @@ CheckboxListTile(
     );
   }
 
-  AccessibilityIssue? _getSwitchIssue(RenderObject renderObject) {
+  AccessibilityIssue _getSwitchIssue(RenderObject renderObject) {
     return AccessibilityIssue(
       renderObject: renderObject,
       message: 'Control widget is missing a semantic label.',

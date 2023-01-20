@@ -484,4 +484,45 @@ ${getWidgetLocationDescription(tester, find.byType(TextField))}
     expect(find.byIcon(Icons.accessibility_new), findsNothing);
     expect(find.byWidgetPredicate((w) => w is Tooltip), findsNothing);
   });
+
+  testWidgets('Shows warning for ToggleButtons with icon', (tester) async {
+    final key = UniqueKey();
+    await tester.pumpWidget(
+      TestApp(
+        child: SizedBox(
+          child: ToggleButtons(
+            isSelected: const [
+              true,
+              false,
+            ],
+            // renderBorder: false,
+            borderWidth: 0,
+            children: [
+              Icon(
+                Icons.sunny,
+                key: key,
+              ),
+              Semantics(
+                label: 'Cloudy',
+                child: const Icon(Icons.cloud),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    await showAccessibilityIssues(tester);
+
+    expectAccessibilityWarning(
+      tester,
+      // ToggleButtons wrap each child in TextButton so warning box is drawn
+      // around it
+      erroredWidgetFinder: find.ancestor(
+        matching: find.byType(TextButton),
+        of: find.byIcon(Icons.sunny),
+      ),
+      tooltipMessage: 'Control widget is missing a semantic label.',
+    );
+  });
 }
