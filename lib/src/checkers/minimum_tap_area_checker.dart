@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -67,16 +68,13 @@ class MinimumTapAreaChecker extends SemanticsNodeChecker {
     }
 
     final paintBounds = getPaintBounds(node);
-    final devicePixelRatio = WidgetsBinding.instance.window.devicePixelRatio;
-    final size = paintBounds.size / devicePixelRatio;
-    final element = renderObject.getCreatorElement();
+    final window = WidgetsBinding.instance.window;
 
-    if (element?.size != null && element?.size != size) {
-      // Item size doesn't match tap area height - it's probably partially off
-      // screen
+    if (_isNodeOffScreen(paintBounds, window)) {
       return null;
     }
 
+    final size = paintBounds.size / window.devicePixelRatio;
     const delta = 0.001;
     if (size.width < minTapArea - delta || size.height < minTapArea - delta) {
       return AccessibilityIssue(
@@ -115,5 +113,16 @@ Icon(
     return (rounded - rounded.toInt()) == 0
         ? rounded.toStringAsFixed(0)
         : rounded.toStringAsFixed(2);
+  }
+
+  /// Returns true if rectange of a node is (partially) off screen
+  bool _isNodeOffScreen(Rect paintBounds, FlutterView window) {
+    const delta = 10.0;
+    final Size windowPhysicalSize =
+        window.physicalSize * window.devicePixelRatio;
+    return paintBounds.top < -delta ||
+        paintBounds.left < -delta ||
+        paintBounds.bottom > windowPhysicalSize.height + delta ||
+        paintBounds.right > windowPhysicalSize.width + delta;
   }
 }

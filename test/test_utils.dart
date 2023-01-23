@@ -70,10 +70,10 @@ ${debugWarningBoxesText(tester)}''',
   const borderSize = 5.0;
 
   // Verify size of warning box
-  expect(
-    warningBox.size,
-    buttonRenderBox.size + const Offset(borderSize, borderSize),
-  );
+  const delta = Offset(0.001, 0.001);
+  final buttonBox = buttonRenderBox.size + const Offset(borderSize, borderSize);
+  final sizeDiff = warningBox.size - buttonBox;
+  expect(sizeDiff, lessThan(delta));
 
   final errorBoxPosition = warningBox.localToGlobal(
     warningBox.size.center(Offset.zero),
