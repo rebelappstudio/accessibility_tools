@@ -322,7 +322,6 @@ void main() {
       final log = await recordDebugPrint(() async {
         await tester.pumpWidget(
           const TestApp(
-            printResolutionGuidance: false,
             child: TextField(
               decoration: InputDecoration(hintText: null),
             ),

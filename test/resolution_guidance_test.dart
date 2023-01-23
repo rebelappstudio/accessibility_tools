@@ -13,7 +13,6 @@ void main() {
     final log = await recordDebugPrint(() async {
       await tester.pumpWidget(
         const TestApp(
-          printResolutionGuidance: true,
           child: TextField(),
         ),
       );
@@ -53,7 +52,6 @@ ${getWidgetLocationDescription(tester, find.byType(TextField))}
       final log = await recordDebugPrint(() async {
         await tester.pumpWidget(
           const TestApp(
-            printResolutionGuidance: false,
             child: TextField(),
           ),
         );

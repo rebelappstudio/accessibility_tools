@@ -30,7 +30,6 @@ class AccessibilityTools extends StatefulWidget {
     this.checkSemanticLabels = true,
     this.checkMissingInputLabels = true,
     this.checkFontOverflows = false,
-    this.printResolutionGuidance = true,
   });
 
   /// Forces accessibility checkers to run when running from a test.
@@ -42,7 +41,6 @@ class AccessibilityTools extends StatefulWidget {
   final bool checkSemanticLabels;
   final bool checkFontOverflows;
   final bool checkMissingInputLabels;
-  final bool printResolutionGuidance;
 
   @override
   State<AccessibilityTools> createState() => _AccessibilityToolsState();
@@ -50,10 +48,7 @@ class AccessibilityTools extends StatefulWidget {
 
 class _AccessibilityToolsState extends State<AccessibilityTools>
     with SemanticUpdateMixin {
-  late CheckerManager _checker = CheckerManager(
-    checkers: _getCheckers(),
-    printResolutionGuidance: widget.printResolutionGuidance,
-  );
+  late CheckerManager _checker = CheckerManager(_getCheckers());
 
   @override
   void dispose() {
@@ -76,10 +71,7 @@ class _AccessibilityToolsState extends State<AccessibilityTools>
   @override
   void didUpdateWidget(covariant AccessibilityTools oldWidget) {
     _checker.dispose();
-    _checker = CheckerManager(
-      checkers: _getCheckers(),
-      printResolutionGuidance: _checker.printResolutionGuidance,
-    );
+    _checker = CheckerManager(_getCheckers());
     super.didUpdateWidget(oldWidget);
   }
 
