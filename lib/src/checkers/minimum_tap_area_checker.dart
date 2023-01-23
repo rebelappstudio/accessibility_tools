@@ -99,12 +99,8 @@ should be at least ${format(minTapArea)}x${format(minTapArea)}''',
   }
 
   /// Returns true if rectange of a node is (partially) off screen
-  bool _isNodeOffScreen(
-    Rect paintBounds,
-    FlutterView window, {
-    double delta = 10.0,
-  }) {
-    assert(delta >= 0, 'Delta must not be negative');
+  bool _isNodeOffScreen(Rect paintBounds, FlutterView window) {
+    const delta = 10.0;
     final Size windowPhysicalSize =
         window.physicalSize * window.devicePixelRatio;
     return paintBounds.top < -delta ||
