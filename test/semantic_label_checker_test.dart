@@ -80,6 +80,19 @@ ACCESSIBILITY ISSUES FOUND
 Accessibility issue 1: Tap area is missing a semantic label
 
 ${getWidgetLocationDescription(tester, find.byType(ElevatedButton))}
+Semantic labels are used by screen readers to enable visually impaired users to
+get spoken feedback about the contents of the screen and interact with the UI.
+
+Consider adding a semantic label. For example,
+
+InkWell(
+  child: Icon(
+    Icons.wifi,
+    semanticLabel: 'Open Wi-Fi settings',
+  ),
+),
+
+Read more about screen readers: https://docs.flutter.dev/development/accessibility-and-localization/accessibility?tab=talkback#screen-readers
 ''';
 
       expect(log, expectedLog);
