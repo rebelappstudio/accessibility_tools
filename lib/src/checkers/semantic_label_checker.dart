@@ -47,6 +47,5 @@ get spoken feedback about the contents of the screen and interact with the UI.
 
 $message
 
-Read more about screen readers: https://docs.flutter.dev/development/accessibility-and-localization/accessibility?tab=talkback#screen-readers
-''';
+Read more about screen readers: https://docs.flutter.dev/development/accessibility-and-localization/accessibility?tab=talkback#screen-readers''';
 }
