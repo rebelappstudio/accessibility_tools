@@ -60,15 +60,6 @@ extension RenderObjectExtension on RenderObject {
     final offset = Offset(translation.x, translation.y);
     return paintBounds.shift(offset);
   }
-
-  Element? getCreatorElement() {
-    final creator = debugCreator;
-    if (creator is DebugCreator) {
-      return creator.element;
-    }
-
-    return null;
-  }
 }
 
 extension SemanticsDataExtension on SemanticsData {

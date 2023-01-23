@@ -173,6 +173,158 @@ Icon(
     expect(tapAreas.forPlatform(TargetPlatform.linux), desktopValue);
   });
 
+  testWidgets("Doesn't show warning for offscreen widget", (tester) async {
+    tester.binding.window.physicalSizeTestValue = const Size(500, 500);
+
+    final key = UniqueKey();
+    await tester.pumpWidget(
+      TestApp(
+        minimumTapAreas: const MinimumTapAreas(desktop: 0, mobile: 100),
+        child: Transform.translate(
+          offset: const Offset(-10000, -10000),
+          child: SizedBox(
+            width: 50,
+            height: 50,
+            child: GestureDetector(
+              key: key,
+              child: const Text('Tap area'),
+              onTap: () {},
+            ),
+          ),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+    expect(find.byIcon(Icons.accessibility_new), findsNothing);
+    expect(find.byWidgetPredicate((w) => w is Tooltip), findsNothing);
+  });
+
+  testWidgets(
+    'Shows warning for a small tap area when widget is partially visible',
+    (WidgetTester tester) async {
+      tester.binding.window.physicalSizeTestValue = const Size(500, 500);
+
+      final key = UniqueKey();
+      await tester.pumpWidget(
+        TestApp(
+          minimumTapAreas: const MinimumTapAreas(desktop: 0, mobile: 100),
+          child: Transform.translate(
+            offset: const Offset(-60, -60),
+            child: Center(
+              child: SizedBox(
+                width: 50,
+                height: 50,
+                child: GestureDetector(
+                  key: key,
+                  child: const Text('Tap area'),
+                  onTap: () {},
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+
+      await showAccessibilityIssues(tester);
+      expectAccessibilityWarning(
+        tester,
+        erroredWidgetFinder: find.byKey(key),
+        tooltipMessage:
+            'Tap area of 50x50 is too small:\nshould be at least 100x100',
+      );
+    },
+  );
+
+  testWidgets(
+    'Shows warning for a small tap area when size is a floating point number',
+    (WidgetTester tester) async {
+      final key = UniqueKey();
+      await tester.pumpWidget(
+        TestApp(
+          minimumTapAreas: const MinimumTapAreas(desktop: 0, mobile: 100),
+          child: SizedBox(
+            width: 99.3,
+            height: 99.3,
+            child: GestureDetector(
+              key: key,
+              child: const Text('Tap area'),
+              onTap: () {},
+            ),
+          ),
+        ),
+      );
+
+      await showAccessibilityIssues(tester);
+      expectAccessibilityWarning(
+        tester,
+        erroredWidgetFinder: find.byKey(key),
+        tooltipMessage:
+            'Tap area of 99.30x99.30 is too small:\nshould be at least 100x100',
+      );
+    },
+  );
+
+  testWidgets(
+    'Shows warning for a small tap area when size is an irrational number',
+    (WidgetTester tester) async {
+      final key = UniqueKey();
+      await tester.pumpWidget(
+        TestApp(
+          minimumTapAreas: const MinimumTapAreas(desktop: 0, mobile: 100),
+          child: SizedBox(
+            width: 100 / 3,
+            height: 100 / 6,
+            child: GestureDetector(
+              key: key,
+              child: const Text('Tap area'),
+              onTap: () {},
+            ),
+          ),
+        ),
+      );
+
+      await showAccessibilityIssues(tester);
+      expectAccessibilityWarning(
+        tester,
+        erroredWidgetFinder: find.byKey(key),
+        tooltipMessage: 'Tap area of 33.33x16.67 is too small:'
+            '\nshould be at least 100x100',
+      );
+    },
+  );
+
+  testWidgets(
+    'Shows warning for a small tap area when pixel ratio is not an integer',
+    (WidgetTester tester) async {
+      tester.binding.window.devicePixelRatioTestValue = 1.333;
+
+      final key = UniqueKey();
+      await tester.pumpWidget(
+        TestApp(
+          minimumTapAreas: const MinimumTapAreas(desktop: 0, mobile: 100),
+          child: SizedBox(
+            width: 99,
+            height: 99,
+            child: GestureDetector(
+              key: key,
+              child: const Text('Tap area'),
+              onTap: () {},
+            ),
+          ),
+        ),
+      );
+
+      await showAccessibilityIssues(tester);
+      expectAccessibilityWarning(
+        tester,
+        erroredWidgetFinder: find.byKey(key),
+        tooltipMessage:
+            'Tap area of 99x99 is too small:\nshould be at least 100x100',
+      );
+    },
+  );
+
   test(
     'Formatted size is not too long (max 2 places after decimal point)',
     () {
