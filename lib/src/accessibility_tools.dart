@@ -8,6 +8,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'accessibility_issue.dart';
+import 'accessibility_testing_tools.dart';
 import 'checker_manager.dart';
 import 'checkers/checker_base.dart';
 import 'checkers/flex_overflow_checker.dart';
@@ -114,7 +115,7 @@ class _AccessibilityToolsState extends State<AccessibilityTools>
     return Stack(
       textDirection: ui.TextDirection.ltr,
       children: [
-        child,
+        AccessibilityTestingTools(child: child),
         Overlay(
           initialEntries: [
             OverlayEntry(
