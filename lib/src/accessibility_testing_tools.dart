@@ -30,6 +30,7 @@ class _AccessibilityTestingToolsState extends State<AccessibilityTestingTools> {
 
   TargetPlatform? targetPlatform;
   VisualDensity? visualDensity;
+  Locale? localeOverride;
 
   bool semanticsDebuggerEnabled = false;
 
@@ -52,6 +53,16 @@ class _AccessibilityTestingToolsState extends State<AccessibilityTestingTools> {
       visualDensity: visualDensity,
     );
 
+    final supportedLocales =
+        context.findAncestorWidgetOfExactType<WidgetsApp>()?.supportedLocales ??
+            const [];
+
+    final child = Localizations.override(
+      context: context,
+      locale: localeOverride,
+      child: widget.child,
+    );
+
     return Stack(
       children: [
         Theme(
@@ -59,139 +70,163 @@ class _AccessibilityTestingToolsState extends State<AccessibilityTestingTools> {
           child: MediaQuery(
             data: mediaQueryData,
             child: semanticsDebuggerEnabled
-                ? SemanticsDebugger(child: widget.child)
-                : widget.child,
+                ? SemanticsDebugger(child: child)
+                : child,
           ),
         ),
         if (widget.menuVisible)
-          Positioned.fill(
-            child: Material(
-              color: Colors.white.withAlpha(240),
-              child: ListView(
-                children: [
-                  Align(
-                    alignment: Alignment.topLeft,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: IconButton(
-                        onPressed: widget.onClose,
-                        icon: const Icon(
-                          Icons.close,
-                          semanticLabel: 'Close',
+          // TODO: Theme to make widgets look nicer
+          Overlay(
+            initialEntries: [
+              OverlayEntry(
+                builder: (context) {
+                  return Material(
+                    color: Colors.white.withAlpha(240),
+                    child: ListView(
+                      padding: const EdgeInsets.all(16) +
+                          mediaQueryData.padding +
+                          const EdgeInsets.only(bottom: 56),
+                      children: [
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: IconButton(
+                              onPressed: widget.onClose,
+                              icon: const Icon(
+                                Icons.close,
+                                semanticLabel: 'Close',
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
+                        SwitchListTile(
+                          title: const Text('Semantics debugger'),
+                          subtitle: const Text(
+                            '''
+          Useful to understand how an app presents itself to screen readers''',
+                          ),
+                          value: semanticsDebuggerEnabled,
+                          onChanged: (value) {
+                            setState(() => semanticsDebuggerEnabled = value);
+                          },
+                        ),
+                        _Toggle(
+                          isOn: invertColors,
+                          label: 'Invert colors',
+                          onTap: (value) {
+                            setState(() {
+                              invertColors = value;
+                            });
+                          },
+                        ),
+                        _Toggle(
+                          isOn: boldText,
+                          label: 'Bold text',
+                          onTap: (value) {
+                            setState(() {
+                              boldText = value;
+                            });
+                          },
+                        ),
+                        _Toggle(
+                          isOn: highContrast,
+                          label: 'High contrast',
+                          onTap: (value) {
+                            setState(() {
+                              highContrast = value;
+                            });
+                          },
+                        ),
+                        _Toggle(
+                          isOn: disableAnimations,
+                          label: 'Disable animations',
+                          onTap: (value) {
+                            setState(() {
+                              disableAnimations = value;
+                            });
+                          },
+                        ),
+                        _BrightnessToggle(
+                          value: platformBrightness,
+                          onTap: (value) {
+                            setState(() {
+                              platformBrightness = value;
+                            });
+                          },
+                        ),
+                        _MultiValueToggle(
+                          value: targetPlatform,
+                          onTap: (value) {
+                            setState(() => targetPlatform = value);
+                          },
+                          label: 'Target platform',
+                          values: TargetPlatform.values,
+                          nameBuilder: (e) => e?.name ?? 'System',
+                        ),
+                        _MultiValueToggle(
+                          value: visualDensity,
+                          onTap: (value) {
+                            setState(() => visualDensity = value);
+                          },
+                          label: 'Visual density',
+                          values: const [
+                            VisualDensity.standard,
+                            VisualDensity.comfortable,
+                            VisualDensity.compact,
+                          ],
+                          nameBuilder: (e) {
+                            if (e == VisualDensity.standard) {
+                              return 'standard';
+                            } else if (e == VisualDensity.comfortable) {
+                              return 'comfortable';
+                            } else if (e == VisualDensity.compact) {
+                              return 'compact';
+                            } else {
+                              return 'System';
+                            }
+                          },
+                        ),
+                        _Slider(
+                          label: '''
+          Text scale factor ${mediaQueryData.textScaleFactor.toStringAsFixed(2)}''',
+                          value:
+                              textScaleFactor ?? mediaQueryData.textScaleFactor,
+                          min: 0.1,
+                          max: 5.0,
+                          onChanged: (value) {
+                            setState(() => textScaleFactor = value);
+                          },
+                        ),
+                        _Slider(
+                          label: '''
+          Device pixel ratio ${mediaQueryData.devicePixelRatio.toStringAsFixed(2)}''',
+                          value: devicePixelRatio ??
+                              mediaQueryData.devicePixelRatio,
+                          min: 1.0,
+                          max: 6.0,
+                          onChanged: (value) {
+                            setState(() => devicePixelRatio = value);
+                          },
+                        ),
+                        if (supportedLocales.length > 1)
+                          _MultiValueToggle(
+                            value: localeOverride,
+                            onTap: (value) {
+                              setState(() => localeOverride = value);
+                            },
+                            label: 'Locale override',
+                            values: supportedLocales.toList(),
+                            nameBuilder: (locale) {
+                              return locale?.toString() ?? 'System';
+                            },
+                          ),
+                      ],
                     ),
-                  ),
-                  SwitchListTile(
-                    title: const Text('Semantics debugger'),
-                    subtitle: const Text(
-                      '''
-Useful to understand how an app presents itself to screen readers''',
-                    ),
-                    value: semanticsDebuggerEnabled,
-                    onChanged: (value) {
-                      setState(() => semanticsDebuggerEnabled = value);
-                    },
-                  ),
-                  _Toggle(
-                    isOn: invertColors,
-                    label: 'Invert colors',
-                    onTap: (value) {
-                      setState(() {
-                        invertColors = value;
-                      });
-                    },
-                  ),
-                  _Toggle(
-                    isOn: boldText,
-                    label: 'Bold text',
-                    onTap: (value) {
-                      setState(() {
-                        boldText = value;
-                      });
-                    },
-                  ),
-                  _Toggle(
-                    isOn: highContrast,
-                    label: 'High contrast',
-                    onTap: (value) {
-                      setState(() {
-                        highContrast = value;
-                      });
-                    },
-                  ),
-                  _Toggle(
-                    isOn: disableAnimations,
-                    label: 'Disable animations',
-                    onTap: (value) {
-                      setState(() {
-                        disableAnimations = value;
-                      });
-                    },
-                  ),
-                  _BrightnessToggle(
-                    value: platformBrightness,
-                    onTap: (value) {
-                      setState(() {
-                        platformBrightness = value;
-                      });
-                    },
-                  ),
-                  _MultiValuePlatformToggle(
-                    value: targetPlatform,
-                    onTap: (value) {
-                      setState(() => targetPlatform = value);
-                    },
-                    label: 'Target platform',
-                    values: TargetPlatform.values,
-                    nameBuilder: (e) => e?.name ?? 'System',
-                  ),
-                  _MultiValuePlatformToggle(
-                    value: visualDensity,
-                    onTap: (value) {
-                      setState(() => visualDensity = value);
-                    },
-                    label: 'Visual density',
-                    values: const [
-                      VisualDensity.standard,
-                      VisualDensity.comfortable,
-                      VisualDensity.compact,
-                    ],
-                    nameBuilder: (e) {
-                      if (e == VisualDensity.standard) {
-                        return 'standard';
-                      } else if (e == VisualDensity.comfortable) {
-                        return 'comfortable';
-                      } else if (e == VisualDensity.compact) {
-                        return 'compact';
-                      } else {
-                        return 'System';
-                      }
-                    },
-                  ),
-                  _Slider(
-                    label: '''
-Text scale factor ${mediaQueryData.textScaleFactor.toStringAsFixed(2)}''',
-                    value: textScaleFactor ?? mediaQueryData.textScaleFactor,
-                    min: 0.1,
-                    max: 5.0,
-                    onChanged: (value) {
-                      setState(() => textScaleFactor = value);
-                    },
-                  ),
-                  _Slider(
-                    label: '''
-Device pixel ratio ${mediaQueryData.devicePixelRatio.toStringAsFixed(2)}''',
-                    value: devicePixelRatio ?? mediaQueryData.devicePixelRatio,
-                    min: 1.0,
-                    max: 6.0,
-                    onChanged: (value) {
-                      setState(() => devicePixelRatio = value);
-                    },
-                  ),
-                ],
+                  );
+                },
               ),
-            ),
+            ],
           ),
       ],
     );
@@ -294,8 +329,8 @@ class _BrightnessToggle extends StatelessWidget {
   }
 }
 
-class _MultiValuePlatformToggle<T> extends StatelessWidget {
-  const _MultiValuePlatformToggle({
+class _MultiValueToggle<T> extends StatelessWidget {
+  const _MultiValueToggle({
     required this.value,
     required this.onTap,
     required this.label,
