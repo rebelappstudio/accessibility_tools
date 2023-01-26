@@ -84,6 +84,10 @@ class _AccessibilityTestingToolsState extends State<AccessibilityTestingTools> {
                   ),
                   SwitchListTile(
                     title: const Text('Semantics debugger'),
+                    subtitle: const Text(
+                      '''
+Useful to understand how an app presents itself to screen readers''',
+                    ),
                     value: semanticsDebuggerEnabled,
                     onChanged: (value) {
                       setState(() => semanticsDebuggerEnabled = value);
@@ -166,7 +170,8 @@ class _AccessibilityTestingToolsState extends State<AccessibilityTestingTools> {
                     },
                   ),
                   _Slider(
-                    label: 'Text scale',
+                    label: '''
+Text scale factor ${mediaQueryData.textScaleFactor.toStringAsFixed(2)}''',
                     value: textScaleFactor ?? mediaQueryData.textScaleFactor,
                     min: 0.1,
                     max: 5.0,
@@ -175,7 +180,8 @@ class _AccessibilityTestingToolsState extends State<AccessibilityTestingTools> {
                     },
                   ),
                   _Slider(
-                    label: 'Pixel ratio',
+                    label: '''
+Device pixel ratio ${mediaQueryData.devicePixelRatio.toStringAsFixed(2)}''',
                     value: devicePixelRatio ?? mediaQueryData.devicePixelRatio,
                     min: 1.0,
                     max: 6.0,
