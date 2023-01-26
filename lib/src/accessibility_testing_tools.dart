@@ -5,9 +5,13 @@ class AccessibilityTestingTools extends StatefulWidget {
   const AccessibilityTestingTools({
     super.key,
     required this.child,
+    required this.onClose,
+    required this.menuVisible,
   });
 
   final Widget child;
+  final bool menuVisible;
+  final VoidCallback onClose;
 
   @override
   State<AccessibilityTestingTools> createState() =>
@@ -15,8 +19,6 @@ class AccessibilityTestingTools extends StatefulWidget {
 }
 
 class _AccessibilityTestingToolsState extends State<AccessibilityTestingTools> {
-  bool _showMenu = false;
-
   double? devicePixelRatio;
   double? textScaleFactor;
   Brightness? platformBrightness;
@@ -61,16 +63,7 @@ class _AccessibilityTestingToolsState extends State<AccessibilityTestingTools> {
                 : widget.child,
           ),
         ),
-        FloatingActionButton(
-          onPressed: () {
-            setState(() => _showMenu = !_showMenu);
-          },
-          child: const Icon(
-            Icons.tune,
-            semanticLabel: 'Show testing tools',
-          ),
-        ),
-        if (_showMenu)
+        if (widget.menuVisible)
           Positioned.fill(
             child: Material(
               color: Colors.white.withAlpha(240),
@@ -81,9 +74,7 @@ class _AccessibilityTestingToolsState extends State<AccessibilityTestingTools> {
                     child: Padding(
                       padding: const EdgeInsets.all(8),
                       child: IconButton(
-                        onPressed: () {
-                          setState(() => _showMenu = false);
-                        },
+                        onPressed: widget.onClose,
                         icon: const Icon(
                           Icons.close,
                           semanticLabel: 'Close',

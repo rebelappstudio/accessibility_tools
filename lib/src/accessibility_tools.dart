@@ -48,6 +48,8 @@ class _AccessibilityToolsState extends State<AccessibilityTools>
     with SemanticUpdateMixin {
   late CheckerManager _checker = CheckerManager(_getCheckers());
 
+  bool _testingToolsVisible = false;
+
   @override
   void dispose() {
     _checker.dispose();
@@ -115,12 +117,25 @@ class _AccessibilityToolsState extends State<AccessibilityTools>
     return Stack(
       textDirection: ui.TextDirection.ltr,
       children: [
-        AccessibilityTestingTools(child: child),
+        AccessibilityTestingTools(
+          menuVisible: _testingToolsVisible,
+          onClose: () {
+            setState(() => _testingToolsVisible = false);
+          },
+          child: child,
+        ),
         Overlay(
           initialEntries: [
             OverlayEntry(
               builder: (_) {
-                return CheckerOverlay(checker: _checker);
+                return CheckerOverlay(
+                  checker: _checker,
+                  onLongPressed: () {
+                    setState(() {
+                      _testingToolsVisible = !_testingToolsVisible;
+                    });
+                  },
+                );
               },
             ),
           ],
@@ -134,9 +149,11 @@ class CheckerOverlay extends StatefulWidget {
   const CheckerOverlay({
     super.key,
     required this.checker,
+    required this.onLongPressed,
   });
 
   final CheckerManager checker;
+  final VoidCallback onLongPressed;
 
   @override
   State<CheckerOverlay> createState() => _CheckerOverlayState();
@@ -196,6 +213,7 @@ class _CheckerOverlayState extends State<CheckerOverlay> {
                       setState(() => showOverlays = !showOverlays);
                     },
                     toggled: showOverlays,
+                    onLongPressed: widget.onLongPressed,
                   ),
                 ),
               ),
@@ -210,12 +228,14 @@ class _WarningButton extends StatelessWidget {
   const _WarningButton({
     required this.issues,
     required this.onPressed,
+    required this.onLongPressed,
     required this.toggled,
   });
 
   final bool toggled;
   final List<AccessibilityIssue> issues;
   final VoidCallback onPressed;
+  final VoidCallback onLongPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -227,18 +247,21 @@ class _WarningButton extends StatelessWidget {
             : '${issues.length} accessibility issues found',
         child: Transform.translate(
           offset: toggled ? const Offset(1, 1) : Offset.zero,
-          child: FloatingActionButton(
-            elevation: toggled ? 0 : 10,
-            hoverElevation: toggled ? 0 : 10,
-            onPressed: onPressed,
-            backgroundColor: toggled ? Colors.orange : Colors.red,
-            child: Icon(
-              Icons.accessibility_new,
-              size: 25,
-              color: toggled ? Colors.white : Colors.yellow,
-              semanticLabel: toggled
-                  ? 'Hide accessibility issues'
-                  : 'Show accessibility issues',
+          child: GestureDetector(
+            onLongPress: onLongPressed,
+            child: FloatingActionButton(
+              elevation: toggled ? 0 : 10,
+              hoverElevation: toggled ? 0 : 10,
+              onPressed: onPressed,
+              backgroundColor: toggled ? Colors.orange : Colors.red,
+              child: Icon(
+                Icons.accessibility_new,
+                size: 25,
+                color: toggled ? Colors.white : Colors.yellow,
+                semanticLabel: toggled
+                    ? 'Hide accessibility issues'
+                    : 'Show accessibility issues',
+              ),
             ),
           ),
         ),
