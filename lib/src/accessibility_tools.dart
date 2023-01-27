@@ -252,12 +252,25 @@ class _WarningButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const tapInstruction = 'Long tap to toggle testing tools visibility';
+    final String message;
+    switch (issues.length) {
+      case 0:
+        message = tapInstruction;
+        break;
+      case 1:
+        message = 'Accessibility issue found\n$tapInstruction';
+        break;
+      default:
+        message =
+            '${issues.length} accessibility issues found\n$tapInstruction';
+        break;
+    }
+
     return SizedBox.square(
       dimension: _warningBoxMinSize,
       child: Tooltip(
-        message: issues.length == 1
-            ? 'Accessibility issue found'
-            : '${issues.length} accessibility issues found',
+        message: message,
         child: Transform.translate(
           offset: toggled ? const Offset(1, 1) : Offset.zero,
           child: GestureDetector(
