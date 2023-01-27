@@ -135,6 +135,9 @@ class _AccessibilityToolsState extends State<AccessibilityTools>
                       _testingToolsVisible = !_testingToolsVisible;
                     });
                   },
+                  onHideTestingTools: () {
+                    setState(() => _testingToolsVisible = false);
+                  },
                 );
               },
             ),
@@ -150,10 +153,12 @@ class CheckerOverlay extends StatefulWidget {
     super.key,
     required this.checker,
     required this.onLongPressed,
+    required this.onHideTestingTools,
   });
 
   final CheckerManager checker;
   final VoidCallback onLongPressed;
+  final VoidCallback onHideTestingTools;
 
   @override
   State<CheckerOverlay> createState() => _CheckerOverlayState();
@@ -210,10 +215,18 @@ class _CheckerOverlayState extends State<CheckerOverlay> {
                   child: _WarningButton(
                     issues: issues,
                     onPressed: () {
-                      setState(() => showOverlays = !showOverlays);
+                      setState(() {
+                        showOverlays = !showOverlays;
+                        widget.onHideTestingTools();
+                      });
                     },
                     toggled: showOverlays,
-                    onLongPressed: widget.onLongPressed,
+                    onLongPressed: () {
+                      setState(() {
+                        showOverlays = false;
+                        widget.onLongPressed();
+                      });
+                    },
                   ),
                 ),
               ),
