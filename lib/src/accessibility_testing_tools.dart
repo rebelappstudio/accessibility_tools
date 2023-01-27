@@ -273,7 +273,10 @@ class _MultiValueToggle<T> extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: Text(label),
+            child: Text(
+              label,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
           ),
           const SizedBox.square(dimension: 24),
           Expanded(
@@ -328,7 +331,10 @@ class _Slider extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: Text(label),
+            child: Text(
+              label,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
           ),
           const SizedBox.square(dimension: 24),
           Slider(
