@@ -17,7 +17,11 @@ class MyApp extends StatelessWidget {
           child: child,
         );
       },
-      theme: ThemeData(primarySwatch: Colors.blue),
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        brightness: Brightness.light,
+      ),
+      darkTheme: ThemeData.dark(),
       home: const MyHomePage(),
     );
   }

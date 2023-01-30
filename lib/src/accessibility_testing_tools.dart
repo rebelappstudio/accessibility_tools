@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -42,13 +43,19 @@ class _AccessibilityTestingToolsState extends State<AccessibilityTestingTools> {
       invertColors: invertColors,
       boldText: boldText,
       highContrast: highContrast,
-      disableAnimations: disableAnimations,
-      platformBrightness: platformBrightness,
     );
 
+    debugBrightnessOverride = platformBrightness;
     debugSemanticsDisableAnimations = disableAnimations;
 
-    final theme = Theme.of(context).copyWith(
+    /// Let all observers ([WidgetsApp] in particular) know that brightness has
+    /// changed. [WidgetsApp] can then decide which theme to use (light to dark
+    /// based on platform brightness)
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      PlatformDispatcher.instance.onPlatformBrightnessChanged?.call();
+    });
+
+    final themeData = Theme.of(context).copyWith(
       platform: targetPlatform,
       visualDensity: visualDensity,
     );
@@ -65,10 +72,10 @@ class _AccessibilityTestingToolsState extends State<AccessibilityTestingTools> {
 
     return Stack(
       children: [
-        Theme(
-          data: theme,
-          child: MediaQuery(
-            data: mediaQueryData,
+        MediaQuery(
+          data: mediaQueryData,
+          child: Theme(
+            data: themeData,
             child: semanticsDebuggerEnabled
                 ? SemanticsDebugger(child: child)
                 : child,
@@ -76,7 +83,7 @@ class _AccessibilityTestingToolsState extends State<AccessibilityTestingTools> {
         ),
         if (widget.menuVisible)
           Material(
-            color: theme.scaffoldBackgroundColor.withAlpha(240),
+            color: themeData.scaffoldBackgroundColor.withAlpha(240),
             child: ListView(
               padding: const EdgeInsets.all(16) +
                   mediaQueryData.padding +
