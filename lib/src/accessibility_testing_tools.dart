@@ -2,51 +2,28 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-class AccessibilityTestingTools extends StatefulWidget {
-  const AccessibilityTestingTools({
+class TestingToolsWrapper extends StatelessWidget {
+  const TestingToolsWrapper({
     super.key,
+    required this.environment,
     required this.child,
-    required this.onClose,
-    required this.menuVisible,
   });
 
+  final TestEnvironment? environment;
   final Widget child;
-  final bool menuVisible;
-  final VoidCallback onClose;
-
-  @override
-  State<AccessibilityTestingTools> createState() =>
-      _AccessibilityTestingToolsState();
-}
-
-class _AccessibilityTestingToolsState extends State<AccessibilityTestingTools> {
-  double? devicePixelRatio;
-  double? textScaleFactor;
-  Brightness? platformBrightness;
-
-  bool? highContrast;
-  bool? disableAnimations;
-  bool? invertColors;
-  bool? boldText;
-
-  TargetPlatform? targetPlatform;
-  VisualDensity? visualDensity;
-  Locale? localeOverride;
-
-  bool semanticsDebuggerEnabled = false;
 
   @override
   Widget build(BuildContext context) {
     final mediaQueryData = MediaQuery.of(context).copyWith(
-      devicePixelRatio: devicePixelRatio,
-      textScaleFactor: textScaleFactor,
-      invertColors: invertColors,
-      boldText: boldText,
-      highContrast: highContrast,
+      devicePixelRatio: environment?.devicePixelRatio,
+      textScaleFactor: environment?.textScaleFactor,
+      invertColors: environment?.invertColors,
+      boldText: environment?.boldText,
+      highContrast: environment?.highContrast,
     );
 
-    debugBrightnessOverride = platformBrightness;
-    debugSemanticsDisableAnimations = disableAnimations;
+    debugBrightnessOverride = environment?.platformBrightness;
+    debugSemanticsDisableAnimations = environment?.disableAnimations;
 
     /// Let all observers ([WidgetsApp] in particular) know that brightness has
     /// changed. [WidgetsApp] can then decide which theme to use (light to dark
@@ -56,201 +33,241 @@ class _AccessibilityTestingToolsState extends State<AccessibilityTestingTools> {
     });
 
     final themeData = Theme.of(context).copyWith(
-      platform: targetPlatform,
-      visualDensity: visualDensity,
+      platform: environment?.targetPlatform,
+      visualDensity: environment?.visualDensity,
     );
 
-    final supportedLocales =
-        context.findAncestorWidgetOfExactType<WidgetsApp>()?.supportedLocales ??
-            const [];
-
-    final child = Localizations.override(
+    final body = Localizations.override(
       context: context,
-      locale: localeOverride,
-      child: widget.child,
+      locale: environment?.localeOverride,
+      child: child,
     );
 
-    return Stack(
-      children: [
-        MediaQuery(
-          data: mediaQueryData,
-          child: Theme(
-            data: themeData,
-            child: semanticsDebuggerEnabled
-                ? SemanticsDebugger(child: child)
-                : child,
-          ),
-        ),
-        if (widget.menuVisible)
-          Material(
-            color: themeData.scaffoldBackgroundColor.withAlpha(240),
-            child: ListView(
-              padding: const EdgeInsets.all(16) +
-                  mediaQueryData.padding +
-                  const EdgeInsets.only(bottom: 56),
-              children: [
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: IconButton(
-                      onPressed: widget.onClose,
-                      icon: const Icon(
-                        Icons.close,
-                        semanticLabel: 'Close',
-                      ),
-                    ),
-                  ),
-                ),
-                SwitchListTile(
-                  title: const Text('Semantics debugger'),
-                  subtitle: const Text(
-                    '''Useful to understand how an app presents itself to screen readers''',
-                  ),
-                  value: semanticsDebuggerEnabled,
-                  onChanged: (value) {
-                    setState(() => semanticsDebuggerEnabled = value);
-                  },
-                ),
-                MultiValueToggle<bool?>(
-                  value: invertColors,
-                  onTap: (value) {
-                    setState(() {
-                      invertColors = value;
-                    });
-                  },
-                  label: 'Invert colors',
-                  values: onOffSystemValues,
-                  nameBuilder: onOffSystemLabels,
-                ),
-                MultiValueToggle<bool?>(
-                  value: boldText,
-                  label: 'Bold text',
-                  onTap: (value) {
-                    setState(() {
-                      boldText = value;
-                    });
-                  },
-                  values: onOffSystemValues,
-                  nameBuilder: onOffSystemLabels,
-                ),
-                MultiValueToggle<bool?>(
-                  value: highContrast,
-                  label: 'High contrast',
-                  onTap: (value) {
-                    setState(() {
-                      highContrast = value;
-                    });
-                  },
-                  values: onOffSystemValues,
-                  nameBuilder: onOffSystemLabels,
-                ),
-                MultiValueToggle<bool?>(
-                  value: disableAnimations,
-                  label: 'Disable animations',
-                  onTap: (value) {
-                    setState(() {
-                      disableAnimations = value;
-                    });
-                  },
-                  values: onOffSystemValues,
-                  nameBuilder: onOffSystemLabels,
-                ),
-                MultiValueToggle(
-                  value: platformBrightness,
-                  onTap: (value) {
-                    setState(() {
-                      platformBrightness = value;
-                    });
-                  },
-                  label: 'Platform brightness',
-                  values: Brightness.values,
-                  nameBuilder: (value) => value?.name ?? 'System',
-                ),
-                MultiValueToggle(
-                  value: targetPlatform,
-                  onTap: (value) {
-                    setState(() => targetPlatform = value);
-                  },
-                  label: 'Target platform',
-                  values: TargetPlatform.values,
-                  nameBuilder: (e) => e?.name ?? 'System',
-                ),
-                MultiValueToggle<VisualDensity>(
-                  value: visualDensity,
-                  onTap: (value) {
-                    setState(() => visualDensity = value);
-                  },
-                  label: 'Visual density',
-                  values: const [
-                    VisualDensity.standard,
-                    VisualDensity.comfortable,
-                    VisualDensity.compact,
-                  ],
-                  nameBuilder: (e) {
-                    if (e == VisualDensity.standard) {
-                      return 'standard';
-                    } else if (e == VisualDensity.comfortable) {
-                      return 'comfortable';
-                    } else if (e == VisualDensity.compact) {
-                      return 'compact';
-                    } else {
-                      return 'System';
-                    }
-                  },
-                ),
-                SliderTile(
-                  label: '''
-Text scale factor ${mediaQueryData.textScaleFactor.toStringAsFixed(2)}''',
-                  value: textScaleFactor ?? mediaQueryData.textScaleFactor,
-                  min: 0.1,
-                  max: 5.0,
-                  onChanged: (value) {
-                    setState(() => textScaleFactor = value);
-                  },
-                ),
-                SliderTile(
-                  label: '''
-Device pixel ratio ${mediaQueryData.devicePixelRatio.toStringAsFixed(2)}''',
-                  value: devicePixelRatio ?? mediaQueryData.devicePixelRatio,
-                  min: 1.0,
-                  max: 6.0,
-                  onChanged: (value) {
-                    setState(() => devicePixelRatio = value);
-                  },
-                ),
-                if (supportedLocales.isNotEmpty) ...[
-                  MultiValueToggle<Locale>(
-                    value: localeOverride,
-                    onTap: (value) {
-                      setState(() => localeOverride = value);
-                    },
-                    label: 'Locale override',
-                    values: supportedLocales.toList(),
-                    nameBuilder: (locale) {
-                      return locale?.toString() ?? 'System';
-                    },
-                  )
-                ],
-              ],
-            ),
-          ),
-      ],
+    return MediaQuery(
+      data: mediaQueryData,
+      child: Theme(
+        data: themeData,
+        child: (environment?.semanticsDebuggerEnabled ?? false)
+            ? SemanticsDebugger(child: body)
+            : body,
+      ),
     );
   }
 }
 
-const onOffSystemValues = [true, false];
+class TestingToolsPanel extends StatefulWidget {
+  const TestingToolsPanel({
+    super.key,
+    required this.onClose,
+    required this.environment,
+    required this.onEnrivonmentUpdate,
+    required this.child,
+  });
 
-String onOffSystemLabels(bool? value) {
-  switch (value) {
-    case true:
-      return 'On';
-    case false:
-      return 'Off';
-    case null:
-    default:
-      return 'System';
+  final Widget child;
+  final TestEnvironment environment;
+  final VoidCallback onClose;
+  final void Function(TestEnvironment environment) onEnrivonmentUpdate;
+
+  @override
+  State<TestingToolsPanel> createState() => _AccessibilityTestingToolsState();
+}
+
+class _AccessibilityTestingToolsState extends State<TestingToolsPanel> {
+  late double? devicePixelRatio = widget.environment.devicePixelRatio;
+  late double? textScaleFactor = widget.environment.textScaleFactor;
+  late Brightness? platformBrightness = widget.environment.platformBrightness;
+
+  late bool? highContrast = widget.environment.highContrast;
+  late bool? disableAnimations = widget.environment.disableAnimations;
+  late bool? invertColors = widget.environment.invertColors;
+  late bool? boldText = widget.environment.boldText;
+
+  late TargetPlatform? targetPlatform = widget.environment.targetPlatform;
+  late VisualDensity? visualDensity = widget.environment.visualDensity;
+  late Locale? localeOverride = widget.environment.localeOverride;
+
+  late bool? semanticsDebuggerEnabled =
+      widget.environment.semanticsDebuggerEnabled;
+
+  @override
+  Widget build(BuildContext context) {
+    final supportedLocales =
+        context.findAncestorWidgetOfExactType<WidgetsApp>()?.supportedLocales ??
+            const [];
+    final mediaQuery = MediaQuery.of(context);
+    final textScaleFactor = this.textScaleFactor ?? mediaQuery.textScaleFactor;
+    final devicePixelRatio =
+        this.devicePixelRatio ?? mediaQuery.devicePixelRatio;
+
+    return Stack(
+      children: [
+        Material(
+          color: Theme.of(context).scaffoldBackgroundColor.withAlpha(240),
+          child: ListView(
+            padding: const EdgeInsets.all(16) +
+                MediaQuery.of(context).padding +
+                const EdgeInsets.only(bottom: 56),
+            children: [
+              Align(
+                alignment: Alignment.topLeft,
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: IconButton(
+                    onPressed: widget.onClose,
+                    icon: const Icon(
+                      Icons.close,
+                      semanticLabel: 'Close',
+                    ),
+                  ),
+                ),
+              ),
+              SwitchListTile(
+                title: const Text('Semantics debugger'),
+                subtitle: const Text(
+                  '''Useful to understand how an app presents itself to screen readers''',
+                ),
+                value: semanticsDebuggerEnabled ?? false,
+                onChanged: (value) {
+                  _updateValue(() => semanticsDebuggerEnabled = value);
+                },
+              ),
+              MultiValueToggle<bool?>(
+                value: invertColors,
+                onTap: (value) {
+                  _updateValue(() => invertColors = value);
+                },
+                label: 'Invert colors',
+                values: onOffSystemValues,
+                nameBuilder: onOffSystemLabels,
+              ),
+              MultiValueToggle<bool?>(
+                value: boldText,
+                label: 'Bold text',
+                onTap: (value) {
+                  _updateValue(() => boldText = value);
+                },
+                values: onOffSystemValues,
+                nameBuilder: onOffSystemLabels,
+              ),
+              MultiValueToggle<bool?>(
+                value: highContrast,
+                label: 'High contrast',
+                onTap: (value) {
+                  _updateValue(() => highContrast = value);
+                },
+                values: onOffSystemValues,
+                nameBuilder: onOffSystemLabels,
+              ),
+              MultiValueToggle<bool?>(
+                value: disableAnimations,
+                label: 'Disable animations',
+                onTap: (value) {
+                  _updateValue(() => disableAnimations = value);
+                },
+                values: onOffSystemValues,
+                nameBuilder: onOffSystemLabels,
+              ),
+              MultiValueToggle(
+                value: platformBrightness,
+                onTap: (value) {
+                  _updateValue(() => platformBrightness = value);
+                },
+                label: 'Platform brightness',
+                values: Brightness.values,
+                nameBuilder: (value) => value?.name ?? 'System',
+              ),
+              MultiValueToggle(
+                value: targetPlatform,
+                onTap: (value) {
+                  _updateValue(() => targetPlatform = value);
+                },
+                label: 'Target platform',
+                values: TargetPlatform.values,
+                nameBuilder: (e) => e?.name ?? 'System',
+              ),
+              MultiValueToggle<VisualDensity>(
+                value: visualDensity,
+                onTap: (value) {
+                  _updateValue(() => visualDensity = value);
+                },
+                label: 'Visual density',
+                values: const [
+                  VisualDensity.standard,
+                  VisualDensity.comfortable,
+                  VisualDensity.compact,
+                ],
+                nameBuilder: (e) {
+                  if (e == VisualDensity.standard) {
+                    return 'standard';
+                  } else if (e == VisualDensity.comfortable) {
+                    return 'comfortable';
+                  } else if (e == VisualDensity.compact) {
+                    return 'compact';
+                  } else {
+                    return 'System';
+                  }
+                },
+              ),
+              SliderTile(
+                label: '''
+Text scale factor ${textScaleFactor.toStringAsFixed(2)}''',
+                value: textScaleFactor,
+                min: 0.1,
+                max: 5.0,
+                onChanged: (value) {
+                  _updateValue(() => this.textScaleFactor = value);
+                },
+              ),
+              SliderTile(
+                label: '''
+Device pixel ratio ${devicePixelRatio.toStringAsFixed(2)}''',
+                value: devicePixelRatio,
+                min: 1.0,
+                max: 6.0,
+                onChanged: (value) {
+                  _updateValue(() => this.devicePixelRatio = value);
+                },
+              ),
+              if (supportedLocales.isNotEmpty) ...[
+                MultiValueToggle<Locale>(
+                  value: localeOverride,
+                  onTap: (value) {
+                    _updateValue(() => localeOverride = value);
+                  },
+                  label: 'Locale override',
+                  values: supportedLocales.toList(),
+                  nameBuilder: (locale) {
+                    return locale?.toString() ?? 'System';
+                  },
+                ),
+              ],
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _updateValue(VoidCallback callback) {
+    setState(() {
+      callback();
+      widget.onEnrivonmentUpdate(
+        TestEnvironment(
+          devicePixelRatio: devicePixelRatio,
+          textScaleFactor: textScaleFactor,
+          platformBrightness: platformBrightness,
+          highContrast: highContrast,
+          disableAnimations: disableAnimations,
+          invertColors: invertColors,
+          boldText: boldText,
+          targetPlatform: targetPlatform,
+          visualDensity: visualDensity,
+          localeOverride: localeOverride,
+          semanticsDebuggerEnabled: semanticsDebuggerEnabled,
+        ),
+      );
+    });
   }
 }
 
@@ -365,4 +382,49 @@ class SliderTile extends StatelessWidget {
       ),
     );
   }
+}
+
+const onOffSystemValues = [true, false];
+
+String onOffSystemLabels(bool? value) {
+  switch (value) {
+    case true:
+      return 'On';
+    case false:
+      return 'Off';
+    case null:
+    default:
+      return 'System';
+  }
+}
+
+class TestEnvironment {
+  const TestEnvironment({
+    this.devicePixelRatio,
+    this.textScaleFactor,
+    this.platformBrightness,
+    this.highContrast,
+    this.disableAnimations,
+    this.invertColors,
+    this.boldText,
+    this.targetPlatform,
+    this.visualDensity,
+    this.localeOverride,
+    this.semanticsDebuggerEnabled,
+  });
+
+  final double? devicePixelRatio;
+  final double? textScaleFactor;
+  final Brightness? platformBrightness;
+
+  final bool? highContrast;
+  final bool? disableAnimations;
+  final bool? invertColors;
+  final bool? boldText;
+
+  final TargetPlatform? targetPlatform;
+  final VisualDensity? visualDensity;
+  final Locale? localeOverride;
+
+  final bool? semanticsDebuggerEnabled;
 }

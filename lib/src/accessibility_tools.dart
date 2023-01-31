@@ -49,6 +49,7 @@ class _AccessibilityToolsState extends State<AccessibilityTools>
   late CheckerManager _checker = CheckerManager(_getCheckers());
 
   bool _testingToolsVisible = false;
+  TestEnvironment _environment = const TestEnvironment();
 
   @override
   void dispose() {
@@ -117,11 +118,8 @@ class _AccessibilityToolsState extends State<AccessibilityTools>
     return Stack(
       textDirection: ui.TextDirection.ltr,
       children: [
-        AccessibilityTestingTools(
-          menuVisible: _testingToolsVisible,
-          onClose: () {
-            setState(() => _testingToolsVisible = false);
-          },
+        TestingToolsWrapper(
+          environment: _environment,
           child: child,
         ),
         Overlay(
@@ -138,6 +136,22 @@ class _AccessibilityToolsState extends State<AccessibilityTools>
                   onHideTestingTools: () {
                     setState(() => _testingToolsVisible = false);
                   },
+                );
+              },
+            ),
+            OverlayEntry(
+              builder: (context) {
+                if (!_testingToolsVisible) return const SizedBox();
+
+                return TestingToolsPanel(
+                  environment: _environment,
+                  onClose: () {
+                    setState(() => _testingToolsVisible = false);
+                  },
+                  onEnrivonmentUpdate: (TestEnvironment environment) {
+                    setState(() => _environment = environment);
+                  },
+                  child: child,
                 );
               },
             ),

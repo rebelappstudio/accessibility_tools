@@ -123,7 +123,6 @@ ${getWidgetLocationDescription(tester, find.byType(ElevatedButton))}
       );
 
       await tester.pumpAndSettle();
-      expect(find.byIcon(Icons.accessibility_new), findsNothing);
       expect(
         find.byWidgetPredicate((w) =>
             w is Tooltip &&
@@ -153,17 +152,15 @@ ${getWidgetLocationDescription(tester, find.byType(ElevatedButton))}
   testWidgets("Doesn't show warning for offscreen widget", (tester) async {
     tester.binding.window.physicalSizeTestValue = const Size(500, 500);
 
-    final key = UniqueKey();
     await tester.pumpWidget(
       TestApp(
-        minimumTapAreas: const MinimumTapAreas(desktop: 0, mobile: 100),
+        minimumTapAreas: const MinimumTapAreas(desktop: 0, mobile: 48),
         child: Transform.translate(
           offset: const Offset(-10000, -10000),
           child: SizedBox(
-            width: 50,
-            height: 50,
+            width: 32,
+            height: 32,
             child: GestureDetector(
-              key: key,
               child: const Text('Tap area'),
               onTap: () {},
             ),
@@ -173,8 +170,12 @@ ${getWidgetLocationDescription(tester, find.byType(ElevatedButton))}
     );
 
     await tester.pumpAndSettle();
-    expect(find.byIcon(Icons.accessibility_new), findsNothing);
-    expect(find.byWidgetPredicate((w) => w is Tooltip), findsNothing);
+    expect(
+      find.byWidgetPredicate((w) =>
+          w is Tooltip &&
+          w.message != 'Long tap to toggle testing tools visibility'),
+      findsNothing,
+    );
   });
 
   testWidgets(

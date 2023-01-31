@@ -23,15 +23,15 @@ void main() {
       await tester.pump();
 
       expect(find.byIcon(Icons.accessibility_new), findsOneWidget);
-      expect(find.text('Semantics debugger'), findsNothing);
+      expect(find.byType(TestingToolsPanel), findsNothing);
 
       await showTestingTools(tester);
 
-      expect(find.text('Semantics debugger'), findsOneWidget);
+      expect(find.byType(TestingToolsPanel), findsOneWidget);
 
-      await tester.longPress(find.byIcon(Icons.accessibility_new));
+      await hideTestingTools(tester);
       await tester.pump();
-      expect(find.text('Semantics debugger'), findsNothing);
+      expect(find.byType(TestingToolsPanel), findsNothing);
     },
   );
 
@@ -46,20 +46,20 @@ void main() {
       await tester.pump();
 
       expect(find.byIcon(Icons.accessibility_new), findsOneWidget);
-      expect(find.text('Semantics debugger'), findsNothing);
+      expect(find.byType(TestingToolsPanel), findsNothing);
       expect(find.byType(WarningBox), findsNothing);
 
       await showTestingTools(tester);
 
-      expect(find.text('Semantics debugger'), findsOneWidget);
+      expect(find.byType(TestingToolsPanel), findsOneWidget);
       expect(find.byType(WarningBox), findsNothing);
 
-      await tester.longPress(find.byIcon(Icons.accessibility_new));
+      await hideTestingTools(tester);
       await tester.pump();
-      expect(find.text('Semantics debugger'), findsNothing);
+      expect(find.byType(TestingToolsPanel), findsNothing);
 
       await showAccessibilityIssues(tester);
-      expect(find.text('Semantics debugger'), findsNothing);
+      expect(find.byType(TestingToolsPanel), findsNothing);
       expect(find.byType(WarningBox), findsOneWidget);
     },
   );

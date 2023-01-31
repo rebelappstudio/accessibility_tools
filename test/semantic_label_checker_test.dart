@@ -102,7 +102,6 @@ ${getWidgetLocationDescription(tester, find.byType(ElevatedButton))}
       );
 
       await tester.pumpAndSettle();
-      expect(find.byIcon(Icons.accessibility_new), findsNothing);
       expect(
         find.byWidgetPredicate((w) =>
             w is Tooltip &&
