@@ -265,18 +265,17 @@ class _WarningButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const longPressInstruction = 'Long tap to toggle testing tools visibility';
+    const longPressInfo = 'Long tap to toggle testing tools visibility';
     final String message;
     switch (issues.length) {
       case 0:
-        message = longPressInstruction;
+        message = longPressInfo;
         break;
       case 1:
-        message = 'Accessibility issue found\n$longPressInstruction';
+        message = 'Accessibility issue found\n$longPressInfo';
         break;
       default:
-        message =
-            '${issues.length} accessibility issues found\n$longPressInstruction';
+        message = '${issues.length} accessibility issues found\n$longPressInfo';
         break;
     }
 
@@ -291,15 +290,15 @@ class _WarningButton extends StatelessWidget {
       elevation = 10;
       foregroundColor = Theme.of(context).colorScheme.onSecondary;
       backgroundColor = Theme.of(context).colorScheme.secondary;
-      semanticLabel = 'Show accessibility issies\n$longPressInstruction';
+      semanticLabel = 'Show accessibility issies\n$longPressInfo';
     } else {
       offset = toggled ? const Offset(1, 1) : Offset.zero;
       elevation = toggled ? 0 : 10;
       foregroundColor = toggled ? Colors.white : Colors.yellow;
       backgroundColor = toggled ? Colors.orange : Colors.red;
       semanticLabel = toggled
-          ? 'Hide accessibility issues\n$longPressInstruction'
-          : 'Show accessibility issues\n$longPressInstruction';
+          ? 'Hide accessibility issues\n$longPressInfo'
+          : 'Show accessibility issues\n$longPressInfo';
     }
 
     return SizedBox.square(
