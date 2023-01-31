@@ -112,7 +112,7 @@ class _AccessibilityTestingToolsState extends State<AccessibilityTestingTools> {
                     setState(() => semanticsDebuggerEnabled = value);
                   },
                 ),
-                _MultiValueToggle<bool?>(
+                MultiValueToggle<bool?>(
                   value: invertColors,
                   onTap: (value) {
                     setState(() {
@@ -123,7 +123,7 @@ class _AccessibilityTestingToolsState extends State<AccessibilityTestingTools> {
                   values: onOffSystemValues,
                   nameBuilder: onOffSystemLabels,
                 ),
-                _MultiValueToggle<bool?>(
+                MultiValueToggle<bool?>(
                   value: boldText,
                   label: 'Bold text',
                   onTap: (value) {
@@ -134,7 +134,7 @@ class _AccessibilityTestingToolsState extends State<AccessibilityTestingTools> {
                   values: onOffSystemValues,
                   nameBuilder: onOffSystemLabels,
                 ),
-                _MultiValueToggle<bool?>(
+                MultiValueToggle<bool?>(
                   value: highContrast,
                   label: 'High contrast',
                   onTap: (value) {
@@ -145,7 +145,7 @@ class _AccessibilityTestingToolsState extends State<AccessibilityTestingTools> {
                   values: onOffSystemValues,
                   nameBuilder: onOffSystemLabels,
                 ),
-                _MultiValueToggle<bool?>(
+                MultiValueToggle<bool?>(
                   value: disableAnimations,
                   label: 'Disable animations',
                   onTap: (value) {
@@ -156,7 +156,7 @@ class _AccessibilityTestingToolsState extends State<AccessibilityTestingTools> {
                   values: onOffSystemValues,
                   nameBuilder: onOffSystemLabels,
                 ),
-                _MultiValueToggle(
+                MultiValueToggle(
                   value: platformBrightness,
                   onTap: (value) {
                     setState(() {
@@ -167,7 +167,7 @@ class _AccessibilityTestingToolsState extends State<AccessibilityTestingTools> {
                   values: Brightness.values,
                   nameBuilder: (value) => value?.name ?? 'System',
                 ),
-                _MultiValueToggle(
+                MultiValueToggle(
                   value: targetPlatform,
                   onTap: (value) {
                     setState(() => targetPlatform = value);
@@ -176,7 +176,7 @@ class _AccessibilityTestingToolsState extends State<AccessibilityTestingTools> {
                   values: TargetPlatform.values,
                   nameBuilder: (e) => e?.name ?? 'System',
                 ),
-                _MultiValueToggle(
+                MultiValueToggle<VisualDensity>(
                   value: visualDensity,
                   onTap: (value) {
                     setState(() => visualDensity = value);
@@ -199,7 +199,7 @@ class _AccessibilityTestingToolsState extends State<AccessibilityTestingTools> {
                     }
                   },
                 ),
-                _Slider(
+                SliderTile(
                   label: '''
 Text scale factor ${mediaQueryData.textScaleFactor.toStringAsFixed(2)}''',
                   value: textScaleFactor ?? mediaQueryData.textScaleFactor,
@@ -209,7 +209,7 @@ Text scale factor ${mediaQueryData.textScaleFactor.toStringAsFixed(2)}''',
                     setState(() => textScaleFactor = value);
                   },
                 ),
-                _Slider(
+                SliderTile(
                   label: '''
 Device pixel ratio ${mediaQueryData.devicePixelRatio.toStringAsFixed(2)}''',
                   value: devicePixelRatio ?? mediaQueryData.devicePixelRatio,
@@ -220,7 +220,7 @@ Device pixel ratio ${mediaQueryData.devicePixelRatio.toStringAsFixed(2)}''',
                   },
                 ),
                 if (supportedLocales.isNotEmpty) ...[
-                  _MultiValueToggle(
+                  MultiValueToggle<Locale>(
                     value: localeOverride,
                     onTap: (value) {
                       setState(() => localeOverride = value);
@@ -254,8 +254,10 @@ String onOffSystemLabels(bool? value) {
   }
 }
 
-class _MultiValueToggle<T> extends StatelessWidget {
-  const _MultiValueToggle({
+@visibleForTesting
+class MultiValueToggle<T> extends StatelessWidget {
+  const MultiValueToggle({
+    super.key,
     required this.value,
     required this.onTap,
     required this.label,
@@ -313,8 +315,10 @@ class _MultiValueToggle<T> extends StatelessWidget {
   }
 }
 
-class _Slider extends StatelessWidget {
-  const _Slider({
+@visibleForTesting
+class SliderTile extends StatelessWidget {
+  const SliderTile({
+    super.key,
     required this.label,
     required this.value,
     required this.min,

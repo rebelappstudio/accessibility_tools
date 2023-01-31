@@ -37,6 +37,12 @@ Future<void> showAccessibilityIssues(WidgetTester tester) async {
   await tester.pump();
 }
 
+Future<void> showTestingTools(WidgetTester tester) async {
+  await tester.pump();
+  await tester.longPress(find.byIcon(Icons.accessibility_new));
+  await tester.pump();
+}
+
 void expectAccessibilityWarning(
   WidgetTester tester, {
   required Finder erroredWidgetFinder,

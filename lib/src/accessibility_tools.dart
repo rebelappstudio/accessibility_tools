@@ -207,29 +207,28 @@ class _CheckerOverlayState extends State<CheckerOverlay> {
                     ),
                   ),
                 ),
-            if (issues.isNotEmpty)
-              Positioned(
-                bottom: 10,
-                right: 10,
-                child: SafeArea(
-                  child: _WarningButton(
-                    issues: issues,
-                    onPressed: () {
-                      setState(() {
-                        showOverlays = !showOverlays;
-                        widget.onHideTestingTools();
-                      });
-                    },
-                    toggled: showOverlays,
-                    onLongPressed: () {
-                      setState(() {
-                        showOverlays = false;
-                        widget.onLongPressed();
-                      });
-                    },
-                  ),
+            Positioned(
+              bottom: 10,
+              right: 10,
+              child: SafeArea(
+                child: _WarningButton(
+                  issues: issues,
+                  onPressed: () {
+                    setState(() {
+                      showOverlays = !showOverlays;
+                      widget.onHideTestingTools();
+                    });
+                  },
+                  toggled: showOverlays,
+                  onLongPressed: () {
+                    setState(() {
+                      showOverlays = false;
+                      widget.onLongPressed();
+                    });
+                  },
                 ),
               ),
+            ),
           ],
         );
       },
