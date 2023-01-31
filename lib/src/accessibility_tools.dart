@@ -265,19 +265,41 @@ class _WarningButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const tapInstruction = 'Long tap to toggle testing tools visibility';
+    const longPressInstruction = 'Long tap to toggle testing tools visibility';
     final String message;
     switch (issues.length) {
       case 0:
-        message = tapInstruction;
+        message = longPressInstruction;
         break;
       case 1:
-        message = 'Accessibility issue found\n$tapInstruction';
+        message = 'Accessibility issue found\n$longPressInstruction';
         break;
       default:
         message =
-            '${issues.length} accessibility issues found\n$tapInstruction';
+            '${issues.length} accessibility issues found\n$longPressInstruction';
         break;
+    }
+
+    final Offset offset;
+    final double elevation;
+    final Color backgroundColor;
+    final Color foregroundColor;
+    final String semanticLabel;
+
+    if (issues.isEmpty) {
+      offset = Offset.zero;
+      elevation = 10;
+      foregroundColor = Theme.of(context).colorScheme.onSecondary;
+      backgroundColor = Theme.of(context).colorScheme.secondary;
+      semanticLabel = 'Show accessibility issies\n$longPressInstruction';
+    } else {
+      offset = toggled ? const Offset(1, 1) : Offset.zero;
+      elevation = toggled ? 0 : 10;
+      foregroundColor = toggled ? Colors.white : Colors.yellow;
+      backgroundColor = toggled ? Colors.orange : Colors.red;
+      semanticLabel = toggled
+          ? 'Hide accessibility issues\n$longPressInstruction'
+          : 'Show accessibility issues\n$longPressInstruction';
     }
 
     return SizedBox.square(
@@ -285,21 +307,19 @@ class _WarningButton extends StatelessWidget {
       child: Tooltip(
         message: message,
         child: Transform.translate(
-          offset: toggled ? const Offset(1, 1) : Offset.zero,
+          offset: offset,
           child: GestureDetector(
             onLongPress: onLongPressed,
             child: FloatingActionButton(
-              elevation: toggled ? 0 : 10,
-              hoverElevation: toggled ? 0 : 10,
+              elevation: elevation,
+              hoverElevation: elevation,
               onPressed: onPressed,
-              backgroundColor: toggled ? Colors.orange : Colors.red,
+              backgroundColor: backgroundColor,
               child: Icon(
                 Icons.accessibility_new,
                 size: 25,
-                color: toggled ? Colors.white : Colors.yellow,
-                semanticLabel: toggled
-                    ? 'Hide accessibility issues'
-                    : 'Show accessibility issues',
+                color: foregroundColor,
+                semanticLabel: semanticLabel,
               ),
             ),
           ),
