@@ -29,7 +29,7 @@ void main() {
 
       expect(find.byType(TestingToolsPanel), findsOneWidget);
 
-      await hideTestingTools(tester);
+      await tester.tap(find.text('Close'));
       await tester.pump();
       expect(find.byType(TestingToolsPanel), findsNothing);
     },
@@ -54,7 +54,7 @@ void main() {
       expect(find.byType(TestingToolsPanel), findsOneWidget);
       expect(find.byType(WarningBox), findsNothing);
 
-      await hideTestingTools(tester);
+      await tester.tap(find.text('Close'));
       await tester.pump();
       expect(find.byType(TestingToolsPanel), findsNothing);
 
@@ -76,7 +76,7 @@ void main() {
 
       expect(find.byType(SemanticsDebugger), findsNothing);
       await showTestingTools(tester);
-
+      await tester.scrollUntilVisible(find.text('Semantics debugger'), 550);
       await tester.tap(find.text('Semantics debugger'));
       await tester.pump();
       expect(find.byType(SemanticsDebugger), findsOneWidget);
@@ -106,6 +106,7 @@ void main() {
       expect(mediaQuery.invertColors, isFalse);
 
       await showTestingTools(tester);
+      await tester.scrollUntilVisible(find.text('Invert colors'), 150);
       await tester.tap(_toggleTile<bool?>('Invert colors', 'On'));
       await tester.pump();
       expect(mediaQuery.invertColors, isTrue);
@@ -131,6 +132,7 @@ void main() {
       expect(mediaQuery.boldText, isFalse);
 
       await showTestingTools(tester);
+      await tester.scrollUntilVisible(find.text('Bold text'), 500);
       await tester.tap(_toggleTile<bool?>('Bold text', 'On'));
       await tester.pump();
       expect(mediaQuery.boldText, isTrue);
@@ -156,6 +158,7 @@ void main() {
       expect(mediaQuery.highContrast, isFalse);
 
       await showTestingTools(tester);
+      await tester.scrollUntilVisible(find.text('High contrast'), 150);
       await tester.tap(_toggleTile<bool?>('High contrast', 'On'));
       await tester.pump();
       expect(mediaQuery.highContrast, isTrue);
@@ -445,6 +448,92 @@ void main() {
       expect(find.text('Moi'), findsOneWidget);
     },
   );
+
+  testWidgets(
+    'Testing tool panel has no accessibility issues',
+    (tester) async {
+      final log = await recordDebugPrint(() async {
+        await tester.pumpWidget(
+          MaterialApp(
+            builder: (context, child) => AccessibilityTools(
+              // Chip widget has quite small tap area but it's coming from the
+              // theme so they're ignored here
+              minimumTapAreas: const MinimumTapAreas(mobile: 32, desktop: 32),
+              child: child,
+            ),
+            home: Scaffold(
+              body: TestingToolsPanel(
+                environment: const TestEnvironment(),
+                onClose: () {},
+                onEnvironmentUpdate: (_) {},
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(
+          find.byWidgetPredicate((w) =>
+              w is Tooltip &&
+              w.message != 'Long tap to toggle testing tools visibility'),
+          findsNothing,
+        );
+      });
+
+      expect(log, isEmpty);
+    },
+  );
+
+  testWidgets('Can reset all changes', (tester) async {
+    late MediaQueryData mediaQueryData;
+    late ThemeData themeData;
+
+    await tester.pumpWidget(
+      TestApp(
+        child: Builder(builder: (context) {
+          mediaQueryData = MediaQuery.of(context);
+          themeData = Theme.of(context);
+
+          return Container();
+        }),
+      ),
+    );
+    await tester.pump();
+    final defaultPlatform = themeData.platform;
+
+    await showTestingTools(tester);
+
+    await tester.scrollUntilVisible(find.text('Disable animations'), 150);
+    await tester.tap(_toggleTile<bool?>('Disable animations', 'On'));
+
+    await tester.scrollUntilVisible(find.text('Invert colors'), 150);
+    await tester.tap(_toggleTile<bool?>('Invert colors', 'On'));
+
+    await tester.scrollUntilVisible(find.text('Target platform'), 150);
+    await tester.tap(_toggleTile<TargetPlatform>('Target platform', 'iOS'));
+
+    await tester.pump();
+
+    expect(debugSemanticsDisableAnimations, true);
+    expect(mediaQueryData.invertColors, true);
+    expect(themeData.platform, TargetPlatform.iOS);
+
+    var env = tester
+        .widget<TestingToolsPanel>(find.byType(TestingToolsPanel))
+        .environment;
+    expect(env, isNot(const TestEnvironment()));
+
+    await tester.tap(find.text('Reset all'));
+    await tester.pump();
+
+    expect(debugSemanticsDisableAnimations, null);
+    expect(mediaQueryData.invertColors, false);
+    expect(themeData.platform, defaultPlatform);
+
+    env = tester
+        .widget<TestingToolsPanel>(find.byType(TestingToolsPanel))
+        .environment;
+    expect(env, const TestEnvironment());
+  });
 }
 
 Finder _toggleTile<T>(String tileName, String optionName) {

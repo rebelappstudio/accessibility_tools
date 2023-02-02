@@ -43,12 +43,6 @@ Future<void> showTestingTools(WidgetTester tester) async {
   await tester.pump();
 }
 
-Future<void> hideTestingTools(WidgetTester tester) async {
-  await tester.pump();
-  await tester.tap(find.byIcon(Icons.close));
-  await tester.pump();
-}
-
 void expectAccessibilityWarning(
   WidgetTester tester, {
   required Finder erroredWidgetFinder,

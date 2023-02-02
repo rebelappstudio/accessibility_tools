@@ -150,7 +150,7 @@ class _AccessibilityTestingToolsState extends State<TestingToolsPanel> {
                     children: [
                       SliderTile(
                         label: '''
-Text scale  factor ${textScaleFactor.toStringAsFixed(2)}''',
+Text scale factor ${textScaleFactor.toStringAsFixed(2)}''',
                         value: textScaleFactor,
                         min: 0.1,
                         max: 5.0,
