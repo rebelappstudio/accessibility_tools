@@ -138,47 +138,42 @@ class _AccessibilityTestingToolsState extends State<TestingToolsPanel> {
                   ],
                 ),
               ),
-              SwitchListTile(
-                title: const Text('Semantics debugger'),
-                subtitle: const Text(
-                  '''Useful to understand how an app presents itself to screen readers''',
-                ),
-                value: semanticsDebuggerEnabled ?? false,
+              SliderTile(
+                label: '''
+Text scale factor ${textScaleFactor.toStringAsFixed(2)}''',
+                value: textScaleFactor,
+                min: 0.1,
+                max: 5.0,
                 onChanged: (value) {
-                  semanticsDebuggerEnabled = value;
+                  this.textScaleFactor = value;
                   _notifyTestEnvironmentChanged();
                 },
               ),
-              MultiValueToggle<bool?>(
-                value: invertColors,
-                onTap: (value) {
-                  invertColors = value;
+              SliderTile(
+                label: '''
+Device pixel ratio ${devicePixelRatio.toStringAsFixed(2)}''',
+                value: devicePixelRatio,
+                min: 1.0,
+                max: 6.0,
+                onChanged: (value) {
+                  this.devicePixelRatio = value;
                   _notifyTestEnvironmentChanged();
                 },
-                label: 'Invert colors',
-                values: onOffSystemValues,
-                nameBuilder: onOffSystemLabels,
               ),
-              MultiValueToggle<bool?>(
-                value: boldText,
-                label: 'Bold text',
-                onTap: (value) {
-                  boldText = value;
-                  _notifyTestEnvironmentChanged();
-                },
-                values: onOffSystemValues,
-                nameBuilder: onOffSystemLabels,
-              ),
-              MultiValueToggle<bool?>(
-                value: highContrast,
-                label: 'High contrast',
-                onTap: (value) {
-                  highContrast = value;
-                  _notifyTestEnvironmentChanged();
-                },
-                values: onOffSystemValues,
-                nameBuilder: onOffSystemLabels,
-              ),
+              if (supportedLocales.isNotEmpty) ...[
+                MultiValueToggle<Locale>(
+                  value: localeOverride,
+                  onTap: (value) {
+                    localeOverride = value;
+                    _notifyTestEnvironmentChanged();
+                  },
+                  label: 'Locale override',
+                  values: supportedLocales.toList(),
+                  nameBuilder: (locale) {
+                    return locale?.toString() ?? 'System';
+                  },
+                ),
+              ],
               MultiValueToggle<bool?>(
                 value: disableAnimations,
                 label: 'Disable animations',
@@ -233,42 +228,47 @@ class _AccessibilityTestingToolsState extends State<TestingToolsPanel> {
                   }
                 },
               ),
-              SliderTile(
-                label: '''
-Text scale factor ${textScaleFactor.toStringAsFixed(2)}''',
-                value: textScaleFactor,
-                min: 0.1,
-                max: 5.0,
-                onChanged: (value) {
-                  this.textScaleFactor = value;
-                  _notifyTestEnvironmentChanged();
-                },
-              ),
-              SliderTile(
-                label: '''
-Device pixel ratio ${devicePixelRatio.toStringAsFixed(2)}''',
-                value: devicePixelRatio,
-                min: 1.0,
-                max: 6.0,
-                onChanged: (value) {
-                  this.devicePixelRatio = value;
-                  _notifyTestEnvironmentChanged();
-                },
-              ),
-              if (supportedLocales.isNotEmpty) ...[
-                MultiValueToggle<Locale>(
-                  value: localeOverride,
-                  onTap: (value) {
-                    localeOverride = value;
-                    _notifyTestEnvironmentChanged();
-                  },
-                  label: 'Locale override',
-                  values: supportedLocales.toList(),
-                  nameBuilder: (locale) {
-                    return locale?.toString() ?? 'System';
-                  },
+              SwitchListTile(
+                title: const Text('Semantics debugger'),
+                subtitle: const Text(
+                  '''Useful to understand how an app presents itself to screen readers''',
                 ),
-              ],
+                value: semanticsDebuggerEnabled ?? false,
+                onChanged: (value) {
+                  semanticsDebuggerEnabled = value;
+                  _notifyTestEnvironmentChanged();
+                },
+              ),
+              MultiValueToggle<bool?>(
+                value: invertColors,
+                onTap: (value) {
+                  invertColors = value;
+                  _notifyTestEnvironmentChanged();
+                },
+                label: 'Invert colors',
+                values: onOffSystemValues,
+                nameBuilder: onOffSystemLabels,
+              ),
+              MultiValueToggle<bool?>(
+                value: boldText,
+                label: 'Bold text',
+                onTap: (value) {
+                  boldText = value;
+                  _notifyTestEnvironmentChanged();
+                },
+                values: onOffSystemValues,
+                nameBuilder: onOffSystemLabels,
+              ),
+              MultiValueToggle<bool?>(
+                value: highContrast,
+                label: 'High contrast',
+                onTap: (value) {
+                  highContrast = value;
+                  _notifyTestEnvironmentChanged();
+                },
+                values: onOffSystemValues,
+                nameBuilder: onOffSystemLabels,
+              ),
             ],
           ),
         ),
