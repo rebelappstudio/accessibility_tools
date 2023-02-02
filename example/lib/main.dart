@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:accessibility_tools/accessibility_tools.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() {
   runApp(const MyApp());
@@ -23,6 +24,16 @@ class MyApp extends StatelessWidget {
       ),
       darkTheme: ThemeData.dark(),
       home: const MyHomePage(),
+      localizationsDelegates: [
+        AppLocalizationDelegate(),
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('fi', 'FI'),
+        Locale('en', 'US'),
+      ],
     );
   }
 }
@@ -49,11 +60,15 @@ class _MyHomePageState extends State<MyHomePage> {
                   MaterialPageRoute(builder: (_) => const OtherPage()),
                 );
               },
-              child: const Text('Other page'),
+              child: Text(AppLocalizations.of(context).secondPage),
             ),
             SizedBox(
               width: 100,
-              child: Row(children: const [Text('Hello testing')]),
+              child: Row(
+                children: [
+                  Text(AppLocalizations.of(context).greetings),
+                ],
+              ),
             ),
             Padding(
               padding: const EdgeInsets.all(50.0),
@@ -98,4 +113,48 @@ class OtherPage extends StatelessWidget {
       ),
     );
   }
+}
+
+class AppLocalizations {
+  final Locale locale;
+
+  const AppLocalizations(this.locale);
+
+  static AppLocalizations of(BuildContext context) {
+    return Localizations.of<AppLocalizations>(context, AppLocalizations)!;
+  }
+
+  String get greetings {
+    switch (locale.languageCode.toLowerCase()) {
+      case 'fi':
+        return 'Moi!';
+      case 'en':
+      default:
+        return 'Hello!';
+    }
+  }
+
+  String get secondPage {
+    switch (locale.languageCode.toLowerCase()) {
+      case 'fi':
+        return 'Toinen sivu';
+      case 'en':
+      default:
+        return 'Other page';
+    }
+  }
+}
+
+class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {
+  @override
+  bool isSupported(Locale locale) =>
+      ['fi', 'en'].contains(locale.languageCode.toLowerCase());
+
+  @override
+  Future<AppLocalizations> load(Locale locale) async =>
+      AppLocalizations(locale);
+
+  @override
+  bool shouldReload(covariant LocalizationsDelegate<AppLocalizations> old) =>
+      false;
 }
