@@ -74,24 +74,35 @@ class TestingToolsPanel extends StatefulWidget {
 }
 
 class _AccessibilityTestingToolsState extends State<TestingToolsPanel> {
-  late double? devicePixelRatio = widget.environment.devicePixelRatio;
-  late double? textScaleFactor = widget.environment.textScaleFactor;
-  late Brightness? platformBrightness = widget.environment.platformBrightness;
+  late double? devicePixelRatio;
+  late double? textScaleFactor;
+  late Brightness? platformBrightness;
 
-  late bool? highContrast = widget.environment.highContrast;
-  late bool? disableAnimations = widget.environment.disableAnimations;
-  late bool? invertColors = widget.environment.invertColors;
-  late bool? boldText = widget.environment.boldText;
+  late bool? highContrast;
+  late bool? disableAnimations;
+  late bool? invertColors;
+  late bool? boldText;
 
-  late TargetPlatform? targetPlatform = widget.environment.targetPlatform;
-  late VisualDensity? visualDensity = widget.environment.visualDensity;
-  late Locale? localeOverride = widget.environment.localeOverride;
+  late TargetPlatform? targetPlatform;
+  late VisualDensity? visualDensity;
+  late Locale? localeOverride;
 
-  late bool? semanticsDebuggerEnabled =
-      widget.environment.semanticsDebuggerEnabled;
+  late bool? semanticsDebuggerEnabled;
 
   @override
   Widget build(BuildContext context) {
+    this.devicePixelRatio = widget.environment.devicePixelRatio;
+    this.textScaleFactor = widget.environment.textScaleFactor;
+    platformBrightness = widget.environment.platformBrightness;
+    highContrast = widget.environment.highContrast;
+    disableAnimations = widget.environment.disableAnimations;
+    invertColors = widget.environment.invertColors;
+    boldText = widget.environment.boldText;
+    targetPlatform = widget.environment.targetPlatform;
+    visualDensity = widget.environment.visualDensity;
+    localeOverride = widget.environment.localeOverride;
+    semanticsDebuggerEnabled = widget.environment.semanticsDebuggerEnabled;
+
     final supportedLocales =
         context.findAncestorWidgetOfExactType<WidgetsApp>()?.supportedLocales ??
             const [];
@@ -109,17 +120,22 @@ class _AccessibilityTestingToolsState extends State<TestingToolsPanel> {
                 MediaQuery.of(context).padding +
                 const EdgeInsets.only(bottom: 56),
             children: [
-              Align(
-                alignment: Alignment.topLeft,
-                child: Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: IconButton(
-                    onPressed: widget.onClose,
-                    icon: const Icon(
-                      Icons.close,
-                      semanticLabel: 'Close',
+              Padding(
+                padding: const EdgeInsets.all(8),
+                child: Row(
+                  children: [
+                    TextButton(
+                      onPressed: widget.onClose,
+                      child: const Text('Close'),
                     ),
-                  ),
+                    const SizedBox(width: 12),
+                    TextButton(
+                      onPressed: () {
+                        widget.onEnrivonmentUpdate(const TestEnvironment());
+                      },
+                      child: const Text('Reset all'),
+                    ),
+                  ],
                 ),
               ),
               SwitchListTile(
@@ -129,13 +145,15 @@ class _AccessibilityTestingToolsState extends State<TestingToolsPanel> {
                 ),
                 value: semanticsDebuggerEnabled ?? false,
                 onChanged: (value) {
-                  _updateValue(() => semanticsDebuggerEnabled = value);
+                  semanticsDebuggerEnabled = value;
+                  _notifyTestEnvironmentChanged();
                 },
               ),
               MultiValueToggle<bool?>(
                 value: invertColors,
                 onTap: (value) {
-                  _updateValue(() => invertColors = value);
+                  invertColors = value;
+                  _notifyTestEnvironmentChanged();
                 },
                 label: 'Invert colors',
                 values: onOffSystemValues,
@@ -145,7 +163,8 @@ class _AccessibilityTestingToolsState extends State<TestingToolsPanel> {
                 value: boldText,
                 label: 'Bold text',
                 onTap: (value) {
-                  _updateValue(() => boldText = value);
+                  boldText = value;
+                  _notifyTestEnvironmentChanged();
                 },
                 values: onOffSystemValues,
                 nameBuilder: onOffSystemLabels,
@@ -154,7 +173,8 @@ class _AccessibilityTestingToolsState extends State<TestingToolsPanel> {
                 value: highContrast,
                 label: 'High contrast',
                 onTap: (value) {
-                  _updateValue(() => highContrast = value);
+                  highContrast = value;
+                  _notifyTestEnvironmentChanged();
                 },
                 values: onOffSystemValues,
                 nameBuilder: onOffSystemLabels,
@@ -163,7 +183,8 @@ class _AccessibilityTestingToolsState extends State<TestingToolsPanel> {
                 value: disableAnimations,
                 label: 'Disable animations',
                 onTap: (value) {
-                  _updateValue(() => disableAnimations = value);
+                  disableAnimations = value;
+                  _notifyTestEnvironmentChanged();
                 },
                 values: onOffSystemValues,
                 nameBuilder: onOffSystemLabels,
@@ -171,7 +192,8 @@ class _AccessibilityTestingToolsState extends State<TestingToolsPanel> {
               MultiValueToggle(
                 value: platformBrightness,
                 onTap: (value) {
-                  _updateValue(() => platformBrightness = value);
+                  platformBrightness = value;
+                  _notifyTestEnvironmentChanged();
                 },
                 label: 'Platform brightness',
                 values: Brightness.values,
@@ -180,7 +202,8 @@ class _AccessibilityTestingToolsState extends State<TestingToolsPanel> {
               MultiValueToggle(
                 value: targetPlatform,
                 onTap: (value) {
-                  _updateValue(() => targetPlatform = value);
+                  targetPlatform = value;
+                  _notifyTestEnvironmentChanged();
                 },
                 label: 'Target platform',
                 values: TargetPlatform.values,
@@ -189,7 +212,8 @@ class _AccessibilityTestingToolsState extends State<TestingToolsPanel> {
               MultiValueToggle<VisualDensity>(
                 value: visualDensity,
                 onTap: (value) {
-                  _updateValue(() => visualDensity = value);
+                  visualDensity = value;
+                  _notifyTestEnvironmentChanged();
                 },
                 label: 'Visual density',
                 values: const [
@@ -216,7 +240,8 @@ Text scale factor ${textScaleFactor.toStringAsFixed(2)}''',
                 min: 0.1,
                 max: 5.0,
                 onChanged: (value) {
-                  _updateValue(() => this.textScaleFactor = value);
+                  this.textScaleFactor = value;
+                  _notifyTestEnvironmentChanged();
                 },
               ),
               SliderTile(
@@ -226,14 +251,16 @@ Device pixel ratio ${devicePixelRatio.toStringAsFixed(2)}''',
                 min: 1.0,
                 max: 6.0,
                 onChanged: (value) {
-                  _updateValue(() => this.devicePixelRatio = value);
+                  this.devicePixelRatio = value;
+                  _notifyTestEnvironmentChanged();
                 },
               ),
               if (supportedLocales.isNotEmpty) ...[
                 MultiValueToggle<Locale>(
                   value: localeOverride,
                   onTap: (value) {
-                    _updateValue(() => localeOverride = value);
+                    localeOverride = value;
+                    _notifyTestEnvironmentChanged();
                   },
                   label: 'Locale override',
                   values: supportedLocales.toList(),
@@ -249,25 +276,22 @@ Device pixel ratio ${devicePixelRatio.toStringAsFixed(2)}''',
     );
   }
 
-  void _updateValue(VoidCallback callback) {
-    setState(() {
-      callback();
-      widget.onEnrivonmentUpdate(
-        TestEnvironment(
-          devicePixelRatio: devicePixelRatio,
-          textScaleFactor: textScaleFactor,
-          platformBrightness: platformBrightness,
-          highContrast: highContrast,
-          disableAnimations: disableAnimations,
-          invertColors: invertColors,
-          boldText: boldText,
-          targetPlatform: targetPlatform,
-          visualDensity: visualDensity,
-          localeOverride: localeOverride,
-          semanticsDebuggerEnabled: semanticsDebuggerEnabled,
-        ),
-      );
-    });
+  void _notifyTestEnvironmentChanged() {
+    widget.onEnrivonmentUpdate(
+      TestEnvironment(
+        devicePixelRatio: devicePixelRatio,
+        textScaleFactor: textScaleFactor,
+        platformBrightness: platformBrightness,
+        highContrast: highContrast,
+        disableAnimations: disableAnimations,
+        invertColors: invertColors,
+        boldText: boldText,
+        targetPlatform: targetPlatform,
+        visualDensity: visualDensity,
+        localeOverride: localeOverride,
+        semanticsDebuggerEnabled: semanticsDebuggerEnabled,
+      ),
+    );
   }
 }
 
