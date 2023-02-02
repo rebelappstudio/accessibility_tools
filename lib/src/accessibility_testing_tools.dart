@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
+/// Widget that applies [environment] to [child] using [MediaQuery], [Theme],
+/// [Localizations] and debug flags
 class TestingToolsWrapper extends StatelessWidget {
   const TestingToolsWrapper({
     super.key,
@@ -55,19 +57,20 @@ class TestingToolsWrapper extends StatelessWidget {
   }
 }
 
+/// Testing tools panel widget with various toggles and settings. Changing any
+/// setting produces a new instance of [TestEnvironment] delivered
+/// via [onEnvironmentUpdate]
 class TestingToolsPanel extends StatefulWidget {
   const TestingToolsPanel({
     super.key,
     required this.onClose,
     required this.environment,
-    required this.onEnrivonmentUpdate,
-    required this.child,
+    required this.onEnvironmentUpdate,
   });
 
-  final Widget child;
   final TestEnvironment environment;
   final VoidCallback onClose;
-  final void Function(TestEnvironment environment) onEnrivonmentUpdate;
+  final void Function(TestEnvironment environment) onEnvironmentUpdate;
 
   @override
   State<TestingToolsPanel> createState() => _AccessibilityTestingToolsState();
@@ -133,7 +136,7 @@ class _AccessibilityTestingToolsState extends State<TestingToolsPanel> {
                       const SizedBox(width: 12),
                       TextButton(
                         onPressed: () {
-                          widget.onEnrivonmentUpdate(const TestEnvironment());
+                          widget.onEnvironmentUpdate(const TestEnvironment());
                         },
                         child: const Text('Reset all'),
                       ),
@@ -289,7 +292,7 @@ Useful to understand how an app presents itself to screen readers''',
   }
 
   void _notifyTestEnvironmentChanged() {
-    widget.onEnrivonmentUpdate(
+    widget.onEnvironmentUpdate(
       TestEnvironment(
         devicePixelRatio: devicePixelRatio,
         textScaleFactor: textScaleFactor,

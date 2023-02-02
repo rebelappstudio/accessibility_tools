@@ -148,10 +148,9 @@ class _AccessibilityToolsState extends State<AccessibilityTools>
                   onClose: () {
                     setState(() => _testingToolsVisible = false);
                   },
-                  onEnrivonmentUpdate: (TestEnvironment environment) {
+                  onEnvironmentUpdate: (TestEnvironment environment) {
                     setState(() => _environment = environment);
                   },
-                  child: child,
                 );
               },
             ),
@@ -290,7 +289,7 @@ class _WarningButton extends StatelessWidget {
       elevation = 10;
       foregroundColor = Theme.of(context).colorScheme.onSecondary;
       backgroundColor = Theme.of(context).colorScheme.secondary;
-      semanticLabel = 'Show accessibility issies\n$longPressInfo';
+      semanticLabel = 'Show accessibility issues\n$longPressInfo';
     } else {
       offset = toggled ? const Offset(1, 1) : Offset.zero;
       elevation = toggled ? 0 : 10;

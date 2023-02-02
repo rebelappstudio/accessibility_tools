@@ -222,7 +222,7 @@ void main() {
       expect(mediaQueryData.platformBrightness, Brightness.dark);
       expect(themeData.brightness, Brightness.dark);
 
-      // Swtich to light
+      // Switch to light
       await tester.tap(
         _toggleTile<Brightness>('Platform brightness', 'light'),
       );
