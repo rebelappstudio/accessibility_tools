@@ -73,10 +73,10 @@ class TestingToolsPanel extends StatefulWidget {
   final void Function(TestEnvironment environment) onEnvironmentUpdate;
 
   @override
-  State<TestingToolsPanel> createState() => _AccessibilityTestingToolsState();
+  State<TestingToolsPanel> createState() => _TestingToolsPanelState();
 }
 
-class _AccessibilityTestingToolsState extends State<TestingToolsPanel> {
+class _TestingToolsPanelState extends State<TestingToolsPanel> {
   late double? devicePixelRatio;
   late double? textScaleFactor;
   late Brightness? platformBrightness;
