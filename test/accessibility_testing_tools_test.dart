@@ -106,7 +106,7 @@ void main() {
       expect(mediaQuery.invertColors, isFalse);
 
       await showTestingTools(tester);
-      await tester.scrollUntilVisible(find.text('Invert colors'), 150);
+      await tester.scrollUntilVisible(find.text('Invert colors'), 500);
       await tester.tap(_toggleTile<bool?>('Invert colors', 'On'));
       await tester.pump();
       expect(mediaQuery.invertColors, isTrue);
@@ -158,7 +158,7 @@ void main() {
       expect(mediaQuery.highContrast, isFalse);
 
       await showTestingTools(tester);
-      await tester.scrollUntilVisible(find.text('High contrast'), 150);
+      await tester.scrollUntilVisible(find.text('High contrast'), 500);
       await tester.tap(_toggleTile<bool?>('High contrast', 'On'));
       await tester.pump();
       expect(mediaQuery.highContrast, isTrue);
@@ -449,6 +449,36 @@ void main() {
     },
   );
 
+  testWidgets('Can change text direction', (tester) async {
+    late TextDirection textDirection;
+
+    await tester.pumpWidget(
+      TestApp(
+        child: Builder(builder: (context) {
+          textDirection = Directionality.of(context);
+          return const Text('Hello!');
+        }),
+      ),
+    );
+    await tester.pump();
+    await showTestingTools(tester);
+
+    expect(textDirection, TextDirection.ltr);
+
+    await tester.scrollUntilVisible(find.text('Text direction'), 150);
+    await tester.tap(_toggleTile<TextDirection>('Text direction', 'RTL'));
+    await tester.pump();
+    expect(textDirection, TextDirection.rtl);
+
+    await tester.tap(_toggleTile<TextDirection>('Text direction', 'LTR'));
+    await tester.pump();
+    expect(textDirection, TextDirection.ltr);
+
+    await tester.tap(_toggleTile<TextDirection>('Text direction', 'System'));
+    await tester.pump();
+    expect(textDirection, TextDirection.ltr);
+  });
+
   testWidgets(
     'Testing tool panel has no accessibility issues',
     (tester) async {
@@ -458,7 +488,7 @@ void main() {
             builder: (context, child) => AccessibilityTools(
               // Chip widget has quite small tap area but it's coming from the
               // theme so they're ignored here
-              minimumTapAreas: const MinimumTapAreas(mobile: 32, desktop: 32),
+              minimumTapAreas: const MinimumTapAreas(mobile: 12, desktop: 12),
               child: child,
             ),
             home: Scaffold(

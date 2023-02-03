@@ -39,19 +39,28 @@ class TestingToolsWrapper extends StatelessWidget {
       visualDensity: environment?.visualDensity,
     );
 
-    final body = Localizations.override(
+    Widget body = Localizations.override(
       context: context,
       locale: environment?.localeOverride,
       child: child,
     );
 
+    if (environment?.semanticsDebuggerEnabled ?? false) {
+      body = SemanticsDebugger(child: body);
+    }
+
+    if (environment?.textDirection != null) {
+      body = Directionality(
+        textDirection: environment!.textDirection!,
+        child: child,
+      );
+    }
+
     return MediaQuery(
       data: mediaQueryData,
       child: Theme(
         data: themeData,
-        child: (environment?.semanticsDebuggerEnabled ?? false)
-            ? SemanticsDebugger(child: body)
-            : body,
+        child: body,
       ),
     );
   }
@@ -89,6 +98,7 @@ class _TestingToolsPanelState extends State<TestingToolsPanel> {
   late TargetPlatform? targetPlatform;
   late VisualDensity? visualDensity;
   late Locale? localeOverride;
+  late TextDirection? textDirection;
 
   late bool? semanticsDebuggerEnabled;
 
@@ -104,6 +114,7 @@ class _TestingToolsPanelState extends State<TestingToolsPanel> {
     targetPlatform = widget.environment.targetPlatform;
     visualDensity = widget.environment.visualDensity;
     localeOverride = widget.environment.localeOverride;
+    textDirection = widget.environment.textDirection;
     semanticsDebuggerEnabled = widget.environment.semanticsDebuggerEnabled;
 
     final supportedLocales =
@@ -184,6 +195,17 @@ Device pixel ratio ${devicePixelRatio.toStringAsFixed(2)}''',
                           },
                         ),
                       ],
+                      MultiValueToggle<TextDirection>(
+                        value: textDirection,
+                        onTap: (value) {
+                          textDirection = value;
+                          _notifyTestEnvironmentChanged();
+                        },
+                        label: 'Text direction',
+                        values: TextDirection.values.toList(),
+                        nameBuilder: (value) =>
+                            value?.name.toUpperCase() ?? 'System',
+                      ),
                       MultiValueToggle<bool?>(
                         value: disableAnimations,
                         label: 'Disable animations',
@@ -305,6 +327,7 @@ Useful to understand how an app presents itself to screen readers''',
         visualDensity: visualDensity,
         localeOverride: localeOverride,
         semanticsDebuggerEnabled: semanticsDebuggerEnabled,
+        textDirection: textDirection,
       ),
     );
   }
@@ -449,6 +472,7 @@ class TestEnvironment {
     this.targetPlatform,
     this.visualDensity,
     this.localeOverride,
+    this.textDirection,
     this.semanticsDebuggerEnabled,
   });
 
@@ -464,6 +488,7 @@ class TestEnvironment {
   final TargetPlatform? targetPlatform;
   final VisualDensity? visualDensity;
   final Locale? localeOverride;
+  final TextDirection? textDirection;
 
   final bool? semanticsDebuggerEnabled;
 }
