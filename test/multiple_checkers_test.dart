@@ -78,16 +78,17 @@ InkWell(
     Icons.wifi,
     semanticLabel: 'Open Wi-Fi settings',
   ),
-),
+)
 
 Read more about screen readers: https://docs.flutter.dev/development/accessibility-and-localization/accessibility?tab=talkback#screen-readers
+
 
 
 Accessibility issue 2: Tap area of 10x10 is too small:
 should be at least 48x48
 
 ${getWidgetLocationDescription(tester, find.byKey(tapKey))}
-Consider making tap area bigger. For example, wrap widget into a SizedBox:
+Consider making the tap area bigger. For example, wrap the widget in a SizedBox:
 
 InkWell(
   child: SizedBox.square(
@@ -96,7 +97,7 @@ InkWell(
   ),
 ),
 
-Icons have size property:
+Icons have a size property:
 
 Icon(
   Icons.wysiwyg,

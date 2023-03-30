@@ -109,7 +109,7 @@ Accessibility issue 1: Tap area of 20x20 is too small:
 should be at least 48x48
 
 ${getWidgetLocationDescription(tester, find.byKey(tapKey))}
-Consider making tap area bigger. For example, wrap widget into a SizedBox:
+Consider making the tap area bigger. For example, wrap the widget in a SizedBox:
 
 InkWell(
   child: SizedBox.square(
@@ -118,7 +118,7 @@ InkWell(
   ),
 ),
 
-Icons have size property:
+Icons have a size property:
 
 Icon(
   Icons.wysiwyg,

@@ -342,13 +342,11 @@ ${getWidgetLocationDescription(tester, find.byType(TextField))}
 Semantic labels are used by screen readers to enable visually impaired users to
 get spoken feedback about the contents of the screen and interact with the UI.
 
-Consider adding a hint or a label to the text field widget. For example,
+Consider adding a hint or a label to the text field widget. For example:
 
-TextField(
-  inputDecoration: InputDecoration(
-    hint: 'This is hint',
-  ),
-),
+  TextField(
+    inputDecoration: InputDecoration(hint: 'This is hint'),
+  )
 
 Read more about screen readers: https://docs.flutter.dev/development/accessibility-and-localization/accessibility?tab=talkback#screen-readers
 ''';

@@ -42,13 +42,14 @@ class InputLabelChecker extends SemanticsNodeChecker {
     return AccessibilityIssue(
       message: 'Control widget is missing a semantic label.',
       resolutionGuidance: '''
-Consider adding a label to the widgets if it allows or using Semantics widget to
-prive a label:
+Consider adding a label to the widgets if it allows or using the Semantics
+widget to provide a label:
 
-Semantics(
-  label: 'Show password',
-  child: MyWidget(),
-)
+  Semantics(
+    label: 'Show password',
+    child: MyWidget(),
+  )
+
 ''',
       renderObject: renderObject,
     );
@@ -59,13 +60,11 @@ Semantics(
       message: 'Text field is missing a label.',
       renderObject: renderObject,
       resolutionGuidance: semanticLabelMessage('''
-Consider adding a hint or a label to the text field widget. For example,
+Consider adding a hint or a label to the text field widget. For example:
 
-TextField(
-  inputDecoration: InputDecoration(
-    hint: 'This is hint',
-  ),
-),'''),
+  TextField(
+    inputDecoration: InputDecoration(hint: 'This is hint'),
+  )'''),
     );
   }
 
@@ -78,20 +77,22 @@ Consider providing semantics label or using widgets with title or label.
 For example, screen reader users may have difficulties understanding what this
 checkbox does:
 
-Checkbox()
+  Checkbox()
 
 Providing a label gives more context:
 
-Semantics(
-  label: 'Show password',
-  Checkbox(),
-),
+  Semantics(
+    label: 'Show password',
+    Checkbox(),
+  )
 
 Another option is to use CheckboxListTile instead:
 
-CheckboxListTile(
-  title: Text('Show password)',
-),'''),
+  CheckboxListTile(
+    title: Text('Show password')
+  )
+
+'''),
     );
   }
 
@@ -100,12 +101,14 @@ CheckboxListTile(
       renderObject: renderObject,
       message: 'Control widget is missing a semantic label.',
       resolutionGuidance: semanticLabelMessage('''
-Consider using widgetts with title or label. For example, SwitchListTile instead
-of Switch:
+Consider using widgets with a title or label. For example, SwitchListTile
+instead of Switch:
 
-SwitchListTile(
-  title: Text('Toggle visibility'),
-),'''),
+  SwitchListTile(
+    title: Text('Toggle visibility'),
+  )
+
+'''),
     );
   }
 }
