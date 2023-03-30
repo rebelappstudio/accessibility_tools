@@ -76,12 +76,15 @@ ACCESSIBILITY ISSUES FOUND
     var i = 1;
 
     for (final issue in issues) {
+      if (i > 1) debugPrint('\n');
       debugPrint('Accessibility issue $i: ${issue.message}\n');
 
       final creator = issue.getDebugCreator();
       if (creator != null) {
         debugPrint(creator.toWidgetCreatorString());
       }
+
+      debugPrint(issue.resolutionGuidance);
 
       i++;
     }

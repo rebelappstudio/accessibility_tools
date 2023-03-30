@@ -68,10 +68,40 @@ ACCESSIBILITY ISSUES FOUND
 Accessibility issue 1: Tap area is missing a semantic label
 
 ${getWidgetLocationDescription(tester, find.byKey(tapKey))}
+Semantic labels are used by screen readers to enable visually impaired users to
+get spoken feedback about the contents of the screen and interact with the UI.
+
+Consider adding a semantic label. For example,
+
+InkWell(
+  child: Icon(
+    Icons.wifi,
+    semanticLabel: 'Open Wi-Fi settings',
+  ),
+)
+
+Read more about screen readers: https://docs.flutter.dev/development/accessibility-and-localization/accessibility?tab=talkback#screen-readers
+
+
 Accessibility issue 2: Tap area of 10x10 is too small:
 should be at least 48x48
 
 ${getWidgetLocationDescription(tester, find.byKey(tapKey))}
+Consider making the tap area bigger. For example, wrap the widget in a SizedBox:
+
+InkWell(
+  child: SizedBox.square(
+    dimension: 48,
+    child: child,
+  ),
+)
+
+Icons have a size property:
+
+Icon(
+  Icons.wysiwyg,
+  size: 48,
+)
 ''';
 
       expect(log, expectedLog);

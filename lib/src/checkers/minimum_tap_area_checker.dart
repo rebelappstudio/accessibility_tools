@@ -81,6 +81,22 @@ class MinimumTapAreaChecker extends SemanticsNodeChecker {
         message: '''
 Tap area of ${format(size.width)}x${format(size.height)} is too small:
 should be at least ${format(minTapArea)}x${format(minTapArea)}''',
+        resolutionGuidance: '''
+Consider making the tap area bigger. For example, wrap the widget in a SizedBox:
+
+InkWell(
+  child: SizedBox.square(
+    dimension: ${format(minTapArea)},
+    child: child,
+  ),
+)
+
+Icons have a size property:
+
+Icon(
+  Icons.wysiwyg,
+  size: ${format(minTapArea)},
+)''',
         renderObject: renderObject,
       );
     }

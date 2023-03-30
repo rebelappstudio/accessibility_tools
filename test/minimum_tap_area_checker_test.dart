@@ -80,12 +80,19 @@ void main() {
   testWidgets(
     'Prints console warning for a tap area that is too small',
     (WidgetTester tester) async {
+      final tapKey = UniqueKey();
       final log = await recordDebugPrint(() async {
         await tester.pumpWidget(
           TestApp(
-            child: ElevatedButton(
-              child: const SizedBox(),
-              onPressed: () {},
+            minimumTapAreas: const MinimumTapAreas(desktop: 48, mobile: 48),
+            child: SizedBox(
+              width: 20,
+              height: 20,
+              child: GestureDetector(
+                key: tapKey,
+                child: const Text('Tap area'),
+                onTap: () {},
+              ),
             ),
           ),
         );
@@ -98,9 +105,25 @@ void main() {
 ACCESSIBILITY ISSUES FOUND
 ==========================
 
-Accessibility issue 1: Tap area is missing a semantic label
+Accessibility issue 1: Tap area of 20x20 is too small:
+should be at least 48x48
 
-${getWidgetLocationDescription(tester, find.byType(ElevatedButton))}
+${getWidgetLocationDescription(tester, find.byKey(tapKey))}
+Consider making the tap area bigger. For example, wrap the widget in a SizedBox:
+
+InkWell(
+  child: SizedBox.square(
+    dimension: 48,
+    child: child,
+  ),
+)
+
+Icons have a size property:
+
+Icon(
+  Icons.wysiwyg,
+  size: 48,
+)
 ''';
 
       expect(log, expectedLog);
