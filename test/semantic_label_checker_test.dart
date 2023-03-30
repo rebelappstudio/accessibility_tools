@@ -90,7 +90,7 @@ InkWell(
     Icons.wifi,
     semanticLabel: 'Open Wi-Fi settings',
   ),
-),
+)
 
 Read more about screen readers: https://docs.flutter.dev/development/accessibility-and-localization/accessibility?tab=talkback#screen-readers
 ''';

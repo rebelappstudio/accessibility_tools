@@ -83,7 +83,6 @@ InkWell(
 Read more about screen readers: https://docs.flutter.dev/development/accessibility-and-localization/accessibility?tab=talkback#screen-readers
 
 
-
 Accessibility issue 2: Tap area of 10x10 is too small:
 should be at least 48x48
 
@@ -95,14 +94,14 @@ InkWell(
     dimension: 48,
     child: child,
   ),
-),
+)
 
 Icons have a size property:
 
 Icon(
   Icons.wysiwyg,
   size: 48,
-),
+)
 ''';
 
       expect(log, expectedLog);

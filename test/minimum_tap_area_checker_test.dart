@@ -116,14 +116,14 @@ InkWell(
     dimension: 48,
     child: child,
   ),
-),
+)
 
 Icons have a size property:
 
 Icon(
   Icons.wysiwyg,
   size: 48,
-),
+)
 ''';
 
       expect(log, expectedLog);

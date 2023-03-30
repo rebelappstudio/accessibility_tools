@@ -30,7 +30,7 @@ InkWell(
     Icons.wifi,
     semanticLabel: 'Open Wi-Fi settings',
   ),
-),'''),
+)'''),
           renderObject: renderObject,
         );
       }

@@ -89,14 +89,14 @@ InkWell(
     dimension: ${format(minTapArea)},
     child: child,
   ),
-),
+)
 
 Icons have a size property:
 
 Icon(
   Icons.wysiwyg,
   size: ${format(minTapArea)},
-),''',
+)''',
         renderObject: renderObject,
       );
     }
