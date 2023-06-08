@@ -13,10 +13,10 @@ void main() {
     'Shows warning for overflowing text',
     (WidgetTester tester) async {
       await tester.pumpWidget(
-        TestApp(
+        const TestApp(
           child: SizedBox(
             width: 100,
-            child: Row(children: const [Text('Testing')]),
+            child: Row(children: [Text('Testing')]),
           ),
         ),
       );
@@ -36,10 +36,10 @@ void main() {
     (WidgetTester tester) async {
       final log = await recordDebugPrint(() async {
         await tester.pumpWidget(
-          TestApp(
+          const TestApp(
             child: SizedBox(
               width: 100,
-              child: Row(children: const [Text('Testing')]),
+              child: Row(children: [Text('Testing')]),
             ),
           ),
         );

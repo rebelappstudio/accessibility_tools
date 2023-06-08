@@ -174,7 +174,7 @@ Icon(
   });
 
   testWidgets("Doesn't show warning for offscreen widget", (tester) async {
-    tester.binding.window.physicalSizeTestValue = const Size(500, 500);
+    tester.view.physicalSize = const Size(500, 500);
 
     final key = UniqueKey();
     await tester.pumpWidget(
@@ -203,7 +203,7 @@ Icon(
   testWidgets(
     'Shows warning for a small tap area when widget is partially visible',
     (WidgetTester tester) async {
-      tester.binding.window.physicalSizeTestValue = const Size(500, 500);
+      tester.view.physicalSize = const Size(500, 500);
 
       final key = UniqueKey();
       await tester.pumpWidget(
@@ -297,7 +297,7 @@ Icon(
   testWidgets(
     'Shows warning for a small tap area when pixel ratio is not an integer',
     (WidgetTester tester) async {
-      tester.binding.window.devicePixelRatioTestValue = 1.333;
+      tester.view.devicePixelRatio = 1.333;
 
       final key = UniqueKey();
       await tester.pumpWidget(
