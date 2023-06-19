@@ -60,7 +60,7 @@ class CheckerManager extends ChangeNotifier {
       child.visitChildrenForSemantics(visitor);
     };
 
-    WidgetsBinding.instance.renderViewElement?.renderObject
+    WidgetsBinding.instance.rootElement?.renderObject
         ?.visitChildrenForSemantics(visitor);
 
     return renderObjects;

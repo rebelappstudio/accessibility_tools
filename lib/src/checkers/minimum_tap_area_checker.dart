@@ -63,12 +63,15 @@ class MinimumTapAreaChecker extends SemanticsNodeChecker {
 
   @override
   AccessibilityIssue? checkNode(SemanticsNode node, RenderObject renderObject) {
-    if (node.isMergedIntoParent || !node.getSemanticsData().isTappable) {
+    final window = _flutterViewForRenderObject(renderObject);
+
+    if (window == null ||
+        node.isMergedIntoParent ||
+        !node.getSemanticsData().isTappable) {
       return null;
     }
 
     final paintBounds = getPaintBounds(node);
-    final window = WidgetsBinding.instance.window;
 
     if (_isNodeOffScreen(paintBounds, window)) {
       return null;
@@ -104,6 +107,15 @@ Icon(
     return null;
   }
 
+  FlutterView? _flutterViewForRenderObject(RenderObject renderObject) {
+    final creator = renderObject.debugCreator;
+    if (creator is DebugCreator) {
+      return View.maybeOf(creator.element);
+    }
+
+    return null;
+  }
+
   @visibleForTesting
   static String format(double val) {
     // Round to N places after decimal point where N is 2
@@ -115,10 +127,10 @@ Icon(
   }
 
   /// Returns true if rectange of a node is (partially) off screen
-  bool _isNodeOffScreen(Rect paintBounds, FlutterView window) {
+  bool _isNodeOffScreen(Rect paintBounds, FlutterView flutterView) {
     const delta = 10.0;
-    final Size windowPhysicalSize =
-        window.physicalSize * window.devicePixelRatio;
+    final windowPhysicalSize =
+        flutterView.physicalSize * flutterView.devicePixelRatio;
     return paintBounds.top < -delta ||
         paintBounds.left < -delta ||
         paintBounds.bottom > windowPhysicalSize.height + delta ||

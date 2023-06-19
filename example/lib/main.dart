@@ -48,9 +48,9 @@ class _MyHomePageState extends State<MyHomePage> {
               child: const Text('Other page'),
             ),
             const SizedBox(height: 16),
-            SizedBox(
+            const SizedBox(
               width: 100,
-              child: Row(children: const [Text('Hello testing')]),
+              child: Row(children: [Text('Hello testing')]),
             ),
             Padding(
               padding: const EdgeInsets.all(50.0),
@@ -112,9 +112,9 @@ class CheckboxRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Expanded(
+        const Expanded(
           child: Row(
-            children: const [
+            children: [
               Checkbox(
                 value: false,
                 onChanged: null,
