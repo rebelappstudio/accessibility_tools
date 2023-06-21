@@ -1,3 +1,7 @@
+## 1.0.0
+
+* Upgrade to Flutter 3.10
+
 ## 0.2.0
 
 * Added a checker to ensure inputs such as text fields and radio buttons have an associated label
