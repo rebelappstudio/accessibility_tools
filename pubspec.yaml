@@ -1,11 +1,11 @@
 name: accessibility_tools
 description: Checkers and tools to ensure your app is accessible to all. Ensures your app is accessible from day one, by checking your interface as you build it.
-version: 0.1.0
+version: 1.0.0
 homepage: https://github.com/rebelappstudio/accessibility_tools/
 
 environment:
   sdk: ">=2.18.4 <3.0.0"
-  flutter: ">=1.17.0"
+  flutter: ">=3.10.0"
 
 dependencies:
   collection: ^1.16.0

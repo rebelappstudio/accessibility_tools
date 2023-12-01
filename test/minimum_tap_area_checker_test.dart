@@ -80,12 +80,19 @@ void main() {
   testWidgets(
     'Prints console warning for a tap area that is too small',
     (WidgetTester tester) async {
+      final tapKey = UniqueKey();
       final log = await recordDebugPrint(() async {
         await tester.pumpWidget(
           TestApp(
-            child: ElevatedButton(
-              child: const SizedBox(),
-              onPressed: () {},
+            minimumTapAreas: const MinimumTapAreas(desktop: 48, mobile: 48),
+            child: SizedBox(
+              width: 20,
+              height: 20,
+              child: GestureDetector(
+                key: tapKey,
+                child: const Text('Tap area'),
+                onTap: () {},
+              ),
             ),
           ),
         );
@@ -98,9 +105,25 @@ void main() {
 ACCESSIBILITY ISSUES FOUND
 ==========================
 
-Accessibility issue 1: Tap area is missing a semantic label
+Accessibility issue 1: Tap area of 20x20 is too small:
+should be at least 48x48
 
-${getWidgetLocationDescription(tester, find.byType(ElevatedButton))}
+${getWidgetLocationDescription(tester, find.byKey(tapKey))}
+Consider making the tap area bigger. For example, wrap the widget in a SizedBox:
+
+InkWell(
+  child: SizedBox.square(
+    dimension: 48,
+    child: child,
+  ),
+)
+
+Icons have a size property:
+
+Icon(
+  Icons.wysiwyg,
+  size: 48,
+)
 ''';
 
       expect(log, expectedLog);
@@ -150,7 +173,7 @@ ${getWidgetLocationDescription(tester, find.byType(ElevatedButton))}
   });
 
   testWidgets("Doesn't show warning for offscreen widget", (tester) async {
-    tester.binding.window.physicalSizeTestValue = const Size(500, 500);
+    tester.view.physicalSize = const Size(500, 500);
 
     await tester.pumpWidget(
       TestApp(
@@ -181,7 +204,7 @@ ${getWidgetLocationDescription(tester, find.byType(ElevatedButton))}
   testWidgets(
     'Shows warning for a small tap area when widget is partially visible',
     (WidgetTester tester) async {
-      tester.binding.window.physicalSizeTestValue = const Size(500, 500);
+      tester.view.physicalSize = const Size(500, 500);
 
       final key = UniqueKey();
       await tester.pumpWidget(
@@ -275,7 +298,7 @@ ${getWidgetLocationDescription(tester, find.byType(ElevatedButton))}
   testWidgets(
     'Shows warning for a small tap area when pixel ratio is not an integer',
     (WidgetTester tester) async {
-      tester.binding.window.devicePixelRatioTestValue = 1.333;
+      tester.view.devicePixelRatio = 1.333;
 
       final key = UniqueKey();
       await tester.pumpWidget(

@@ -62,6 +62,7 @@ class _MyHomePageState extends State<MyHomePage> {
               },
               child: Text(AppLocalizations.of(context).secondPage),
             ),
+            const SizedBox(height: 16),
             SizedBox(
               width: 100,
               child: Row(
@@ -80,6 +81,14 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: const Icon(Icons.person),
                 ),
               ),
+            ),
+            const Padding(
+              padding: EdgeInsets.all(16),
+              child: TextField(),
+            ),
+            const Padding(
+              padding: EdgeInsets.all(16),
+              child: CheckboxRow(),
             ),
           ],
         ),
@@ -111,6 +120,51 @@ class OtherPage extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class CheckboxRow extends StatelessWidget {
+  const CheckboxRow({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        const Expanded(
+          child: Row(
+            children: [
+              Checkbox(
+                value: false,
+                onChanged: null,
+              ),
+              Expanded(
+                child: Text(
+                  'This checkbox has no semantic label',
+                ),
+              ),
+            ],
+          ),
+        ),
+        Expanded(
+          child: Row(
+            children: [
+              Semantics(
+                label: 'Show password',
+                child: const Checkbox(
+                  value: false,
+                  onChanged: null,
+                ),
+              ),
+              const Expanded(
+                child: Text(
+                  'This checkbox has a semantic label',
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
