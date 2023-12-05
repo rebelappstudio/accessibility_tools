@@ -46,12 +46,16 @@ InkWell(
   /// Can be removed once https://github.com/flutter/flutter/pull/117584 is
   /// released in Flutter stable.
   static bool _isFlutterInspectorButton(RenderObject renderObject) {
-    final creator = renderObject.getCreatorElement();
+    final creator = renderObject.debugCreator;
     if (creator == null) {
       return false;
     }
 
-    return creator
+    if (creator is! DebugCreator) {
+      return false;
+    }
+
+    return creator.element
         .debugGetDiagnosticChain()
         .any((element) => element.widget is WidgetInspector);
   }
