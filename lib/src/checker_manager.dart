@@ -23,12 +23,6 @@ class CheckerManager extends ChangeNotifier {
 
   /// Called whenever the semantic tree updates.
   void update() {
-    final root =
-        WidgetsBinding.instance.pipelineOwner.semanticsOwner?.rootSemanticsNode;
-    if (root == null) {
-      return;
-    }
-
     final renderObjects = _getRenderObjectsWithSemantics();
 
     for (final checker in checkers) {
