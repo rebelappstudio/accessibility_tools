@@ -47,9 +47,10 @@ class _MyHomePageState extends State<MyHomePage> {
               },
               child: const Text('Other page'),
             ),
-            SizedBox(
+            const SizedBox(height: 16),
+            const SizedBox(
               width: 100,
-              child: Row(children: const [Text('Hello testing')]),
+              child: Row(children: [Text('Hello testing')]),
             ),
             Padding(
               padding: const EdgeInsets.all(50.0),
@@ -61,6 +62,14 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: const Icon(Icons.person),
                 ),
               ),
+            ),
+            const Padding(
+              padding: EdgeInsets.all(16),
+              child: TextField(),
+            ),
+            const Padding(
+              padding: EdgeInsets.all(16),
+              child: CheckboxRow(),
             ),
           ],
         ),
@@ -92,6 +101,51 @@ class OtherPage extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class CheckboxRow extends StatelessWidget {
+  const CheckboxRow({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        const Expanded(
+          child: Row(
+            children: [
+              Checkbox(
+                value: false,
+                onChanged: null,
+              ),
+              Expanded(
+                child: Text(
+                  'This checkbox has no semantic label',
+                ),
+              ),
+            ],
+          ),
+        ),
+        Expanded(
+          child: Row(
+            children: [
+              Semantics(
+                label: 'Show password',
+                child: const Checkbox(
+                  value: false,
+                  onChanged: null,
+                ),
+              ),
+              const Expanded(
+                child: Text(
+                  'This checkbox has a semantic label',
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

@@ -1,3 +1,6 @@
+import 'dart:math';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -60,27 +63,43 @@ class MinimumTapAreaChecker extends SemanticsNodeChecker {
 
   @override
   AccessibilityIssue? checkNode(SemanticsNode node, RenderObject renderObject) {
-    if (node.isMergedIntoParent || !node.getSemanticsData().isTappable) {
+    final window = _flutterViewForRenderObject(renderObject);
+
+    if (window == null ||
+        node.isMergedIntoParent ||
+        !node.getSemanticsData().isTappable) {
       return null;
     }
 
     final paintBounds = getPaintBounds(node);
-    final devicePixelRatio = WidgetsBinding.instance.window.devicePixelRatio;
-    final size = paintBounds.size / devicePixelRatio;
-    final element = renderObject.getCreatorElement();
 
-    if (element?.size != null && element?.size != size) {
-      // Item size doesn't match tap area height - it's probably partially off
-      // screen
+    if (_isNodeOffScreen(paintBounds, window)) {
       return null;
     }
 
+    final size = paintBounds.size / window.devicePixelRatio;
     const delta = 0.001;
     if (size.width < minTapArea - delta || size.height < minTapArea - delta) {
       return AccessibilityIssue(
         message: '''
-Tap area of ${_format(size.width)}x${_format(size.height)} is too small:
-should be at least ${_format(minTapArea)}x${_format(minTapArea)}''',
+Tap area of ${format(size.width)}x${format(size.height)} is too small:
+should be at least ${format(minTapArea)}x${format(minTapArea)}''',
+        resolutionGuidance: '''
+Consider making the tap area bigger. For example, wrap the widget in a SizedBox:
+
+InkWell(
+  child: SizedBox.square(
+    dimension: ${format(minTapArea)},
+    child: child,
+  ),
+)
+
+Icons have a size property:
+
+Icon(
+  Icons.wysiwyg,
+  size: ${format(minTapArea)},
+)''',
         renderObject: renderObject,
       );
     }
@@ -88,7 +107,33 @@ should be at least ${_format(minTapArea)}x${_format(minTapArea)}''',
     return null;
   }
 
-  String _format(double val) {
-    return (val % 1 == 0 ? val.toInt() : val).toString();
+  FlutterView? _flutterViewForRenderObject(RenderObject renderObject) {
+    final creator = renderObject.debugCreator;
+    if (creator is DebugCreator) {
+      return View.maybeOf(creator.element);
+    }
+
+    return null;
+  }
+
+  @visibleForTesting
+  static String format(double val) {
+    // Round to N places after decimal point where N is 2
+    final mod = pow(10, 2);
+    final rounded = (val * mod).roundToDouble() / mod;
+    return (rounded - rounded.toInt()) == 0
+        ? rounded.toStringAsFixed(0)
+        : rounded.toStringAsFixed(2);
+  }
+
+  /// Returns true if rectange of a node is (partially) off screen
+  bool _isNodeOffScreen(Rect paintBounds, FlutterView flutterView) {
+    const delta = 10.0;
+    final windowPhysicalSize =
+        flutterView.physicalSize * flutterView.devicePixelRatio;
+    return paintBounds.top < -delta ||
+        paintBounds.left < -delta ||
+        paintBounds.bottom > windowPhysicalSize.height + delta ||
+        paintBounds.right > windowPhysicalSize.width + delta;
   }
 }

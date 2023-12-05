@@ -78,7 +78,9 @@ class _FlexOverflowCheckerInjectorState
       children: [
         MediaQuery(
           data: MediaQuery.of(context).copyWith(
-            textScaleFactor: _textScaleFactor,
+            textScaler: _textScaleFactor != null
+                ? TextScaler.linear(_textScaleFactor!)
+                : null,
           ),
           child: widget.child,
         ),
@@ -112,6 +114,22 @@ class _FlexOverflowCheckerInjectorState
                 AccessibilityIssue(
                   message:
                       'This RenderFlex will overflow at larger font sizes.',
+                  resolutionGuidance: '''
+Font sizes are calculated automatically by Flutter based on the OS setting.
+Developers should make sure that layout has enough room to render all its
+contents when the font sizes are increased.
+
+The error often occurs when a Column or Row has a child widget that is not
+constrained in its size. For example, a text widget in a container with fixed
+height is not a good practice because it may overflow at larger font sizes:
+
+SizedBox(
+  height: 48,
+  child: Text('Lorem ipsum dolor sit amet'),
+),
+
+Read more about large fonts: https://docs.flutter.dev/development/accessibility-and-localization/accessibility?tab=talkback#large-fonts
+Read more about RenderFlex overflow: https://docs.flutter.dev/testing/common-errors#a-renderflex-overflowed''',
                   renderObject: renderObject,
                 ),
               );

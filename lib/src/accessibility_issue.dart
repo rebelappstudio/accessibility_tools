@@ -5,16 +5,19 @@ import 'package:flutter/rendering.dart';
 class AccessibilityIssue {
   const AccessibilityIssue({
     required this.message,
+    required this.resolutionGuidance,
     required this.renderObject,
   });
 
   final String message;
+  final String resolutionGuidance;
   final RenderObject renderObject;
 
   SemanticsNode? get semanticsNode => renderObject.debugSemantics;
 
   @override
-  int get hashCode => semanticsNode.hashCode ^ message.hashCode;
+  int get hashCode =>
+      semanticsNode.hashCode ^ message.hashCode ^ resolutionGuidance.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -22,7 +25,8 @@ class AccessibilityIssue {
       other is AccessibilityIssue &&
           runtimeType == other.runtimeType &&
           semanticsNode == other.semanticsNode &&
-          message == other.message;
+          message == other.message &&
+          resolutionGuidance == other.resolutionGuidance;
 
   DebugCreator? getDebugCreator() {
     final creator = renderObject.debugCreator;

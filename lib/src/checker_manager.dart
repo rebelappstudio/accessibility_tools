@@ -23,12 +23,6 @@ class CheckerManager extends ChangeNotifier {
 
   /// Called whenever the semantic tree updates.
   void update() {
-    final root =
-        WidgetsBinding.instance.pipelineOwner.semanticsOwner?.rootSemanticsNode;
-    if (root == null) {
-      return;
-    }
-
     final renderObjects = _getRenderObjectsWithSemantics();
 
     for (final checker in checkers) {
@@ -60,7 +54,7 @@ class CheckerManager extends ChangeNotifier {
       child.visitChildrenForSemantics(visitor);
     };
 
-    WidgetsBinding.instance.renderViewElement?.renderObject
+    WidgetsBinding.instance.rootElement?.renderObject
         ?.visitChildrenForSemantics(visitor);
 
     return renderObjects;
@@ -76,12 +70,15 @@ ACCESSIBILITY ISSUES FOUND
     var i = 1;
 
     for (final issue in issues) {
+      if (i > 1) debugPrint('\n');
       debugPrint('Accessibility issue $i: ${issue.message}\n');
 
       final creator = issue.getDebugCreator();
       if (creator != null) {
         debugPrint(creator.toWidgetCreatorString());
       }
+
+      debugPrint(issue.resolutionGuidance);
 
       i++;
     }

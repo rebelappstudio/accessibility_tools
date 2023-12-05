@@ -10,11 +10,13 @@ void main() {
 
     final issue1 = AccessibilityIssue(
       message: 'message',
+      resolutionGuidance: 'guidance',
       renderObject: TestRenderObject(semanticsNode),
     );
 
     final issue2 = AccessibilityIssue(
       message: 'message',
+      resolutionGuidance: 'guidance',
       renderObject: TestRenderObject(semanticsNode),
     );
 
@@ -25,11 +27,13 @@ void main() {
   test('Accessibility issues are not equal with different semantics nodes', () {
     final issue1 = AccessibilityIssue(
       message: 'message',
+      resolutionGuidance: '',
       renderObject: TestRenderObject(SemanticsNode()),
     );
 
     final issue2 = AccessibilityIssue(
       message: 'message',
+      resolutionGuidance: '',
       renderObject: TestRenderObject(SemanticsNode()),
     );
 
@@ -42,17 +46,41 @@ void main() {
 
     final issue1 = AccessibilityIssue(
       message: 'message 1',
+      resolutionGuidance: '',
       renderObject: TestRenderObject(semanticsNode),
     );
 
     final issue2 = AccessibilityIssue(
       message: 'message 2',
+      resolutionGuidance: '',
       renderObject: TestRenderObject(semanticsNode),
     );
 
     expect(issue1, isNot(issue2));
     expect(issue1.hashCode, isNot(issue2.hashCode));
   });
+
+  test(
+    'Accessibility issues are not equal with different guidance messages',
+    () {
+      final semanticsNode = SemanticsNode();
+
+      final issue1 = AccessibilityIssue(
+        message: 'message',
+        resolutionGuidance: 'guidance 1',
+        renderObject: TestRenderObject(semanticsNode),
+      );
+
+      final issue2 = AccessibilityIssue(
+        message: 'message',
+        resolutionGuidance: 'guidance 2',
+        renderObject: TestRenderObject(semanticsNode),
+      );
+
+      expect(issue1, isNot(issue2));
+      expect(issue1.hashCode, isNot(issue2.hashCode));
+    },
+  );
 }
 
 class TestRenderObject extends RenderObject {
