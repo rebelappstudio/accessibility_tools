@@ -13,4 +13,11 @@ jobs:
       - uses: subosito/flutter-action@v2.8.0
         with:
           channel: "stable"
-      - run: flutter test
+
+      - name: Analyze
+        uses: zgosalvez/github-actions-analyze-dart@v2
+        with:
+          fail-on-warnings: true
+
+      - name: Test
+        run: flutter test
