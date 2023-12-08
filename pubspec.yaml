@@ -4,11 +4,11 @@ version: 1.0.0
 homepage: https://github.com/rebelappstudio/accessibility_tools/
 
 environment:
-  sdk: ">=2.18.4 <3.0.0"
-  flutter: ">=3.10.0"
+  sdk: ">=2.18.4 <4.0.0"
+  flutter: ">=3.16.0"
 
 dependencies:
-  collection: ^1.16.0
+  collection: ^1.18.0
   flutter:
     sdk: flutter
   flutter_test:
@@ -16,6 +16,3 @@ dependencies:
 
 flutter:
   uses-material-design: true
-
-dev_dependencies:
-  dart_code_metrics: ^5.2.1
