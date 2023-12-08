@@ -17,7 +17,8 @@ import 'checkers/minimum_tap_area_checker.dart';
 import 'checkers/mixin.dart';
 import 'checkers/semantic_label_checker.dart';
 
-const _warningBoxMinSize = 48.0;
+const _toolsBoxMinSize = 48.0;
+const _warningBoxMinSize = 32.0;
 const iOSLargestTextScaleFactor = 1.35;
 
 /// A checker for debug mode that highlights accessibility issues.
@@ -237,7 +238,7 @@ class _CheckerOverlayState extends State<CheckerOverlay> {
                     });
                   },
                   toggled: showOverlays,
-                  onLongPressed: () {
+                  onToolsButtonPressed: () {
                     setState(() {
                       showOverlays = false;
                       widget.onLongPressed();
@@ -257,76 +258,93 @@ class _WarningButton extends StatelessWidget {
   const _WarningButton({
     required this.issues,
     required this.onPressed,
-    required this.onLongPressed,
+    required this.onToolsButtonPressed,
     required this.toggled,
   });
 
   final bool toggled;
   final List<AccessibilityIssue> issues;
   final VoidCallback onPressed;
-  final VoidCallback onLongPressed;
+  final VoidCallback onToolsButtonPressed;
 
   @override
   Widget build(BuildContext context) {
-    const longPressInfo = 'Long tap to toggle testing tools visibility';
     final String message;
+    final tapToChangeIssuesVisibility =
+        toggled ? 'Tap to hide issues' : 'Tap to show issues';
     switch (issues.length) {
-      case 0:
-        message = longPressInfo;
-        break;
       case 1:
-        message = 'Accessibility issue found\n$longPressInfo';
+        message = 'Accessibility issue found\n\n$tapToChangeIssuesVisibility';
         break;
       default:
-        message = '${issues.length} accessibility issues found\n$longPressInfo';
+        message =
+            '''${issues.length} accessibility issues found\n\n$tapToChangeIssuesVisibility''';
         break;
     }
 
-    final Offset offset;
     final double elevation;
     final Color backgroundColor;
     final Color foregroundColor;
     final String semanticLabel;
 
     if (issues.isEmpty) {
-      offset = Offset.zero;
       elevation = 10;
       foregroundColor = Theme.of(context).colorScheme.onSecondary;
       backgroundColor = Theme.of(context).colorScheme.secondary;
-      semanticLabel = 'Show accessibility issues\n$longPressInfo';
+      semanticLabel = 'Show accessibility issues\n';
     } else {
-      offset = toggled ? const Offset(1, 1) : Offset.zero;
       elevation = toggled ? 0 : 10;
       foregroundColor = toggled ? Colors.white : Colors.yellow;
       backgroundColor = toggled ? Colors.orange : Colors.red;
       semanticLabel = toggled
-          ? 'Hide accessibility issues\n$longPressInfo'
-          : 'Show accessibility issues\n$longPressInfo';
+          ? 'Hide accessibility issues\n'
+          : 'Show accessibility issues\n';
     }
 
-    return SizedBox.square(
-      dimension: _warningBoxMinSize,
-      child: Tooltip(
-        message: message,
-        child: Transform.translate(
-          offset: offset,
-          child: GestureDetector(
-            onLongPress: onLongPressed,
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (issues.isNotEmpty)
+          SizedBox.square(
+            dimension: _warningBoxMinSize,
+            child: Tooltip(
+              message: message,
+              child: FloatingActionButton(
+                shape: const CircleBorder(),
+                elevation: elevation,
+                hoverElevation: elevation,
+                onPressed: onPressed,
+                backgroundColor: backgroundColor,
+                child: Icon(
+                  Icons.accessibility_new,
+                  size: 20,
+                  color: foregroundColor,
+                  semanticLabel: semanticLabel,
+                ),
+              ),
+            ),
+          ),
+        const SizedBox(height: 12),
+        SizedBox.square(
+          dimension: _toolsBoxMinSize,
+          child: Tooltip(
+            message: 'Open testing tools',
             child: FloatingActionButton(
+              onPressed: onToolsButtonPressed,
+              shape: const CircleBorder(),
               elevation: elevation,
               hoverElevation: elevation,
-              onPressed: onPressed,
-              backgroundColor: backgroundColor,
+              backgroundColor: Colors.blue,
               child: Icon(
-                Icons.accessibility_new,
-                size: 25,
-                color: foregroundColor,
+                Icons.handyman,
+                size: 24,
+                color: Colors.white,
                 semanticLabel: semanticLabel,
               ),
             ),
           ),
         ),
-      ),
+      ],
     );
   }
 }
