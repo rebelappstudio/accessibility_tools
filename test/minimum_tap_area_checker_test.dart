@@ -335,9 +335,9 @@ Icon(
           TestApp(
             minimumTapAreas: const MinimumTapAreas(desktop: 25, mobile: 25),
             child: ListView(
-              // Make sure big part of the blue widget is off-screen. The visible
-              // part is still clickable and doesn't meet min tap area
-              // requirements
+              // Make sure big part of the blue widget is off-screen.
+              // The visible part is still clickable and doesn't meet min tap
+              // area requirements
               controller: ScrollController(initialScrollOffset: 80),
               padding: EdgeInsets.zero,
               children: [
