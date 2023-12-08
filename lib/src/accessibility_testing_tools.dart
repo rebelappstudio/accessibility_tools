@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
+import '../color_mode_simulation.dart';
+
 /// Widget that applies [environment] to [child] using [MediaQuery], [Theme],
 /// [Localizations] and debug flags
 class TestingToolsWrapper extends StatelessWidget {
@@ -58,6 +60,13 @@ class TestingToolsWrapper extends StatelessWidget {
       );
     }
 
+    if (environment?.colorModeSimulation != null) {
+      body = ColorModeSimulator(
+        simulation: environment!.colorModeSimulation!,
+        child: child,
+      );
+    }
+
     return MediaQuery(
       data: mediaQueryData,
       child: Theme(
@@ -103,6 +112,7 @@ class _TestingToolsPanelState extends State<TestingToolsPanel> {
   late TextDirection? textDirection;
 
   late bool? semanticsDebuggerEnabled;
+  late ColorModeSimulation? colorModeSimulation;
 
   @override
   Widget build(BuildContext context) {
@@ -118,6 +128,7 @@ class _TestingToolsPanelState extends State<TestingToolsPanel> {
     localeOverride = widget.environment.localeOverride;
     textDirection = widget.environment.textDirection;
     semanticsDebuggerEnabled = widget.environment.semanticsDebuggerEnabled;
+    colorModeSimulation = widget.environment.colorModeSimulation;
 
     final supportedLocales =
         context.findAncestorWidgetOfExactType<WidgetsApp>()?.supportedLocales ??
@@ -265,10 +276,9 @@ Device pixel ratio ${devicePixelRatio.toStringAsFixed(2)}''',
                         },
                       ),
                       SwitchListTile(
-                        title: const Text('Semantics debugger'),
+                        title: const Text('Screen reader mode'),
                         subtitle: const Text(
-                          '''
-Useful to understand how an app presents itself to screen readers''',
+                          '''Use Semantics Debugger to simulate how the app behaves with screen readers''',
                         ),
                         value: semanticsDebuggerEnabled ?? false,
                         onChanged: (value) {
@@ -306,6 +316,16 @@ Useful to understand how an app presents itself to screen readers''',
                         values: onOffSystemValues,
                         nameBuilder: onOffSystemLabels,
                       ),
+                      MultiValueToggle<ColorModeSimulation?>(
+                        value: colorModeSimulation,
+                        label: 'Color mode simulation',
+                        onTap: (value) {
+                          colorModeSimulation = value;
+                          _notifyTestEnvironmentChanged();
+                        },
+                        values: ColorModeSimulation.values,
+                        nameBuilder: (e) => e?.name ?? 'System',
+                      ),
                     ],
                   ),
                 ),
@@ -332,6 +352,7 @@ Useful to understand how an app presents itself to screen readers''',
         localeOverride: localeOverride,
         semanticsDebuggerEnabled: semanticsDebuggerEnabled,
         textDirection: textDirection,
+        colorModeSimulation: colorModeSimulation,
       ),
     );
   }
@@ -478,6 +499,7 @@ class TestEnvironment {
     this.localeOverride,
     this.textDirection,
     this.semanticsDebuggerEnabled,
+    this.colorModeSimulation,
   });
 
   final double? devicePixelRatio;
@@ -495,4 +517,5 @@ class TestEnvironment {
   final TextDirection? textDirection;
 
   final bool? semanticsDebuggerEnabled;
+  final ColorModeSimulation? colorModeSimulation;
 }
