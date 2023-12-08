@@ -71,14 +71,14 @@ class MinimumTapAreaChecker extends SemanticsNodeChecker {
       return null;
     }
 
-    final paintBounds = getPaintBounds(node);
-
-    if (_isNodeOffScreen(paintBounds, window)) {
+    final nodePaintBounds = getPaintBounds(node);
+    final renderObjectPaintBounds = renderObject.paintBounds;
+    if (_isNodeOffScreen(window, renderObjectPaintBounds, nodePaintBounds)) {
       return null;
     }
 
-    final size = paintBounds.size / window.devicePixelRatio;
     const delta = 0.001;
+    final size = nodePaintBounds.size / window.devicePixelRatio;
     if (size.width < minTapArea - delta || size.height < minTapArea - delta) {
       return AccessibilityIssue(
         message: '''
@@ -126,14 +126,32 @@ Icon(
         : rounded.toStringAsFixed(2);
   }
 
-  /// Returns true if rectange of a node is (partially) off screen
-  bool _isNodeOffScreen(Rect paintBounds, FlutterView flutterView) {
+  /// Returns true if rectangle of a node is (partially) off screen
+  bool _isNodeOffScreen(
+    FlutterView flutterView,
+    Rect renderObjectPaintBounds,
+    Rect nodePaintBounds,
+  ) {
+    // Check if node's size and corresponding render object's size are different
+    // This could mean that node is partially off screen
+    final nodeSize = nodePaintBounds.size / flutterView.devicePixelRatio;
+    final renderObjectSize = renderObjectPaintBounds.size;
+    final widthDiff = (nodeSize.width - renderObjectSize.width).abs();
+    final heightDiff = (nodeSize.height - renderObjectSize.height).abs();
+    const offScreenDelta = 5.0;
+    final isNodeOffScreen =
+        widthDiff >= offScreenDelta || heightDiff >= offScreenDelta;
+    if (isNodeOffScreen) {
+      return true;
+    }
+
+    // Check if node's paint bounds are off screen
     const delta = 10.0;
     final windowPhysicalSize =
         flutterView.physicalSize * flutterView.devicePixelRatio;
-    return paintBounds.top < -delta ||
-        paintBounds.left < -delta ||
-        paintBounds.bottom > windowPhysicalSize.height + delta ||
-        paintBounds.right > windowPhysicalSize.width + delta;
+    return nodePaintBounds.top < -delta ||
+        nodePaintBounds.left < -delta ||
+        nodePaintBounds.bottom > windowPhysicalSize.height + delta ||
+        nodePaintBounds.right > windowPhysicalSize.width + delta;
   }
 }
