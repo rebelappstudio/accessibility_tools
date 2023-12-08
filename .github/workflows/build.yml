@@ -23,12 +23,6 @@ jobs:
         with:
           fail-on-warnings: true
 
-      - name: Check for unused code
-        run: flutter pub run dart_code_metrics:metrics check-unused-code lib test
-
-      - name: Check for unnecessary nullables
-        run: flutter pub run dart_code_metrics:metrics check-unnecessary-nullable lib test
-
       - name: Test on Flutter stable channel
         run: flutter test --coverage
 
