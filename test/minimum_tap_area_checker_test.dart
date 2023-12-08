@@ -325,6 +325,51 @@ Icon(
     },
   );
 
+  testWidgets(
+    "Doesn't show warnings for partially off-screen widgets inside scrollable",
+    (tester) async {
+      tester.view.devicePixelRatio = 1.0;
+
+      final log = await recordDebugPrint(() async {
+        await tester.pumpWidget(
+          TestApp(
+            minimumTapAreas: const MinimumTapAreas(desktop: 25, mobile: 25),
+            child: ListView(
+              // Make sure big part of the blue widget is off-screen.
+              // The visible part is still clickable and doesn't meet min tap
+              // area requirements
+              controller: ScrollController(initialScrollOffset: 80),
+              padding: EdgeInsets.zero,
+              children: [
+                GestureDetector(
+                  onTap: () {},
+                  child: Semantics(
+                    label: 'Label',
+                    child: Container(
+                      color: Colors.blue,
+                      height: 100,
+                    ),
+                  ),
+                ),
+                Container(
+                  width: 10,
+                  height: 10000,
+                  color: Colors.white,
+                ),
+              ],
+            ),
+          ),
+        );
+      });
+
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(Icons.accessibility_new), findsNothing);
+      expect(find.byWidgetPredicate((w) => w is Tooltip), findsNothing);
+      expect(log, isEmpty);
+    },
+  );
+
   test(
     'Formatted size is not too long (max 2 places after decimal point)',
     () {
