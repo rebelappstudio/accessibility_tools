@@ -3,18 +3,29 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
 mixin SemanticUpdateMixin<T extends StatefulWidget> on State<T> {
-  late final SemanticsClient client;
+  late final List<SemanticsClient> _clients = [];
+  late final SemanticsHandle _rootSemanticsHandle;
 
   @override
   void initState() {
-    client = SemanticsClient(WidgetsBinding.instance.pipelineOwner)
-      ..addListener(_update);
+    _rootSemanticsHandle = RendererBinding.instance.ensureSemantics();
+
+    RendererBinding.instance.rootPipelineOwner.visitChildren((child) {
+      final client = SemanticsClient(child)..addListener(_update);
+      _clients.add(client);
+    });
+
     super.initState();
   }
 
   @override
   void dispose() {
-    client.dispose();
+    _rootSemanticsHandle.dispose();
+
+    for (final client in _clients) {
+      client.dispose();
+    }
+
     super.dispose();
   }
 

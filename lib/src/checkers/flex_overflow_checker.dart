@@ -78,7 +78,9 @@ class _FlexOverflowCheckerInjectorState
       children: [
         MediaQuery(
           data: MediaQuery.of(context).copyWith(
-            textScaleFactor: _textScaleFactor,
+            textScaler: _textScaleFactor != null
+                ? TextScaler.linear(_textScaleFactor!)
+                : null,
           ),
           child: widget.child,
         ),

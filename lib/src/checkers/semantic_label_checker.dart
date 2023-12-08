@@ -1,6 +1,7 @@
 import 'dart:ui' as ui;
 
 import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
 
 import '../accessibility_issue.dart';
 import 'checker_base.dart';
@@ -19,7 +20,7 @@ class SemanticLabelChecker extends SemanticsNodeChecker {
       final hasLabel =
           data.label.trim().isNotEmpty || data.tooltip.trim().isNotEmpty;
 
-      if (!hasLabel) {
+      if (!hasLabel && !_isFlutterInspectorButton(renderObject)) {
         return AccessibilityIssue(
           message: 'Tap area is missing a semantic label',
           resolutionGuidance: semanticLabelMessage('''
@@ -37,6 +38,26 @@ InkWell(
     }
 
     return null;
+  }
+
+  /// Work-around for Flutter widget inspector select button not having a
+  /// semantics label, and so being flagged as an accessibility issue.
+  ///
+  /// Can be removed once https://github.com/flutter/flutter/pull/117584 is
+  /// released in Flutter stable.
+  static bool _isFlutterInspectorButton(RenderObject renderObject) {
+    final creator = renderObject.debugCreator;
+    if (creator == null) {
+      return false;
+    }
+
+    if (creator is! DebugCreator) {
+      return false;
+    }
+
+    return creator.element
+        .debugGetDiagnosticChain()
+        .any((element) => element.widget is WidgetInspector);
   }
 }
 
