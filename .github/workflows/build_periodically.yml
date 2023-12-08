@@ -1,0 +1,16 @@
+name: Test once a week using latest stable version of Flutter
+
+on:
+  schedule:
+    - cron: 0 6 * * 1 # At 06:00 on Monday
+
+jobs:
+  test-on-stable:
+    name: Test on Flutter stable channel
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3.3.0
+      - uses: subosito/flutter-action@v2.8.0
+        with:
+          channel: "stable"
+      - run: flutter test
