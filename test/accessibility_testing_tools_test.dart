@@ -347,12 +347,12 @@ void main() {
       await tester.drag(_slider('Text scale factor'), const Offset(1000, 0));
       await tester.pump();
 
-      expect(mediaQuery.textScaleFactor, 5.0);
+      expect(mediaQuery.textScaler.scale(1.0), 5.0);
 
       await tester.tap(_sliderResetButton('Text scale factor'));
       await tester.pump();
 
-      expect(mediaQuery.textScaleFactor, 1.0);
+      expect(mediaQuery.textScaler.scale(1.0), 1.0);
     },
   );
 

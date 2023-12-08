@@ -18,7 +18,9 @@ class TestingToolsWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     final mediaQueryData = MediaQuery.of(context).copyWith(
       devicePixelRatio: environment?.devicePixelRatio,
-      textScaleFactor: environment?.textScaleFactor,
+      textScaler: environment?.textScaleFactor != null
+          ? TextScaler.linear(environment!.textScaleFactor!)
+          : null,
       invertColors: environment?.invertColors,
       boldText: environment?.boldText,
       highContrast: environment?.highContrast,
@@ -121,7 +123,9 @@ class _TestingToolsPanelState extends State<TestingToolsPanel> {
         context.findAncestorWidgetOfExactType<WidgetsApp>()?.supportedLocales ??
             const [];
     final mediaQuery = MediaQuery.of(context);
-    final textScaleFactor = this.textScaleFactor ?? mediaQuery.textScaleFactor;
+    final textScaleFactor = this.textScaleFactor != null
+        ? TextScaler.linear(this.textScaleFactor!)
+        : mediaQuery.textScaler;
     final devicePixelRatio =
         this.devicePixelRatio ?? mediaQuery.devicePixelRatio;
 
@@ -161,8 +165,8 @@ class _TestingToolsPanelState extends State<TestingToolsPanel> {
                     children: [
                       SliderTile(
                         label: '''
-Text scale factor ${textScaleFactor.toStringAsFixed(2)}''',
-                        value: textScaleFactor,
+Text scale factor ${textScaleFactor.scale(1.0).toStringAsFixed(2)}''',
+                        value: textScaleFactor.scale(1.0),
                         min: 0.1,
                         max: 5.0,
                         onChanged: (value) {
