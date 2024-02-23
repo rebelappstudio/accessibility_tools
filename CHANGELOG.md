@@ -1,3 +1,8 @@
+## 1.0.1
+
+* Upgrade to Flutter 3.16
+* Fixed an issue with partially off-screen widgets inside scrollables
+
 ## 1.0.0
 
 * Upgrade to Flutter 3.10
