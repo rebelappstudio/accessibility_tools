@@ -8,7 +8,6 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'accessibility_issue.dart';
-import 'accessibility_testing_tools.dart';
 import 'checker_manager.dart';
 import 'checkers/checker_base.dart';
 import 'checkers/flex_overflow_checker.dart';
@@ -16,9 +15,11 @@ import 'checkers/input_label_checker.dart';
 import 'checkers/minimum_tap_area_checker.dart';
 import 'checkers/mixin.dart';
 import 'checkers/semantic_label_checker.dart';
+import 'testing_tools/test_environment.dart';
+import 'testing_tools/testing_tools_panel.dart';
+import 'testing_tools/testing_tools_wrapper.dart';
 
 const _toolsBoxMinSize = 48.0;
-const _warningBoxMinSize = 32.0;
 const iOSLargestTextScaleFactor = 1.35;
 
 /// A checker for debug mode that highlights accessibility issues.
@@ -186,11 +187,11 @@ class _CheckerOverlayState extends State<CheckerOverlay> {
   bool showOverlays = false;
 
   static Rect _inflateToMinimumSize(Rect rect) {
-    if (rect.shortestSide < _warningBoxMinSize) {
+    if (rect.shortestSide < _toolsBoxMinSize) {
       return Rect.fromCenter(
         center: rect.center,
-        width: max(_warningBoxMinSize, rect.width),
-        height: max(_warningBoxMinSize, rect.height),
+        width: max(_toolsBoxMinSize, rect.width),
+        height: max(_toolsBoxMinSize, rect.height),
       );
     }
 
@@ -306,7 +307,7 @@ class _WarningButton extends StatelessWidget {
       children: [
         if (issues.isNotEmpty)
           SizedBox.square(
-            dimension: _warningBoxMinSize,
+            dimension: _toolsBoxMinSize,
             child: Tooltip(
               message: message,
               child: FloatingActionButton(

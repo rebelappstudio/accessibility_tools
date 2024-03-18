@@ -1,5 +1,8 @@
 import 'package:accessibility_tools/accessibility_tools.dart';
-import 'package:accessibility_tools/src/accessibility_testing_tools.dart';
+import 'package:accessibility_tools/src/testing_tools/multi_value_toggle.dart';
+import 'package:accessibility_tools/src/testing_tools/slider_toggle.dart';
+import 'package:accessibility_tools/src/testing_tools/test_environment.dart';
+import 'package:accessibility_tools/src/testing_tools/testing_tools_panel.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';

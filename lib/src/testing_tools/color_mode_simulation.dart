@@ -1,5 +1,16 @@
 import 'package:flutter/material.dart';
 
+/// Various color modes that can be simulated to check if the app is accessible
+/// in certain color modes.
+///
+/// Protanopia, deuteranopia, and tritanopia matrices are inspired by:
+/// Gustavo M. Machado, Manuel M. Oliveira, and Leandro A. F. Fernandes
+/// "A Physiologically-based Model for Simulation of Color Vision Deficiency".
+/// IEEE Transactions on Visualization and Computer Graphics.
+/// Volume 15 (2009), Number 6, November/December 2009. pp. 1291-1298.
+///
+/// https://www.inf.ufrgs.br/~oliveira/pubs_files/CVD_Simulation/CVD_Simulation.html
+///
 enum ColorModeSimulation {
   protanopia([
     //
