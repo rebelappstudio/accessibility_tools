@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import 'color_mode_simulation.dart';
 import 'multi_value_toggle.dart';
@@ -195,6 +196,17 @@ class _TestingToolsPanelState extends State<TestingToolsPanel> {
                           semanticsDebuggerEnabled = value;
                           _notifyTestEnvironmentChanged();
                         },
+                      ),
+                      const SizedBox(height: 8),
+                      const Divider(),
+                      const SizedBox(height: 12),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: ElevatedButton.icon(
+                          onPressed: widget.onClose,
+                          icon: const Icon(Icons.close),
+                          label: const Text('Close'),
+                        ),
                       ),
                     ],
                   ),
