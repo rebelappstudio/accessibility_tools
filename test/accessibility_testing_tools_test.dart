@@ -1,11 +1,13 @@
 import 'package:accessibility_tools/accessibility_tools.dart';
+import 'package:accessibility_tools/src/floating_action_buttons.dart';
+import 'package:accessibility_tools/src/testing_tools/color_mode_simulation.dart';
 import 'package:accessibility_tools/src/testing_tools/multi_value_toggle.dart';
 import 'package:accessibility_tools/src/testing_tools/slider_toggle.dart';
+import 'package:accessibility_tools/src/testing_tools/switch_toggle.dart';
 import 'package:accessibility_tools/src/testing_tools/test_environment.dart';
 import 'package:accessibility_tools/src/testing_tools/testing_tools_panel.dart';
-import 'package:flutter/foundation.dart';
+import 'package:accessibility_tools/src/testing_tools/testing_tools_wrapper.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/semantics.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'test_utils.dart';
@@ -25,303 +27,70 @@ void main() {
       );
       await tester.pump();
 
-      expect(find.byIcon(Icons.accessibility_new), findsOneWidget);
+      expect(find.byType(AccessibilityToolsToggle), findsOneWidget);
       expect(find.byType(TestingToolsPanel), findsNothing);
 
       await showTestingTools(tester);
-
       expect(find.byType(TestingToolsPanel), findsOneWidget);
 
-      await tester.tap(find.text('Close'));
-      await tester.pump();
+      await closeTestingTools(tester);
       expect(find.byType(TestingToolsPanel), findsNothing);
+      expect(find.byType(AccessibilityToolsToggle), findsOneWidget);
     },
   );
 
+  testWidgets('Can use bottom close button', (tester) async {
+    await tester.pumpWidget(
+      const TestApp(
+        child: SizedBox(),
+      ),
+    );
+    await tester.pump();
+
+    expect(find.byType(AccessibilityToolsToggle), findsOneWidget);
+    expect(find.byType(TestingToolsPanel), findsNothing);
+
+    await showTestingTools(tester);
+    expect(find.byType(TestingToolsPanel), findsOneWidget);
+
+    final closeButton = find.ancestor(
+      of: find.text('Close'),
+      matching: find.byWidgetPredicate((widget) => widget is ElevatedButton),
+    );
+    await tester.scrollUntilVisible(closeButton, 150);
+    await tester.tap(closeButton);
+    await tester.pumpAndSettle();
+
+    expect(find.byType(TestingToolsPanel), findsNothing);
+    expect(find.byType(AccessibilityToolsToggle), findsOneWidget);
+  });
+
   testWidgets(
-    'Panel disappears when warning boxes are shown',
+    'Warning boxes are hidden when panel is displayed',
     (tester) async {
       await tester.pumpWidget(
         const TestApp(
           child: TextField(),
         ),
       );
-      await tester.pump();
+      await tester.pumpAndSettle();
 
-      expect(find.byIcon(Icons.accessibility_new), findsOneWidget);
+      expect(find.byType(AccessibilityIssuesToggle), findsOneWidget);
+      expect(find.byType(AccessibilityToolsToggle), findsOneWidget);
       expect(find.byType(TestingToolsPanel), findsNothing);
       expect(find.byType(WarningBox), findsNothing);
 
       await showTestingTools(tester);
-
       expect(find.byType(TestingToolsPanel), findsOneWidget);
       expect(find.byType(WarningBox), findsNothing);
 
-      await tester.tap(find.text('Close'));
-      await tester.pump();
+      await closeTestingTools(tester);
       expect(find.byType(TestingToolsPanel), findsNothing);
+      expect(find.byType(WarningBox), findsNothing);
 
       await showAccessibilityIssues(tester);
       expect(find.byType(TestingToolsPanel), findsNothing);
       expect(find.byType(WarningBox), findsOneWidget);
-    },
-  );
-
-  testWidgets(
-    'Can toggle semantics debugger',
-    (tester) async {
-      await tester.pumpWidget(
-        const TestApp(
-          child: SizedBox(),
-        ),
-      );
-      await tester.pump();
-
-      expect(find.byType(SemanticsDebugger), findsNothing);
-      await showTestingTools(tester);
-      await tester.scrollUntilVisible(find.text('Semantics debugger'), 550);
-      await tester.tap(find.text('Semantics debugger'));
-      await tester.pump();
-      expect(find.byType(SemanticsDebugger), findsOneWidget);
-
-      await tester.tap(find.text('Semantics debugger'));
-      await tester.pump();
-      expect(find.byType(SemanticsDebugger), findsNothing);
-    },
-  );
-
-  testWidgets(
-    'Can invert colors',
-    (tester) async {
-      late MediaQueryData mediaQuery;
-
-      await tester.pumpWidget(
-        TestApp(
-          child: Builder(
-            builder: (context) {
-              mediaQuery = MediaQuery.of(context);
-              return const SizedBox();
-            },
-          ),
-        ),
-      );
-      await tester.pump();
-      expect(mediaQuery.invertColors, isFalse);
-
-      await showTestingTools(tester);
-      await tester.scrollUntilVisible(find.text('Invert colors'), 500);
-      await tester.tap(_toggleTile<bool?>('Invert colors', 'On'));
-      await tester.pump();
-      expect(mediaQuery.invertColors, isTrue);
-    },
-  );
-
-  testWidgets(
-    'Can toggle bold text',
-    (tester) async {
-      late MediaQueryData mediaQuery;
-
-      await tester.pumpWidget(
-        TestApp(
-          child: Builder(
-            builder: (context) {
-              mediaQuery = MediaQuery.of(context);
-              return const SizedBox();
-            },
-          ),
-        ),
-      );
-      await tester.pump();
-      expect(mediaQuery.boldText, isFalse);
-
-      await showTestingTools(tester);
-      await tester.scrollUntilVisible(find.text('Bold text'), 500);
-      await tester.tap(_toggleTile<bool?>('Bold text', 'On'));
-      await tester.pump();
-      expect(mediaQuery.boldText, isTrue);
-    },
-  );
-
-  testWidgets(
-    'Can toggle hight contrast',
-    (tester) async {
-      late MediaQueryData mediaQuery;
-
-      await tester.pumpWidget(
-        TestApp(
-          child: Builder(
-            builder: (context) {
-              mediaQuery = MediaQuery.of(context);
-              return const SizedBox();
-            },
-          ),
-        ),
-      );
-      await tester.pump();
-      expect(mediaQuery.highContrast, isFalse);
-
-      await showTestingTools(tester);
-      await tester.scrollUntilVisible(find.text('High contrast'), 500);
-      await tester.tap(_toggleTile<bool?>('High contrast', 'On'));
-      await tester.pump();
-      expect(mediaQuery.highContrast, isTrue);
-    },
-  );
-
-  testWidgets(
-    'Can disable animations',
-    (tester) async {
-      await tester.pumpWidget(
-        const TestApp(
-          child: SizedBox(),
-        ),
-      );
-      await tester.pump();
-      expect(debugSemanticsDisableAnimations, null);
-
-      await showTestingTools(tester);
-      await tester.tap(_toggleTile<bool?>('Disable animations', 'On'));
-      await tester.pump();
-      expect(debugSemanticsDisableAnimations, isTrue);
-
-      await tester.tap(_toggleTile<bool?>('Disable animations', 'Off'));
-      await tester.pump();
-      expect(debugSemanticsDisableAnimations, isFalse);
-
-      await tester.tap(_toggleTile<bool?>('Disable animations', 'System'));
-      await tester.pump();
-      expect(debugSemanticsDisableAnimations, isNull);
-    },
-  );
-
-  testWidgets(
-    'Can change platform brightness',
-    (tester) async {
-      late MediaQueryData mediaQueryData;
-      late ThemeData themeData;
-
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: ThemeData(),
-          darkTheme: ThemeData.dark(),
-          builder: (context, child) => AccessibilityTools(child: child),
-          home: Scaffold(
-            body: Builder(
-              builder: (context) {
-                mediaQueryData = MediaQuery.of(context);
-                themeData = Theme.of(context);
-
-                return const SizedBox();
-              },
-            ),
-          ),
-        ),
-      );
-      await tester.pump();
-      expect(debugBrightnessOverride, null);
-
-      // Switch to dark
-      await showTestingTools(tester);
-      await tester.tap(_toggleTile<Brightness>('Platform brightness', 'dark'));
-      await tester.pumpAndSettle();
-      expect(debugBrightnessOverride, Brightness.dark);
-      expect(mediaQueryData.platformBrightness, Brightness.dark);
-      expect(themeData.brightness, Brightness.dark);
-
-      // Switch to light
-      await tester.tap(
-        _toggleTile<Brightness>('Platform brightness', 'light'),
-      );
-      await tester.pumpAndSettle();
-      expect(debugBrightnessOverride, Brightness.light);
-      expect(mediaQueryData.platformBrightness, Brightness.light);
-      expect(themeData.brightness, Brightness.light);
-
-      // Remove override
-      await tester.tap(
-        _toggleTile<Brightness>('Platform brightness', 'System'),
-      );
-      await tester.pumpAndSettle();
-      expect(debugBrightnessOverride, isNull);
-      expect(mediaQueryData.platformBrightness, Brightness.light);
-      expect(themeData.brightness, Brightness.light);
-    },
-  );
-
-  testWidgets(
-    'Can change target platform',
-    (tester) async {
-      late ThemeData themeData;
-      await tester.pumpWidget(
-        TestApp(
-          child: Builder(
-            builder: (context) {
-              themeData = Theme.of(context);
-              return const SizedBox();
-            },
-          ),
-        ),
-      );
-      await tester.pump();
-      await showTestingTools(tester);
-
-      // Switch to Android
-      await tester.tap(
-        _toggleTile<TargetPlatform>('Target platform', 'android'),
-      );
-      await tester.pump();
-      expect(themeData.platform, TargetPlatform.android);
-
-      // Switch to iOS
-      await tester.tap(
-        _toggleTile<TargetPlatform>('Target platform', 'iOS'),
-      );
-      await tester.pump();
-      expect(themeData.platform, TargetPlatform.iOS);
-    },
-  );
-
-  testWidgets(
-    'Can toggle visual density',
-    (tester) async {
-      late ThemeData themeData;
-      await tester.pumpWidget(
-        TestApp(
-          child: Builder(
-            builder: (context) {
-              themeData = Theme.of(context);
-              return const SizedBox();
-            },
-          ),
-        ),
-      );
-      await tester.pump();
-      await showTestingTools(tester);
-
-      final defaultDensity = themeData.visualDensity;
-
-      await tester.scrollUntilVisible(find.text('Visual density'), 150);
-
-      // Switch to standard
-      await tester.tap(
-        _toggleTile<VisualDensity>('Visual density', 'standard'),
-      );
-      await tester.pump();
-      expect(themeData.visualDensity, VisualDensity.standard);
-
-      // Switch to comfortable
-      await tester.tap(
-        _toggleTile<VisualDensity>('Visual density', 'comfortable'),
-      );
-      await tester.pump();
-      expect(themeData.visualDensity, VisualDensity.comfortable);
-
-      // Switch to default value
-      await tester.tap(
-        _toggleTile<VisualDensity>('Visual density', 'System'),
-      );
-      await tester.pump();
-      expect(themeData.visualDensity, defaultDensity);
     },
   );
 
@@ -342,55 +111,16 @@ void main() {
       );
       await tester.pump();
       await showTestingTools(tester);
-      await tester.scrollUntilVisible(
-        find.textContaining('Text scale factor'),
-        150,
-      );
-
-      await tester.drag(_slider('Text scale factor'), const Offset(1000, 0));
+      await tester.scrollUntilVisible(find.textContaining('Text scale:'), 150);
+      await tester.drag(_slider('Text scale:'), const Offset(1000, 0));
       await tester.pump();
 
-      expect(mediaQuery.textScaler.scale(1.0), 5.0);
+      expect(mediaQuery.textScaler.scale(1.0), 10.0);
 
-      await tester.tap(_sliderResetButton('Text scale factor'));
+      await tester.tap(_sliderResetButton('Text scale:'));
       await tester.pump();
 
       expect(mediaQuery.textScaler.scale(1.0), 1.0);
-    },
-  );
-
-  testWidgets(
-    'Can change device pixel ratio',
-    (tester) async {
-      late MediaQueryData mediaQuery;
-
-      await tester.pumpWidget(
-        TestApp(
-          child: Builder(
-            builder: (context) {
-              mediaQuery = MediaQuery.of(context);
-              return const SizedBox();
-            },
-          ),
-        ),
-      );
-      await tester.pump();
-      final defaultPixelRatio = mediaQuery.devicePixelRatio;
-      await showTestingTools(tester);
-      await tester.scrollUntilVisible(
-        find.textContaining('Device pixel ratio'),
-        150,
-      );
-
-      await tester.drag(_slider('Device pixel ratio'), const Offset(1000, 0));
-      await tester.pump();
-
-      expect(mediaQuery.devicePixelRatio, 6.0);
-
-      await tester.tap(_sliderResetButton('Device pixel ratio'));
-      await tester.pump();
-
-      expect(mediaQuery.devicePixelRatio, defaultPixelRatio);
     },
   );
 
@@ -423,12 +153,12 @@ void main() {
       await showTestingTools(tester);
 
       await tester.scrollUntilVisible(
-        find.textContaining('Locale override'),
+        find.textContaining('Localization'),
         150,
       );
 
       final tile = find.ancestor(
-        of: find.text('Locale override'),
+        of: find.text('Localization'),
         matching: find.byType(MultiValueToggle<Locale>),
       );
       final localeFi = find.descendant(
@@ -483,6 +213,161 @@ void main() {
   });
 
   testWidgets(
+    'Can change target platform',
+    (tester) async {
+      late ThemeData themeData;
+      await tester.pumpWidget(
+        TestApp(
+          child: Builder(
+            builder: (context) {
+              themeData = Theme.of(context);
+              return const SizedBox();
+            },
+          ),
+        ),
+      );
+      await tester.pump();
+      await showTestingTools(tester);
+
+      // Switch to Android
+      await tester.tap(_toggleTile<TargetPlatform>('Platform', 'android'));
+      await tester.pump();
+      expect(themeData.platform, TargetPlatform.android);
+
+      // Switch to iOS
+      await tester.tap(_toggleTile<TargetPlatform>('Platform', 'iOS'));
+      await tester.pump();
+      expect(themeData.platform, TargetPlatform.iOS);
+
+      // Reset
+      await tester.tap(_toggleTile<TargetPlatform>('Platform', 'System'));
+      await tester.pump();
+      expect(
+        find.byWidgetPredicate((widget) =>
+            widget is TestingToolsWrapper &&
+            widget.environment != null &&
+            widget.environment?.targetPlatform == null),
+        findsOneWidget,
+      );
+    },
+  );
+
+  testWidgets(
+    'Can toggle visual density',
+    (tester) async {
+      const itemName = 'Density';
+      late ThemeData themeData;
+      await tester.pumpWidget(
+        TestApp(
+          child: Builder(
+            builder: (context) {
+              themeData = Theme.of(context);
+              return const SizedBox();
+            },
+          ),
+        ),
+      );
+      await tester.pump();
+      await showTestingTools(tester);
+
+      final defaultDensity = themeData.visualDensity;
+
+      await tester.scrollUntilVisible(find.text(itemName), 150);
+
+      // Switch to standard
+      await tester.tap(
+        _toggleTile<VisualDensity>(itemName, 'standard'),
+      );
+      await tester.pump();
+      expect(themeData.visualDensity, VisualDensity.standard);
+
+      // Switch to comfortable
+      await tester.tap(
+        _toggleTile<VisualDensity>(itemName, 'comfortable'),
+      );
+      await tester.pump();
+      expect(themeData.visualDensity, VisualDensity.comfortable);
+
+      // Switch to default value
+      await tester.tap(
+        _toggleTile<VisualDensity>(itemName, 'System'),
+      );
+      await tester.pump();
+      expect(themeData.visualDensity, defaultDensity);
+    },
+  );
+
+  testWidgets(
+    'Can toggle bold text',
+    (tester) async {
+      late MediaQueryData mediaQuery;
+
+      await tester.pumpWidget(
+        TestApp(
+          child: Builder(
+            builder: (context) {
+              mediaQuery = MediaQuery.of(context);
+              return const SizedBox();
+            },
+          ),
+        ),
+      );
+      await tester.pump();
+      expect(mediaQuery.boldText, isFalse);
+
+      // Turn on
+      await showTestingTools(tester);
+      await tester.scrollUntilVisible(find.text('Bold text'), 500);
+      await tester.tap(_toggleTile<bool?>('Bold text', 'on'));
+      await tester.pump();
+      expect(mediaQuery.boldText, isTrue);
+
+      // Turn off
+      await tester.tap(_toggleTile<bool?>('Bold text', 'off'));
+      await tester.pump();
+      expect(mediaQuery.boldText, isFalse);
+
+      // Reset
+      await tester.tap(_toggleTile<bool?>('Bold text', 'System'));
+      await tester.pump();
+      expect(
+        find.byWidgetPredicate((widget) =>
+            widget is TestingToolsWrapper &&
+            widget.environment != null &&
+            widget.environment?.boldText == null),
+        findsOneWidget,
+      );
+    },
+  );
+
+  testWidgets(
+    'Can toggle semantics debugger',
+    (tester) async {
+      const itemName = 'Screen reader mode';
+      await tester.pumpWidget(
+        const TestApp(
+          child: SizedBox(),
+        ),
+      );
+      await tester.pump();
+
+      expect(find.byType(SemanticsDebugger), findsNothing);
+      await showTestingTools(tester);
+      await tester.scrollUntilVisible(find.text(itemName), 550);
+
+      await _tapSwitchToggle(tester, itemName);
+      await tester.pumpAndSettle();
+      expect(find.byType(SemanticsDebugger), findsOneWidget);
+
+      await _tapSwitchToggle(tester, itemName);
+      await tester.pumpAndSettle();
+      expect(find.byType(SemanticsDebugger), findsNothing);
+    },
+  );
+
+  // TODO color mode simulation  (goldens?)
+
+  testWidgets(
     'Testing tool panel has no accessibility issues',
     (tester) async {
       final log = await recordDebugPrint(() async {
@@ -504,12 +389,7 @@ void main() {
           ),
         );
         await tester.pumpAndSettle();
-        expect(
-          find.byWidgetPredicate((w) =>
-              w is Tooltip &&
-              w.message != 'Long tap to toggle testing tools visibility'),
-          findsNothing,
-        );
+        expect(find.byType(AccessibilityIssuesToggle), findsNothing);
       });
 
       expect(log, isEmpty);
@@ -519,15 +399,21 @@ void main() {
   testWidgets('Can reset all changes', (tester) async {
     late MediaQueryData mediaQueryData;
     late ThemeData themeData;
+    late TextDirection textDirection;
+    late MockLocalizations localizations;
 
     await tester.pumpWidget(
       TestApp(
-        child: Builder(builder: (context) {
-          mediaQueryData = MediaQuery.of(context);
-          themeData = Theme.of(context);
+        child: Builder(
+          builder: (context) {
+            mediaQueryData = MediaQuery.of(context);
+            themeData = Theme.of(context);
+            textDirection = Directionality.of(context);
+            localizations = MockLocalizations.of(context);
 
-          return Container();
-        }),
+            return Container();
+          },
+        ),
       ),
     );
     await tester.pump();
@@ -535,32 +421,77 @@ void main() {
 
     await showTestingTools(tester);
 
-    await tester.scrollUntilVisible(find.text('Disable animations'), 150);
-    await tester.tap(_toggleTile<bool?>('Disable animations', 'On'));
+    await tester.scrollUntilVisible(find.textContaining('Text scale:'), 150);
+    await tester.drag(_slider('Text scale:'), const Offset(1000, 0));
 
-    await tester.scrollUntilVisible(find.text('Invert colors'), 150);
-    await tester.tap(_toggleTile<bool?>('Invert colors', 'On'));
+    await tester.scrollUntilVisible(find.text('Localization'), 150);
+    await tester.tap(_toggleTile<Locale>('Localization', 'fi_FI'));
 
-    await tester.scrollUntilVisible(find.text('Target platform'), 150);
-    await tester.tap(_toggleTile<TargetPlatform>('Target platform', 'iOS'));
+    await tester.scrollUntilVisible(find.text('Text direction'), 15);
+    await tester.tap(_toggleTile<TextDirection>('Text direction', 'RTL'));
+    await tester.pumpAndSettle();
 
-    await tester.pump();
+    await tester.scrollUntilVisible(find.text('Platform'), 15);
+    await tester.tap(_toggleTile<TargetPlatform>('Platform', 'iOS'));
+    await tester.pumpAndSettle();
 
-    expect(debugSemanticsDisableAnimations, true);
-    expect(mediaQueryData.invertColors, true);
-    expect(themeData.platform, TargetPlatform.iOS);
+    await tester.scrollUntilVisible(find.text('Density'), 15);
+    await tester.tap(_toggleTile<VisualDensity>('Density', 'compact'));
+    await tester.pumpAndSettle();
+
+    await tester.scrollUntilVisible(find.text('Bold text'), 15);
+    await tester.tap(_toggleTile<bool?>('Bold text', 'on'));
+    await tester.pumpAndSettle();
+
+    await tester.scrollUntilVisible(find.text('Color mode simulation'), 15);
+    await tester.tap(
+      _toggleTile<ColorModeSimulation?>('Color mode simulation', 'protanopia'),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.scrollUntilVisible(find.text('Screen reader mode'), 15);
+    await _tapSwitchToggle(tester, 'Screen reader mode');
+    await tester.pumpAndSettle();
 
     var env = tester
         .widget<TestingToolsPanel>(find.byType(TestingToolsPanel))
         .environment;
-    expect(env, isNot(const TestEnvironment()));
+    expect(
+      env,
+      equals(
+        const TestEnvironment(
+          textScaleFactor: 10.0,
+          boldText: true,
+          targetPlatform: TargetPlatform.iOS,
+          visualDensity: VisualDensity.compact,
+          localeOverride: Locale('fi', 'FI'),
+          textDirection: TextDirection.rtl,
+          semanticsDebuggerEnabled: true,
+          colorModeSimulation: ColorModeSimulation.protanopia,
+        ),
+      ),
+    );
 
-    await tester.tap(find.text('Reset all'));
-    await tester.pump();
+    expect(mediaQueryData.textScaler.scale(1.0), 10.0);
+    expect(localizations.locale, const Locale('fi', 'FI'));
+    expect(textDirection, TextDirection.rtl);
+    expect(themeData.platform, TargetPlatform.iOS);
+    expect(themeData.visualDensity, VisualDensity.compact);
+    expect(mediaQueryData.boldText, isTrue);
+    expect(find.byType(ColorModeSimulator), findsOneWidget);
+    expect(find.byType(SemanticsDebugger), findsOneWidget);
 
-    expect(debugSemanticsDisableAnimations, null);
-    expect(mediaQueryData.invertColors, false);
+    await tester.tap(find.widgetWithText(TextButton, 'Reset all'));
+    await tester.pumpAndSettle();
+
+    expect(mediaQueryData.textScaler.scale(1.0), 1.0);
+    expect(localizations.locale, const Locale('en', 'US'));
+    expect(textDirection, TextDirection.ltr);
     expect(themeData.platform, defaultPlatform);
+    expect(themeData.visualDensity, VisualDensity.adaptivePlatformDensity);
+    expect(mediaQueryData.boldText, isFalse);
+    expect(find.byType(ColorModeSimulator), findsNothing);
+    expect(find.byType(SemanticsDebugger), findsNothing);
 
     env = tester
         .widget<TestingToolsPanel>(find.byType(TestingToolsPanel))
@@ -578,6 +509,19 @@ Finder _toggleTile<T>(String tileName, String optionName) {
     of: tile,
     matching: find.text(optionName),
   );
+}
+
+Future<void> _tapSwitchToggle(WidgetTester tester, String name) async {
+  final switchWidget = find.ancestor(
+    of: find.text(name),
+    matching: find.byType(SwitchToggle),
+  );
+  final toggleWidget = find.descendant(
+    of: switchWidget,
+    matching: find.byType(Switch),
+  );
+  await tester.tap(toggleWidget);
+  await tester.pump();
 }
 
 Finder _slider(String tileName) {
@@ -598,41 +542,6 @@ Finder _sliderResetButton(String tileName) {
   );
   return find.descendant(
     of: tile,
-    matching: find.byIcon(Icons.replay),
+    matching: find.widgetWithText(OutlinedButton, 'Reset'),
   );
-}
-
-class MockLocalizations {
-  const MockLocalizations(this.locale);
-
-  final Locale locale;
-
-  static MockLocalizations of(BuildContext context) {
-    return Localizations.of<MockLocalizations>(context, MockLocalizations)!;
-  }
-
-  String get greetings {
-    switch (locale.languageCode.toLowerCase()) {
-      case 'fi':
-        return 'Moi';
-      default:
-        return 'Hello';
-    }
-  }
-}
-
-class MockLocalizationsDelegate
-    extends LocalizationsDelegate<MockLocalizations> {
-  @override
-  bool isSupported(Locale locale) =>
-      ['fi', 'en'].contains(locale.languageCode.toLowerCase());
-
-  @override
-  Future<MockLocalizations> load(Locale locale) =>
-      SynchronousFuture<MockLocalizations>(MockLocalizations(locale));
-
-  @override
-  bool shouldReload(covariant LocalizationsDelegate<MockLocalizations> old) {
-    return false;
-  }
 }

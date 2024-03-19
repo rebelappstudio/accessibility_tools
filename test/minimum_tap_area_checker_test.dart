@@ -1,5 +1,6 @@
 import 'package:accessibility_tools/accessibility_tools.dart';
 import 'package:accessibility_tools/src/checkers/minimum_tap_area_checker.dart';
+import 'package:accessibility_tools/src/floating_action_buttons.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -193,12 +194,8 @@ Icon(
     );
 
     await tester.pumpAndSettle();
-    expect(
-      find.byWidgetPredicate((w) =>
-          w is Tooltip &&
-          w.message != 'Long tap to toggle testing tools visibility'),
-      findsNothing,
-    );
+    expect(find.byType(AccessibilityIssuesToggle), findsNothing);
+    expect(find.byType(AccessibilityToolsToggle), findsOneWidget);
   });
 
   testWidgets(
@@ -365,8 +362,8 @@ Icon(
 
       await tester.pumpAndSettle();
 
-      expect(find.byIcon(Icons.accessibility_new), findsNothing);
-      expect(find.byWidgetPredicate((w) => w is Tooltip), findsNothing);
+      expect(find.byType(AccessibilityIssuesToggle), findsNothing);
+      expect(find.byType(AccessibilityToolsToggle), findsOneWidget);
       expect(log, isEmpty);
     },
   );

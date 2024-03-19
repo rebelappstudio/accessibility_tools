@@ -1,5 +1,8 @@
 import 'package:accessibility_tools/accessibility_tools.dart';
+import 'package:accessibility_tools/src/floating_action_buttons.dart';
+import 'package:accessibility_tools/src/testing_tools/testing_tools_panel.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -17,6 +20,14 @@ class TestApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      locale: const Locale('en'),
+      supportedLocales: const [
+        Locale('en', 'US'),
+        Locale('fi', 'FI'),
+      ],
+      localizationsDelegates: [
+        MockLocalizationsDelegate(),
+      ],
       builder: (context, child) => AccessibilityTools(
         checkFontOverflows: true,
         minimumTapAreas: minimumTapAreas,
@@ -39,7 +50,18 @@ Future<void> showAccessibilityIssues(WidgetTester tester) async {
 
 Future<void> showTestingTools(WidgetTester tester) async {
   await tester.pump();
-  await tester.longPress(find.byIcon(Icons.accessibility_new));
+  await tester.tap(find.byType(AccessibilityToolsToggle));
+  await tester.pump();
+}
+
+Future<void> closeTestingTools(WidgetTester tester) async {
+  await tester.pump();
+  await tester.tap(
+    find.descendant(
+      of: find.byType(Toolbar),
+      matching: find.byIcon(Icons.close),
+    ),
+  );
   await tester.pump();
 }
 
@@ -125,4 +147,39 @@ Future<String> recordDebugPrint(Future<void> Function() callback) async {
 
   debugPrint = originalDebugPrint;
   return logBuffer.toString();
+}
+
+class MockLocalizations {
+  const MockLocalizations(this.locale);
+
+  final Locale locale;
+
+  static MockLocalizations of(BuildContext context) {
+    return Localizations.of<MockLocalizations>(context, MockLocalizations)!;
+  }
+
+  String get greetings {
+    switch (locale.languageCode.toLowerCase()) {
+      case 'fi':
+        return 'Moi';
+      default:
+        return 'Hello';
+    }
+  }
+}
+
+class MockLocalizationsDelegate
+    extends LocalizationsDelegate<MockLocalizations> {
+  @override
+  bool isSupported(Locale locale) =>
+      ['fi', 'en'].contains(locale.languageCode.toLowerCase());
+
+  @override
+  Future<MockLocalizations> load(Locale locale) =>
+      SynchronousFuture<MockLocalizations>(MockLocalizations(locale));
+
+  @override
+  bool shouldReload(covariant LocalizationsDelegate<MockLocalizations> old) {
+    return false;
+  }
 }

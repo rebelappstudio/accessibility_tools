@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 import 'color_mode_simulation.dart';
 import 'multi_value_toggle.dart';
@@ -67,7 +66,7 @@ class _TestingToolsPanelState extends State<TestingToolsPanel> {
             padding: MediaQuery.paddingOf(context),
             child: Column(
               children: [
-                _Toolbar(
+                Toolbar(
                   onClose: widget.onClose,
                   onResetAll: () => widget.onEnvironmentUpdate(
                     const TestEnvironment(),
@@ -249,8 +248,10 @@ String _onOffSystemLabels(bool? value) {
   }
 }
 
-class _Toolbar extends StatelessWidget {
-  const _Toolbar({
+@visibleForTesting
+class Toolbar extends StatelessWidget {
+  const Toolbar({
+    super.key,
     required this.onClose,
     required this.onResetAll,
   });

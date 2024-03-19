@@ -38,7 +38,7 @@ class TestingToolsWrapper extends StatelessWidget {
     if (environment?.textDirection != null) {
       body = Directionality(
         textDirection: environment!.textDirection!,
-        child: child,
+        child: body,
       );
     }
 
@@ -53,7 +53,7 @@ class TestingToolsWrapper extends StatelessWidget {
     if (environment?.colorModeSimulation != null) {
       body = ColorModeSimulator(
         simulation: environment!.colorModeSimulation!,
-        child: child,
+        child: body,
       );
     }
 

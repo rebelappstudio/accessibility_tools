@@ -15,11 +15,11 @@ import 'checkers/input_label_checker.dart';
 import 'checkers/minimum_tap_area_checker.dart';
 import 'checkers/mixin.dart';
 import 'checkers/semantic_label_checker.dart';
+import 'floating_action_buttons.dart';
 import 'testing_tools/test_environment.dart';
 import 'testing_tools/testing_tools_panel.dart';
 import 'testing_tools/testing_tools_wrapper.dart';
 
-const _toolsBoxMinSize = 48.0;
 const iOSLargestTextScaleFactor = 1.35;
 
 /// A checker for debug mode that highlights accessibility issues.
@@ -134,7 +134,7 @@ class _AccessibilityToolsState extends State<AccessibilityTools>
               builder: (_) {
                 return CheckerOverlay(
                   checker: _checker,
-                  onLongPressed: () {
+                  onToolsButtonPressed: () {
                     setState(() {
                       _testingToolsVisible = !_testingToolsVisible;
                     });
@@ -171,12 +171,12 @@ class CheckerOverlay extends StatefulWidget {
   const CheckerOverlay({
     super.key,
     required this.checker,
-    required this.onLongPressed,
+    required this.onToolsButtonPressed,
     required this.onHideTestingTools,
   });
 
   final CheckerManager checker;
-  final VoidCallback onLongPressed;
+  final VoidCallback onToolsButtonPressed;
   final VoidCallback onHideTestingTools;
 
   @override
@@ -187,11 +187,11 @@ class _CheckerOverlayState extends State<CheckerOverlay> {
   bool showOverlays = false;
 
   static Rect _inflateToMinimumSize(Rect rect) {
-    if (rect.shortestSide < _toolsBoxMinSize) {
+    if (rect.shortestSide < toolsBoxMinSize) {
       return Rect.fromCenter(
         center: rect.center,
-        width: max(_toolsBoxMinSize, rect.width),
-        height: max(_toolsBoxMinSize, rect.height),
+        width: max(toolsBoxMinSize, rect.width),
+        height: max(toolsBoxMinSize, rect.height),
       );
     }
 
@@ -242,7 +242,7 @@ class _CheckerOverlayState extends State<CheckerOverlay> {
                   onToolsButtonPressed: () {
                     setState(() {
                       showOverlays = false;
-                      widget.onLongPressed();
+                      widget.onToolsButtonPressed();
                     });
                   },
                 ),
@@ -270,80 +270,18 @@ class _WarningButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String message;
-    final tapToChangeIssuesVisibility =
-        toggled ? 'Tap to hide issues' : 'Tap to show issues';
-    switch (issues.length) {
-      case 1:
-        message = 'Accessibility issue found\n\n$tapToChangeIssuesVisibility';
-        break;
-      default:
-        message =
-            '''${issues.length} accessibility issues found\n\n$tapToChangeIssuesVisibility''';
-        break;
-    }
-
-    final double elevation;
-    final Color backgroundColor;
-    final Color foregroundColor;
-    final String semanticLabel;
-
-    if (issues.isEmpty) {
-      elevation = 10;
-      foregroundColor = Theme.of(context).colorScheme.onSecondary;
-      backgroundColor = Theme.of(context).colorScheme.secondary;
-      semanticLabel = 'Show accessibility issues\n';
-    } else {
-      elevation = toggled ? 0 : 10;
-      foregroundColor = toggled ? Colors.white : Colors.yellow;
-      backgroundColor = toggled ? Colors.orange : Colors.red;
-      semanticLabel = toggled
-          ? 'Hide accessibility issues\n'
-          : 'Show accessibility issues\n';
-    }
-
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         if (issues.isNotEmpty)
-          SizedBox.square(
-            dimension: _toolsBoxMinSize,
-            child: Tooltip(
-              message: message,
-              child: FloatingActionButton(
-                shape: const CircleBorder(),
-                elevation: elevation,
-                hoverElevation: elevation,
-                onPressed: onPressed,
-                backgroundColor: backgroundColor,
-                child: Icon(
-                  Icons.accessibility_new,
-                  size: 20,
-                  color: foregroundColor,
-                  semanticLabel: semanticLabel,
-                ),
-              ),
-            ),
+          AccessibilityIssuesToggle(
+            toggled: toggled,
+            issues: issues,
+            onPressed: onPressed,
           ),
         const SizedBox(height: 12),
-        SizedBox.square(
-          dimension: _toolsBoxMinSize,
-          child: Tooltip(
-            message: 'Open testing tools',
-            child: FloatingActionButton(
-              onPressed: onToolsButtonPressed,
-              shape: const CircleBorder(),
-              elevation: elevation,
-              hoverElevation: elevation,
-              backgroundColor: Colors.blue,
-              child: Icon(
-                Icons.handyman,
-                size: 24,
-                color: Colors.white,
-                semanticLabel: semanticLabel,
-              ),
-            ),
-          ),
+        AccessibilityToolsToggle(
+          onToolsButtonPressed: onToolsButtonPressed,
         ),
       ],
     );
