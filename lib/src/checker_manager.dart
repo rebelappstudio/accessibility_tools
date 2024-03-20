@@ -4,14 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 import 'accessibility_issue.dart';
+import 'accessibility_tools.dart';
 import 'checkers/checker_base.dart';
 
 /// Checks for accessibility issues, updating whenever the semantic tree
 /// changes.
 class CheckerManager extends ChangeNotifier {
-  CheckerManager(this.checkers);
+  CheckerManager({
+    required this.checkers,
+    required this.logLevel,
+  });
 
   final Iterable<CheckerBase> checkers;
+  final LogLevel logLevel;
 
   /// A list of current accessibility issues.
   List<AccessibilityIssue> get issues => _issues;
@@ -39,7 +44,7 @@ class CheckerManager extends ChangeNotifier {
     _setIssues(newIssues);
 
     if (newIssues.isNotEmpty && issuesHaveChanged) {
-      _logAccessibilityIssues(newIssues);
+      _logAccessibilityIssues(logLevel, newIssues);
     }
   }
 
@@ -60,7 +65,12 @@ class CheckerManager extends ChangeNotifier {
     return renderObjects;
   }
 
-  void _logAccessibilityIssues(List<AccessibilityIssue> issues) {
+  void _logAccessibilityIssues(
+    LogLevel logLevel,
+    List<AccessibilityIssue> issues,
+  ) {
+    if (logLevel == LogLevel.none) return;
+
     debugPrint('''
 ==========================
 ACCESSIBILITY ISSUES FOUND
@@ -78,7 +88,9 @@ ACCESSIBILITY ISSUES FOUND
         debugPrint(creator.toWidgetCreatorString());
       }
 
-      debugPrint(issue.resolutionGuidance);
+      if (logLevel == LogLevel.verbose) {
+        debugPrint(issue.resolutionGuidance);
+      }
 
       i++;
     }

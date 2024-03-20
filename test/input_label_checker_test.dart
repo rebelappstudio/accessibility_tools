@@ -1,4 +1,5 @@
 import 'package:accessibility_tools/accessibility_tools.dart';
+import 'package:accessibility_tools/src/floating_action_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -198,8 +199,8 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.byIcon(Icons.accessibility_new), findsNothing);
-      expect(find.byWidgetPredicate((w) => w is Tooltip), findsNothing);
+      expect(find.byType(AccessibilityIssuesToggle), findsNothing);
+      expect(find.byType(AccessibilityToolsToggle), findsOneWidget);
     },
   );
 
@@ -219,8 +220,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.byIcon(Icons.accessibility_new), findsNothing);
-      expect(find.byWidgetPredicate((w) => w is Tooltip), findsNothing);
+      expect(find.byType(AccessibilityIssuesToggle), findsNothing);
     },
   );
 
@@ -238,8 +238,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.byIcon(Icons.accessibility_new), findsNothing);
-      expect(find.byWidgetPredicate((w) => w is Tooltip), findsNothing);
+      expect(find.byType(AccessibilityIssuesToggle), findsNothing);
     },
   );
 
@@ -259,8 +258,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.byIcon(Icons.accessibility_new), findsNothing);
-      expect(find.byWidgetPredicate((w) => w is Tooltip), findsNothing);
+      expect(find.byType(AccessibilityIssuesToggle), findsNothing);
     },
   );
 
@@ -311,8 +309,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.byIcon(Icons.accessibility_new), findsNothing);
-      expect(find.byWidgetPredicate((w) => w is Tooltip), findsNothing);
+      expect(find.byType(AccessibilityIssuesToggle), findsNothing);
     },
   );
 
@@ -392,8 +389,7 @@ Read more about screen readers: https://docs.flutter.dev/development/accessibili
     );
     await tester.pumpAndSettle();
 
-    expect(find.byIcon(Icons.accessibility_new), findsNothing);
-    expect(find.byWidgetPredicate((w) => w is Tooltip), findsNothing);
+    expect(find.byType(AccessibilityIssuesToggle), findsNothing);
   });
 
   testWidgets("Doesn't show warning for CheckboxListTile", (tester) async {
@@ -410,8 +406,7 @@ Read more about screen readers: https://docs.flutter.dev/development/accessibili
     );
     await tester.pumpAndSettle();
 
-    expect(find.byIcon(Icons.accessibility_new), findsNothing);
-    expect(find.byWidgetPredicate((w) => w is Tooltip), findsNothing);
+    expect(find.byType(AccessibilityIssuesToggle), findsNothing);
   });
 
   testWidgets('Shows warning for Radio', (tester) async {
@@ -451,8 +446,7 @@ Read more about screen readers: https://docs.flutter.dev/development/accessibili
     );
     await tester.pumpAndSettle();
 
-    expect(find.byIcon(Icons.accessibility_new), findsNothing);
-    expect(find.byWidgetPredicate((w) => w is Tooltip), findsNothing);
+    expect(find.byType(AccessibilityIssuesToggle), findsNothing);
   });
 
   testWidgets('Shows warning for Switch', (tester) async {
@@ -490,8 +484,7 @@ Read more about screen readers: https://docs.flutter.dev/development/accessibili
     );
     await tester.pumpAndSettle();
 
-    expect(find.byIcon(Icons.accessibility_new), findsNothing);
-    expect(find.byWidgetPredicate((w) => w is Tooltip), findsNothing);
+    expect(find.byType(AccessibilityIssuesToggle), findsNothing);
   });
 
   testWidgets('Shows warning for ToggleButtons with icon', (tester) async {
