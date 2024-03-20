@@ -22,6 +22,21 @@ import 'testing_tools/testing_tools_wrapper.dart';
 
 const iOSLargestTextScaleFactor = 1.35;
 
+/// Set log level for the accessibility tools. By default it prints all
+/// available info about found issues and suggested solutions
+enum LogLevel {
+  /// Print found issues and suggested solution
+  verbose,
+
+  /// Print info about found issues but not resolution guidance
+  warning,
+
+  /// Don't print anything to the log. Useful when you don't want logs polluted
+  /// with too many messages (developing the app or only using accessibility
+  /// tools UI)
+  none,
+}
+
 /// A checker for debug mode that highlights accessibility issues.
 ///
 /// Issues are highlighted by a red box.
@@ -30,6 +45,7 @@ class AccessibilityTools extends StatefulWidget {
     super.key,
     required this.child,
     this.minimumTapAreas = MinimumTapAreas.material,
+    this.logLevel = LogLevel.verbose,
     this.checkSemanticLabels = true,
     this.checkMissingInputLabels = true,
     this.checkFontOverflows = false,
@@ -41,6 +57,7 @@ class AccessibilityTools extends StatefulWidget {
 
   final Widget? child;
   final MinimumTapAreas? minimumTapAreas;
+  final LogLevel logLevel;
   final bool checkSemanticLabels;
   final bool checkFontOverflows;
   final bool checkMissingInputLabels;
@@ -51,7 +68,10 @@ class AccessibilityTools extends StatefulWidget {
 
 class _AccessibilityToolsState extends State<AccessibilityTools>
     with SemanticUpdateMixin {
-  late CheckerManager _checker = CheckerManager(_getCheckers());
+  late CheckerManager _checker = CheckerManager(
+    checkers: _getCheckers(),
+    logLevel: widget.logLevel,
+  );
 
   bool _testingToolsVisible = false;
   TestEnvironment _environment = const TestEnvironment();
@@ -77,7 +97,10 @@ class _AccessibilityToolsState extends State<AccessibilityTools>
   @override
   void didUpdateWidget(covariant AccessibilityTools oldWidget) {
     _checker.dispose();
-    _checker = CheckerManager(_getCheckers());
+    _checker = CheckerManager(
+      checkers: _getCheckers(),
+      logLevel: widget.logLevel,
+    );
     super.didUpdateWidget(oldWidget);
   }
 
