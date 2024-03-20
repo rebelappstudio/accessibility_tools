@@ -32,24 +32,11 @@ class AccessibilityIssuesToggle extends StatelessWidget {
         break;
     }
 
-    final double elevation;
-    final Color backgroundColor;
-    final Color foregroundColor;
-    final String semanticLabel;
-
-    if (issues.isEmpty) {
-      elevation = _elevation;
-      foregroundColor = Theme.of(context).colorScheme.onSecondary;
-      backgroundColor = Theme.of(context).colorScheme.secondary;
-      semanticLabel = 'Show accessibility issues\n';
-    } else {
-      elevation = toggled ? 0 : _elevation;
-      foregroundColor = toggled ? Colors.white : Colors.yellow;
-      backgroundColor = toggled ? Colors.orange : Colors.red;
-      semanticLabel = toggled
-          ? 'Hide accessibility issues\n'
-          : 'Show accessibility issues\n';
-    }
+    final double elevation = toggled ? 0 : _elevation;
+    final Color backgroundColor = toggled ? Colors.orange : Colors.red;
+    final Color foregroundColor = toggled ? Colors.white : Colors.yellow;
+    final String semanticLabel =
+        toggled ? 'Hide accessibility issues\n' : 'Show accessibility issues\n';
 
     return SizedBox.square(
       dimension: toolsBoxMinSize,
