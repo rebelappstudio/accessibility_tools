@@ -340,6 +340,53 @@ void main() {
     },
   );
 
+  testWidgets('Can use color mode simulation', (tester) async {
+    await tester.pumpWidget(
+      const TestApp(
+        child: SizedBox(),
+      ),
+    );
+    await tester.pump();
+
+    expect(find.byType(ColorModeSimulator), findsNothing);
+    expect(
+      find.byWidgetPredicate((widget) =>
+          widget is TestingToolsWrapper &&
+          widget.environment?.colorModeSimulation != null),
+      findsNothing,
+    );
+
+    await showTestingTools(tester);
+    await tester.scrollUntilVisible(
+      find.descendant(
+        of: find.ancestor(
+          of: find.text('Color mode simulation'),
+          matching: find.byType(MultiValueToggle<ColorModeSimulation?>),
+        ),
+        matching: find.text('inverted'),
+      ),
+      50,
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(
+      _toggleTile<ColorModeSimulation?>('Color mode simulation', 'inverted'),
+    );
+    await tester.pumpAndSettle();
+    await closeTestingTools(tester);
+    await tester.pumpAndSettle();
+
+    expect(find.byType(ColorModeSimulator), findsOneWidget);
+    expect(
+      find.byWidgetPredicate(
+        (widget) =>
+            widget is TestingToolsWrapper &&
+            widget.environment?.colorModeSimulation ==
+                ColorModeSimulation.inverted,
+      ),
+      findsOneWidget,
+    );
+  });
+
   testWidgets(
     'Can toggle semantics debugger',
     (tester) async {
@@ -364,8 +411,6 @@ void main() {
       expect(find.byType(SemanticsDebugger), findsNothing);
     },
   );
-
-  // TODO color mode simulation  (goldens?)
 
   testWidgets(
     'Testing tool panel has no accessibility issues',
