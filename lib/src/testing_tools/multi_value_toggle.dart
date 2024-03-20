@@ -43,6 +43,7 @@ class MultiValueToggle<T> extends StatelessWidget {
         Wrap(
           alignment: WrapAlignment.start,
           spacing: 8,
+          runSpacing: 8,
           children: [
             ChoiceChip(
               showCheckmark: false,
