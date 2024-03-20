@@ -78,7 +78,7 @@ class _TestingToolsPanelState extends State<TestingToolsPanel> {
                     children: [
                       SliderTile(
                         label:
-                            '''Text scale: ${textScaleFactor.scale(1.0).toStringAsFixed(2)}''',
+                            '''Text scale: ${textScaleFactor.scale(1.0).toStringAsFixed(1)}''',
                         info:
                             '''Change text scaler value to see how layouts behave with different font sizes''',
                         value: textScaleFactor.scale(1.0),

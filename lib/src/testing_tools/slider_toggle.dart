@@ -23,6 +23,8 @@ class SliderTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final divisions = (max * 10 - min).toInt();
+
     return Column(
       children: [
         // TODO editable value
@@ -56,6 +58,7 @@ class SliderTile extends StatelessWidget {
           value: value,
           min: min,
           max: max,
+          divisions: divisions,
           onChanged: onChanged,
         ),
       ],
