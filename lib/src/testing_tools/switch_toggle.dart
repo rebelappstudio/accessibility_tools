@@ -22,8 +22,9 @@ class SwitchToggle extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Expanded(
+        Flexible(
           child: Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
               Flexible(
                 child: Text(

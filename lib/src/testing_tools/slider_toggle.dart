@@ -32,8 +32,9 @@ class SliderTile extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Expanded(
+            Flexible(
               child: Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Flexible(
                     child: Text(
@@ -46,7 +47,7 @@ class SliderTile extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(width: 8),
             OutlinedButton(
               onPressed: () => onChanged(null),
               child: const Text('Reset'),
