@@ -24,7 +24,12 @@ class MyApp extends StatelessWidget {
       ),
     );
 
+    final roundedRectangleShape = RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(60),
+    );
+
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       builder: (context, child) {
         // Add AccessibilityTools to the widget tree. The tools are available
         // only in debug mode
@@ -36,6 +41,12 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorSchemeSeed: Colors.blue,
         brightness: Brightness.light,
+        chipTheme: ChipThemeData(
+          shape: roundedRectangleShape,
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(shape: roundedRectangleShape),
+        ),
         cardTheme: CardTheme(
           color: Colors.blue.withOpacity(.1),
         ),
@@ -71,6 +82,14 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     final strings = AppLocalizations.of(context);
 
+    final density = Theme.of(context).visualDensity;
+    final baseInset = switch (density) {
+      VisualDensity.comfortable => 18.0,
+      VisualDensity.compact => 6.0,
+      VisualDensity.standard => 12.0,
+      _ => 12.0,
+    };
+
     return Scaffold(
       appBar: AppBar(
         title: Text(strings.shopName),
@@ -81,7 +100,7 @@ class _MyHomePageState extends State<MyHomePage> {
           // * no label, impossible to know what this icon is for when using a
           //   screen reader
           Padding(
-            padding: const EdgeInsets.all(8),
+            padding: EdgeInsets.all(baseInset),
             child: InkWell(
               onTap: () {},
               child: const Icon(Icons.person, size: 24),
@@ -91,7 +110,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: ListView(
         padding: MediaQuery.paddingOf(context).copyWith(top: 0) +
-            const EdgeInsets.all(16),
+            EdgeInsets.all(baseInset * 2),
         children: <Widget>[
           SizedBox(
             // Fixed height with a text inside may cause overflow or text may
@@ -104,26 +123,38 @@ class _MyHomePageState extends State<MyHomePage> {
               textAlign: TextAlign.center,
             ),
           ),
-          const SizedBox(height: 12),
-          Wrap(
-            spacing: 8,
-            children: ProductType.values.map((e) {
-              return ChoiceChip(
-                label: Text(e.name),
-                selected: _selectedProductTypes.contains(e),
-                onSelected: (isSelected) {
-                  setState(() {
-                    if (isSelected) {
-                      _selectedProductTypes.add(e);
-                    } else {
-                      _selectedProductTypes.remove(e);
-                    }
-                  });
-                },
-              );
-            }).toList(),
+          SizedBox(height: baseInset),
+          Theme(
+            data: ThemeData(
+              // This chip theme is not very accessible: users with deuteranopia
+              // might have problems recognizing which item is selected
+              chipTheme: ChipThemeData(
+                backgroundColor: const Color(0xFFF44535).withOpacity(0.6),
+                selectedColor: const Color(0xFF8BC549).withOpacity(0.6),
+                showCheckmark: false,
+                side: BorderSide.none,
+              ),
+            ),
+            child: Wrap(
+              spacing: baseInset,
+              children: ProductType.values.map((e) {
+                return ChoiceChip(
+                  label: Text(e.name),
+                  selected: _selectedProductTypes.contains(e),
+                  onSelected: (isSelected) {
+                    setState(() {
+                      if (isSelected) {
+                        _selectedProductTypes.add(e);
+                      } else {
+                        _selectedProductTypes.remove(e);
+                      }
+                    });
+                  },
+                );
+              }).toList(),
+            ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: baseInset),
           ...purchaseableItems(_selectedProductTypes).map((e) {
             final quantity = _shoppingCart[e] ?? 0;
             return ProductListItem(
@@ -140,27 +171,40 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             );
           }),
-          const SizedBox(height: 24),
+          SizedBox(height: baseInset * 2),
           // This button has no label or text. It's impossible to know what
           // this button is for when using a screen reader. It's also impossible
           // to tell what icon this is since it's also not labeled
           ElevatedButton(
             onPressed: () {},
-            child: const Padding(
-              padding: EdgeInsets.all(12.0),
-              child: Icon(
+            child: Padding(
+              padding: EdgeInsets.all(baseInset),
+              child: const Icon(
                 Icons.shopping_cart,
                 size: 42,
               ),
             ),
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: baseInset * 2),
+          // This banner image is not accessible: there's no label that explains
+          // what this image contains. It's impossible to understand the content
+          // for screen reader users
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxHeight: 200),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor.withAlpha(10),
+                borderRadius: BorderRadius.circular(32),
+              ),
+              child: Image.asset('assets/banner.png'),
+            ),
+          ),
+          SizedBox(height: baseInset * 2),
           Container(
             padding: const EdgeInsets.all(24),
-            margin: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               color: Theme.of(context).cardTheme.color,
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(32),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -173,13 +217,13 @@ class _MyHomePageState extends State<MyHomePage> {
                 // Semantics of this sign in form is broken: it's impossible to tell
                 // what the fields are for because they are not labeled using
                 // TextField's decoration
-                const SizedBox(height: 12),
+                SizedBox(height: baseInset),
                 Text(strings.email),
                 const TextField(),
-                const SizedBox(height: 12),
+                SizedBox(height: baseInset),
                 Text(strings.password),
                 const TextField(),
-                const SizedBox(height: 12),
+                SizedBox(height: baseInset),
                 Row(
                   children: [
                     // This checkbox is not attached to the following text so
@@ -221,7 +265,10 @@ class ProductListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Text(item.localizedName(AppLocalizations.of(context))),
+        Text(
+          item.localizedName(AppLocalizations.of(context)),
+          style: const TextStyle(fontSize: 18),
+        ),
         const Spacer(),
         Text(
           item.formattedPrice(AppLocalizations.of(context).locale),
@@ -229,6 +276,7 @@ class ProductListItem extends StatelessWidget {
             // Highlighting the sale price with color doesn't work in all cases.
             // For example, people with protanopia may not see the difference
             // between the regular price and the red-colored sale price
+            fontSize: 18,
             color: item.isOnSale ? const Color.fromARGB(255, 202, 0, 0) : null,
           ),
         ),
@@ -264,7 +312,13 @@ class QuantitySelector extends StatelessWidget {
           onPressed: () => _updateQuantity(quantity - 1),
         ),
         const SizedBox(width: 2),
-        Text(quantity.toString()),
+        Text(
+          quantity.toString(),
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: quantity > 0 ? FontWeight.bold : FontWeight.normal,
+          ),
+        ),
         const SizedBox(width: 2),
         IconButton(
           icon: const Icon(Icons.add),

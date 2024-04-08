@@ -42,17 +42,17 @@ class AppLocalizations {
   String get email {
     switch (locale.languageCode.toLowerCase()) {
       case 'fi':
-        return 'Sähköposti:';
+        return 'Sähköposti';
       case 'en':
       default:
-        return 'Email:';
+        return 'Email';
     }
   }
 
   String get password {
     return switch (locale.languageCode.toLowerCase()) {
-      'fi' => 'Salasana:',
-      _ => 'Password:'
+      'fi' => 'Salasana',
+      _ => 'Password'
     };
   }
 
