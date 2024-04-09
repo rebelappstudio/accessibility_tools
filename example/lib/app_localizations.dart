@@ -1,4 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+
+final localizationDelegates = <LocalizationsDelegate>[
+  AppLocalizationDelegate(),
+  GlobalMaterialLocalizations.delegate,
+  GlobalWidgetsLocalizations.delegate,
+  GlobalCupertinoLocalizations.delegate,
+];
+
+const supportedLocales = [
+  Locale('fi', 'FI'),
+  Locale('en', 'US'),
+];
 
 class AppLocalizations {
   final Locale locale;
