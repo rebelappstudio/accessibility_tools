@@ -23,7 +23,8 @@ class MyApp extends StatelessWidget {
         );
       },
       home: const MyHomePage(),
-      theme: appTheme,
+      theme: lightTheme,
+      darkTheme: darkTheme,
       localizationsDelegates: localizationDelegates,
       supportedLocales: supportedLocales,
       debugShowCheckedModeBanner: false,
