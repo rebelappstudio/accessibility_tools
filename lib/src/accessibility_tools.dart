@@ -172,14 +172,17 @@ class _AccessibilityToolsState extends State<AccessibilityTools>
               builder: (context) {
                 if (!_testingToolsVisible) return const SizedBox();
 
-                return TestingToolsPanel(
-                  environment: _environment,
-                  onClose: () {
-                    setState(() => _testingToolsVisible = false);
-                  },
-                  onEnvironmentUpdate: (TestEnvironment environment) {
-                    setState(() => _environment = environment);
-                  },
+                return Theme(
+                  data: ThemeData(useMaterial3: true),
+                  child: TestingToolsPanel(
+                    environment: _environment,
+                    onClose: () {
+                      setState(() => _testingToolsVisible = false);
+                    },
+                    onEnvironmentUpdate: (TestEnvironment environment) {
+                      setState(() => _environment = environment);
+                    },
+                  ),
                 );
               },
             ),
