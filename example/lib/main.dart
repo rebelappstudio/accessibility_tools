@@ -237,7 +237,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     // This text is not wrapped in Expanded or Flexible so it
                     // may overflow when the font size is increased in
                     // the device settings
-                    const Text('Remember me'),
+                    Text(strings.rememberMe),
                   ],
                 ),
               ],

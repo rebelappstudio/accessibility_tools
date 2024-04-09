@@ -167,6 +167,13 @@ class AppLocalizations {
       _ => 'Sign in to see your previous purchases',
     };
   }
+
+  String get rememberMe {
+    return switch (locale.languageCode.toLowerCase()) {
+      'fi' => 'Muista minut',
+      _ => 'Remember me',
+    };
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {
