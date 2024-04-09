@@ -48,7 +48,9 @@ class MyApp extends StatelessWidget {
           style: ElevatedButton.styleFrom(shape: roundedRectangleShape),
         ),
         cardTheme: CardTheme(
-          color: Colors.blue.withOpacity(.1),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(32),
+          ),
         ),
       ),
       home: const MyHomePage(),
@@ -191,56 +193,50 @@ class _MyHomePageState extends State<MyHomePage> {
           // for screen reader users
           ConstrainedBox(
             constraints: const BoxConstraints(maxHeight: 200),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor.withAlpha(10),
-                borderRadius: BorderRadius.circular(32),
-              ),
+            child: Card(
               child: Image.asset('assets/banner.png'),
             ),
           ),
           SizedBox(height: baseInset * 2),
-          Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: Theme.of(context).cardTheme.color,
-              borderRadius: BorderRadius.circular(32),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  strings.signInTitle,
-                  style: Theme.of(context).textTheme.headlineSmall,
-                  textAlign: TextAlign.center,
-                ),
-                // Semantics of this sign in form is broken: it's impossible to tell
-                // what the fields are for because they are not labeled using
-                // TextField's decoration
-                SizedBox(height: baseInset),
-                Text(strings.email),
-                const TextField(),
-                SizedBox(height: baseInset),
-                Text(strings.password),
-                const TextField(),
-                SizedBox(height: baseInset),
-                Row(
-                  children: [
-                    // This checkbox is not attached to the following text so
-                    // screen readers don't know about what this checkbox is for
-                    Checkbox(
-                      value: _rememberMe,
-                      onChanged: (value) {
-                        setState(() => _rememberMe = value);
-                      },
-                    ),
-                    // This text is not wrapped in Expanded or Flexible so it
-                    // may overflow when the font size is increased in
-                    // the device settings
-                    Text(strings.rememberMe),
-                  ],
-                ),
-              ],
+          Card(
+            child: Padding(
+              padding: EdgeInsets.all(baseInset * 3),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    strings.signInTitle,
+                    style: Theme.of(context).textTheme.headlineSmall,
+                    textAlign: TextAlign.center,
+                  ),
+                  // Semantics of this sign in form is broken: it's impossible to tell
+                  // what the fields are for because they are not labeled using
+                  // TextField's decoration
+                  SizedBox(height: baseInset),
+                  Text(strings.email),
+                  const TextField(),
+                  SizedBox(height: baseInset),
+                  Text(strings.password),
+                  const TextField(),
+                  SizedBox(height: baseInset),
+                  Row(
+                    children: [
+                      // This checkbox is not attached to the following text so
+                      // screen readers don't know about what this checkbox is for
+                      Checkbox(
+                        value: _rememberMe,
+                        onChanged: (value) {
+                          setState(() => _rememberMe = value);
+                        },
+                      ),
+                      // This text is not wrapped in Expanded or Flexible so it
+                      // may overflow when the font size is increased in
+                      // the device settings
+                      Text(strings.rememberMe),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ],
