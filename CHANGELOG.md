@@ -1,3 +1,7 @@
+## 2.0.0
+
+* Add accessibility testing tools, a panel with toggles to help testing app behavior in different conditions
+
 ## 1.0.1
 
 * Upgrade to Flutter 3.16
