@@ -115,7 +115,6 @@ Read more about screen readers: https://docs.flutter.dev/development/accessibili
       );
 
       await tester.pumpAndSettle();
-      expect(find.byIcon(Icons.accessibility_new), findsNothing);
       expect(
         find.byWidgetPredicate((w) =>
             w is Tooltip &&

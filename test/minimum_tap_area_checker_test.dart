@@ -1,5 +1,6 @@
 import 'package:accessibility_tools/accessibility_tools.dart';
 import 'package:accessibility_tools/src/checkers/minimum_tap_area_checker.dart';
+import 'package:accessibility_tools/src/floating_action_buttons.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -146,7 +147,6 @@ Icon(
       );
 
       await tester.pumpAndSettle();
-      expect(find.byIcon(Icons.accessibility_new), findsNothing);
       expect(
         find.byWidgetPredicate((w) =>
             w is Tooltip &&
@@ -176,17 +176,15 @@ Icon(
   testWidgets("Doesn't show warning for offscreen widget", (tester) async {
     tester.view.physicalSize = const Size(500, 500);
 
-    final key = UniqueKey();
     await tester.pumpWidget(
       TestApp(
-        minimumTapAreas: const MinimumTapAreas(desktop: 0, mobile: 100),
+        minimumTapAreas: const MinimumTapAreas(desktop: 0, mobile: 48),
         child: Transform.translate(
           offset: const Offset(-10000, -10000),
           child: SizedBox(
-            width: 50,
-            height: 50,
+            width: 32,
+            height: 32,
             child: GestureDetector(
-              key: key,
               child: const Text('Tap area'),
               onTap: () {},
             ),
@@ -196,8 +194,8 @@ Icon(
     );
 
     await tester.pumpAndSettle();
-    expect(find.byIcon(Icons.accessibility_new), findsNothing);
-    expect(find.byWidgetPredicate((w) => w is Tooltip), findsNothing);
+    expect(find.byType(AccessibilityIssuesToggle), findsNothing);
+    expect(find.byType(AccessibilityToolsToggle), findsOneWidget);
   });
 
   testWidgets(
@@ -364,8 +362,8 @@ Icon(
 
       await tester.pumpAndSettle();
 
-      expect(find.byIcon(Icons.accessibility_new), findsNothing);
-      expect(find.byWidgetPredicate((w) => w is Tooltip), findsNothing);
+      expect(find.byType(AccessibilityIssuesToggle), findsNothing);
+      expect(find.byType(AccessibilityToolsToggle), findsOneWidget);
       expect(log, isEmpty);
     },
   );

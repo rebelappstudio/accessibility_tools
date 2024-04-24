@@ -15,9 +15,27 @@ import 'checkers/input_label_checker.dart';
 import 'checkers/minimum_tap_area_checker.dart';
 import 'checkers/mixin.dart';
 import 'checkers/semantic_label_checker.dart';
+import 'floating_action_buttons.dart';
+import 'testing_tools/test_environment.dart';
+import 'testing_tools/testing_tools_panel.dart';
+import 'testing_tools/testing_tools_wrapper.dart';
 
-const _warningBoxMinSize = 48.0;
 const iOSLargestTextScaleFactor = 1.35;
+
+/// Set log level for the accessibility tools. By default it prints all
+/// available info about found issues and suggested solutions
+enum LogLevel {
+  /// Print found issues and suggested solution
+  verbose,
+
+  /// Print info about found issues but not resolution guidance
+  warning,
+
+  /// Don't print anything to the log. Useful when you don't want logs polluted
+  /// with too many messages (developing the app or only using accessibility
+  /// tools UI)
+  none,
+}
 
 /// A checker for debug mode that highlights accessibility issues.
 ///
@@ -27,6 +45,7 @@ class AccessibilityTools extends StatefulWidget {
     super.key,
     required this.child,
     this.minimumTapAreas = MinimumTapAreas.material,
+    this.logLevel = LogLevel.verbose,
     this.checkSemanticLabels = true,
     this.checkMissingInputLabels = true,
     this.checkFontOverflows = false,
@@ -38,6 +57,7 @@ class AccessibilityTools extends StatefulWidget {
 
   final Widget? child;
   final MinimumTapAreas? minimumTapAreas;
+  final LogLevel logLevel;
   final bool checkSemanticLabels;
   final bool checkFontOverflows;
   final bool checkMissingInputLabels;
@@ -48,7 +68,13 @@ class AccessibilityTools extends StatefulWidget {
 
 class _AccessibilityToolsState extends State<AccessibilityTools>
     with SemanticUpdateMixin {
-  late CheckerManager _checker = CheckerManager(_getCheckers());
+  late CheckerManager _checker = CheckerManager(
+    checkers: _getCheckers(),
+    logLevel: widget.logLevel,
+  );
+
+  bool _testingToolsVisible = false;
+  TestEnvironment _environment = const TestEnvironment();
 
   @override
   void dispose() {
@@ -71,7 +97,10 @@ class _AccessibilityToolsState extends State<AccessibilityTools>
   @override
   void didUpdateWidget(covariant AccessibilityTools oldWidget) {
     _checker.dispose();
-    _checker = CheckerManager(_getCheckers());
+    _checker = CheckerManager(
+      checkers: _getCheckers(),
+      logLevel: widget.logLevel,
+    );
     super.didUpdateWidget(oldWidget);
   }
 
@@ -118,12 +147,40 @@ class _AccessibilityToolsState extends State<AccessibilityTools>
     return Stack(
       textDirection: ui.TextDirection.ltr,
       children: [
-        child,
+        TestingToolsWrapper(
+          environment: _environment,
+          child: child,
+        ),
         Overlay(
           initialEntries: [
             OverlayEntry(
               builder: (_) {
-                return CheckerOverlay(checker: _checker);
+                return CheckerOverlay(
+                  checker: _checker,
+                  onToolsButtonPressed: () {
+                    setState(() {
+                      _testingToolsVisible = !_testingToolsVisible;
+                    });
+                  },
+                  onHideTestingTools: () {
+                    setState(() => _testingToolsVisible = false);
+                  },
+                );
+              },
+            ),
+            OverlayEntry(
+              builder: (context) {
+                if (!_testingToolsVisible) return const SizedBox();
+
+                return TestingToolsPanel(
+                  environment: _environment,
+                  onClose: () {
+                    setState(() => _testingToolsVisible = false);
+                  },
+                  onEnvironmentUpdate: (TestEnvironment environment) {
+                    setState(() => _environment = environment);
+                  },
+                );
               },
             ),
           ],
@@ -137,9 +194,13 @@ class CheckerOverlay extends StatefulWidget {
   const CheckerOverlay({
     super.key,
     required this.checker,
+    required this.onToolsButtonPressed,
+    required this.onHideTestingTools,
   });
 
   final CheckerManager checker;
+  final VoidCallback onToolsButtonPressed;
+  final VoidCallback onHideTestingTools;
 
   @override
   State<CheckerOverlay> createState() => _CheckerOverlayState();
@@ -149,11 +210,11 @@ class _CheckerOverlayState extends State<CheckerOverlay> {
   bool showOverlays = false;
 
   static Rect _inflateToMinimumSize(Rect rect) {
-    if (rect.shortestSide < _warningBoxMinSize) {
+    if (rect.shortestSide < toolsBoxMinSize) {
       return Rect.fromCenter(
         center: rect.center,
-        width: max(_warningBoxMinSize, rect.width),
-        height: max(_warningBoxMinSize, rect.height),
+        width: max(toolsBoxMinSize, rect.width),
+        height: max(toolsBoxMinSize, rect.height),
       );
     }
 
@@ -188,20 +249,28 @@ class _CheckerOverlayState extends State<CheckerOverlay> {
                     ),
                   ),
                 ),
-            if (issues.isNotEmpty)
-              Positioned(
-                bottom: 10,
-                right: 10,
-                child: SafeArea(
-                  child: _WarningButton(
-                    issues: issues,
-                    onPressed: () {
-                      setState(() => showOverlays = !showOverlays);
-                    },
-                    toggled: showOverlays,
-                  ),
+            Positioned(
+              bottom: 10,
+              right: 10,
+              child: SafeArea(
+                child: _WarningButton(
+                  issues: issues,
+                  onPressed: () {
+                    setState(() {
+                      showOverlays = !showOverlays;
+                      widget.onHideTestingTools();
+                    });
+                  },
+                  toggled: showOverlays,
+                  onToolsButtonPressed: () {
+                    setState(() {
+                      showOverlays = false;
+                      widget.onToolsButtonPressed();
+                    });
+                  },
                 ),
               ),
+            ),
           ],
         );
       },
@@ -213,39 +282,31 @@ class _WarningButton extends StatelessWidget {
   const _WarningButton({
     required this.issues,
     required this.onPressed,
+    required this.onToolsButtonPressed,
     required this.toggled,
   });
 
   final bool toggled;
   final List<AccessibilityIssue> issues;
   final VoidCallback onPressed;
+  final VoidCallback onToolsButtonPressed;
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox.square(
-      dimension: _warningBoxMinSize,
-      child: Tooltip(
-        message: issues.length == 1
-            ? 'Accessibility issue found'
-            : '${issues.length} accessibility issues found',
-        child: Transform.translate(
-          offset: toggled ? const Offset(1, 1) : Offset.zero,
-          child: FloatingActionButton(
-            elevation: toggled ? 0 : 10,
-            hoverElevation: toggled ? 0 : 10,
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (issues.isNotEmpty)
+          AccessibilityIssuesToggle(
+            toggled: toggled,
+            issues: issues,
             onPressed: onPressed,
-            backgroundColor: toggled ? Colors.orange : Colors.red,
-            child: Icon(
-              Icons.accessibility_new,
-              size: 25,
-              color: toggled ? Colors.white : Colors.yellow,
-              semanticLabel: toggled
-                  ? 'Hide accessibility issues'
-                  : 'Show accessibility issues',
-            ),
           ),
+        const SizedBox(height: 12),
+        AccessibilityToolsToggle(
+          onToolsButtonPressed: onToolsButtonPressed,
         ),
-      ),
+      ],
     );
   }
 }
