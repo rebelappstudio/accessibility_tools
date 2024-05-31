@@ -50,7 +50,7 @@ class AccessibilityTools extends StatefulWidget {
     this.checkSemanticLabels = true,
     this.checkMissingInputLabels = true,
     this.checkFontOverflows = false,
-    this.checkImageLabels = false,
+    this.checkImageLabels = true,
   });
 
   /// Forces accessibility checkers to run when running from a test.
