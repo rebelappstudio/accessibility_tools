@@ -68,6 +68,10 @@ Experimental: ensures that no flex widgets, such as `Column` and `Row`, overflow
 
 Makes sure text fields (`TextField`, `TextFormField`, `Autocomplete` etc) and inputs (`Checkbox`, `Radio`, `Switch` etc) have semantic labels.
 
+### Image label checker
+
+Makes sure images have semantic labels.
+
 ## Current testing tools toggles
 
 * Text scale. Changes text scale factor, range is 0.1 to 10.0. Does nothing if app ignores text scaling
@@ -91,6 +95,8 @@ AccessibilityTools(
   checkSemanticLabels: false,
   // Check for flex overflows
   checkFontOverflows: true,
+  // Check for image labels
+  checkImageLabels: true,
   // Set how much info about issues is printed
   logLevel: LogLevel.verbose,
   child: child,

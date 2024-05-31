@@ -73,4 +73,8 @@ extension SemanticsDataExtension on SemanticsData {
         hasFlag(SemanticsFlag.hasCheckedState) ||
         hasFlag(SemanticsFlag.hasToggledState);
   }
+
+  bool get isImage {
+    return hasFlag(SemanticsFlag.isImage);
+  }
 }

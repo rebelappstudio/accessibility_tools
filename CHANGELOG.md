@@ -1,3 +1,7 @@
+## 2.1.0
+
+* Add accessibility checker for images without labels
+
 ## 2.0.0
 
 * Add accessibility testing tools, a panel with toggles to help testing app behavior in different conditions

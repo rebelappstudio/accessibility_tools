@@ -1,6 +1,7 @@
 import 'package:accessibility_tools/src/accessibility_tools.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:network_image_mock/network_image_mock.dart';
 
 import 'test_utils.dart';
 
@@ -52,6 +53,34 @@ void main() {
         tester,
         erroredWidgetFinder: find.byKey(gestureDetectorKey),
         tooltipMessage: 'Tap area is missing a semantic label',
+      );
+    },
+  );
+
+  testWidgets(
+    'Shows warning for Image without semantic label',
+    (WidgetTester tester) async {
+      const imageKey = Key('Image');
+
+      await mockNetworkImagesFor(() async {
+        await tester.pumpWidget(
+          TestApp(
+            child: Image.network(
+              'https://picsum.photos/200/200',
+              height: 200,
+              width: 200,
+              key: imageKey,
+            ),
+          ),
+        );
+      });
+
+      await showAccessibilityIssues(tester);
+
+      expectAccessibilityWarning(
+        tester,
+        erroredWidgetFinder: find.byKey(imageKey),
+        tooltipMessage: 'Image widget is missing a semantic label.',
       );
     },
   );

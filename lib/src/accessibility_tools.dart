@@ -11,6 +11,7 @@ import 'accessibility_issue.dart';
 import 'checker_manager.dart';
 import 'checkers/checker_base.dart';
 import 'checkers/flex_overflow_checker.dart';
+import 'checkers/image_label_checker.dart';
 import 'checkers/input_label_checker.dart';
 import 'checkers/minimum_tap_area_checker.dart';
 import 'checkers/mixin.dart';
@@ -49,6 +50,7 @@ class AccessibilityTools extends StatefulWidget {
     this.checkSemanticLabels = true,
     this.checkMissingInputLabels = true,
     this.checkFontOverflows = false,
+    this.checkImageLabels = true,
   });
 
   /// Forces accessibility checkers to run when running from a test.
@@ -61,6 +63,7 @@ class AccessibilityTools extends StatefulWidget {
   final bool checkSemanticLabels;
   final bool checkFontOverflows;
   final bool checkMissingInputLabels;
+  final bool checkImageLabels;
 
   @override
   State<AccessibilityTools> createState() => _AccessibilityToolsState();
@@ -119,6 +122,7 @@ class _AccessibilityToolsState extends State<AccessibilityTools>
           textScaleFactor: iOSLargestTextScaleFactor,
         ),
       if (widget.checkMissingInputLabels) InputLabelChecker(),
+      if (widget.checkImageLabels) ImageLabelChecker(),
     ];
   }
 

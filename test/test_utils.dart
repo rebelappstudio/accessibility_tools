@@ -32,6 +32,7 @@ class TestApp extends StatelessWidget {
       ],
       builder: (context, child) => AccessibilityTools(
         checkFontOverflows: true,
+        checkImageLabels: true,
         minimumTapAreas: minimumTapAreas,
         logLevel: logLevel,
         child: child,
