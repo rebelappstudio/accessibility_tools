@@ -21,28 +21,7 @@ class ImageLabelChecker extends SemanticsNodeChecker {
     final hasLabel = data.label.trim().isNotEmpty;
     if (hasLabel) return null;
 
-    if (node.hasFlag(SemanticsFlag.isImage)) {
-      return _getImageIssue(renderObject);
-    }
-
-    return _getDefaultIssue(renderObject);
-  }
-
-  AccessibilityIssue _getDefaultIssue(RenderObject renderObject) {
-    return AccessibilityIssue(
-      message: 'Image widget is missing a semantic label.',
-      resolutionGuidance: '''
-Consider adding a label to the widgets if it allows or using the Semantics
-widget to provide a label:
-
-  Semantics(
-    label: 'Show password',
-    child: MyWidget(),
-  )
-
-''',
-      renderObject: renderObject,
-    );
+    return _getImageIssue(renderObject);
   }
 
   AccessibilityIssue _getImageIssue(RenderObject renderObject) {

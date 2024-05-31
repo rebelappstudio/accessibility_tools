@@ -57,6 +57,30 @@ void main() {
   );
 
   testWidgets(
+    'Shows warning for Image without semantic label',
+    (WidgetTester tester) async {
+      const imageKey = Key('Image');
+
+      await tester.pumpWidget(
+        TestApp(
+          child: Image.network(
+            'https://picsum.photos/200/200',
+            key: imageKey,
+          ),
+        ),
+      );
+
+      await showAccessibilityIssues(tester);
+
+      expectAccessibilityWarning(
+        tester,
+        erroredWidgetFinder: find.byKey(imageKey),
+        tooltipMessage: 'Image widget is missing a semantic label.',
+      );
+    },
+  );
+
+  testWidgets(
     'Prints console warning for tap area without semantic label',
     (WidgetTester tester) async {
       final log = await recordDebugPrint(() async {
