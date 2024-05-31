@@ -19,6 +19,7 @@ class MyApp extends StatelessWidget {
         // only in debug mode
         return AccessibilityTools(
           checkFontOverflows: true,
+          checkImageLabels: true,
           child: child,
         );
       },
