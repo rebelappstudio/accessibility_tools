@@ -16,6 +16,7 @@ import 'checkers/input_label_checker.dart';
 import 'checkers/minimum_tap_area_checker.dart';
 import 'checkers/mixin.dart';
 import 'checkers/semantic_label_checker.dart';
+import 'enums/buttons_alignment.dart';
 import 'floating_action_buttons.dart';
 import 'testing_tools/test_environment.dart';
 import 'testing_tools/testing_tools_panel.dart';
@@ -51,6 +52,8 @@ class AccessibilityTools extends StatefulWidget {
     this.checkMissingInputLabels = true,
     this.checkFontOverflows = false,
     this.checkImageLabels = true,
+    this.buttonsAlignment = ButtonsAlignment.bottomRight,
+    this.enableButtonsDrag = false,
   });
 
   /// Forces accessibility checkers to run when running from a test.
@@ -64,6 +67,9 @@ class AccessibilityTools extends StatefulWidget {
   final bool checkFontOverflows;
   final bool checkMissingInputLabels;
   final bool checkImageLabels;
+
+  final ButtonsAlignment buttonsAlignment;
+  final bool enableButtonsDrag;
 
   @override
   State<AccessibilityTools> createState() => _AccessibilityToolsState();
@@ -161,6 +167,8 @@ class _AccessibilityToolsState extends State<AccessibilityTools>
               builder: (_) {
                 return CheckerOverlay(
                   checker: _checker,
+                  buttonsAlignment: widget.buttonsAlignment,
+                  enableButtonsDrag: widget.enableButtonsDrag,
                   onToolsButtonPressed: () {
                     setState(() {
                       _testingToolsVisible = !_testingToolsVisible;
@@ -200,11 +208,15 @@ class CheckerOverlay extends StatefulWidget {
     required this.checker,
     required this.onToolsButtonPressed,
     required this.onHideTestingTools,
+    this.buttonsAlignment = ButtonsAlignment.bottomRight,
+    this.enableButtonsDrag = false,
   });
 
   final CheckerManager checker;
   final VoidCallback onToolsButtonPressed;
   final VoidCallback onHideTestingTools;
+  final ButtonsAlignment buttonsAlignment;
+  final bool enableButtonsDrag;
 
   @override
   State<CheckerOverlay> createState() => _CheckerOverlayState();
@@ -253,31 +265,171 @@ class _CheckerOverlayState extends State<CheckerOverlay> {
                     ),
                   ),
                 ),
-            Positioned(
-              bottom: 10,
-              right: 10,
-              child: SafeArea(
-                child: _WarningButton(
-                  issues: issues,
-                  onPressed: () {
-                    setState(() {
-                      showOverlays = !showOverlays;
-                      widget.onHideTestingTools();
-                    });
-                  },
-                  toggled: showOverlays,
-                  onToolsButtonPressed: () {
-                    setState(() {
-                      showOverlays = false;
-                      widget.onToolsButtonPressed();
-                    });
-                  },
-                ),
+            _DraggablePositioned(
+              minSpacing: 10,
+              initialAlignment: widget.buttonsAlignment,
+              enableDrag: widget.enableButtonsDrag,
+              child: _WarningButton(
+                issues: issues,
+                onPressed: () {
+                  setState(() {
+                    showOverlays = !showOverlays;
+                    widget.onHideTestingTools();
+                  });
+                },
+                toggled: showOverlays,
+                onToolsButtonPressed: () {
+                  setState(() {
+                    showOverlays = false;
+                    widget.onToolsButtonPressed();
+                  });
+                },
               ),
             ),
           ],
         );
       },
+    );
+  }
+}
+
+class _DraggablePositioned extends StatefulWidget {
+  const _DraggablePositioned({
+    this.initialAlignment = ButtonsAlignment.bottomRight,
+    required this.minSpacing,
+    required this.enableDrag,
+    required this.child,
+  });
+
+  final ButtonsAlignment initialAlignment;
+  final double minSpacing;
+  final bool enableDrag;
+  final Widget child;
+
+  @override
+  State<_DraggablePositioned> createState() => _DraggablePositionedState();
+}
+
+class _DraggablePositionedState extends State<_DraggablePositioned> {
+  late Offset _offset = Offset(widget.minSpacing, widget.minSpacing);
+  late ButtonsAlignment _alignment = widget.initialAlignment;
+
+  Offset _panPosition = Offset.zero;
+  bool _isDragging = false;
+
+  void _updateAlignedPosition(Offset position) {
+    final delta = position - _panPosition;
+    switch (_alignment) {
+      case ButtonsAlignment.topLeft:
+        _offset = Offset(_offset.dx + delta.dx, _offset.dy + delta.dy);
+        break;
+      case ButtonsAlignment.topRight:
+        _offset = Offset(_offset.dx - delta.dx, _offset.dy + delta.dy);
+        break;
+      case ButtonsAlignment.bottomLeft:
+        _offset = Offset(_offset.dx + delta.dx, _offset.dy - delta.dy);
+        break;
+      case ButtonsAlignment.bottomRight:
+        _offset = Offset(_offset.dx - delta.dx, _offset.dy - delta.dy);
+        break;
+    }
+    setState(() => _panPosition = position);
+  }
+
+  void _calculateAlignment() {
+    final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
+
+    final leftHalf = _panPosition.dx < width / 2;
+    final topHalf = _panPosition.dy < height / 2;
+
+    if (leftHalf) {
+      if (topHalf) {
+        _alignment = ButtonsAlignment.topLeft;
+      } else {
+        _alignment = ButtonsAlignment.bottomLeft;
+      }
+    } else {
+      if (topHalf) {
+        _alignment = ButtonsAlignment.topRight;
+      } else {
+        _alignment = ButtonsAlignment.bottomRight;
+      }
+    }
+
+    setState(() {
+      _offset = Offset(widget.minSpacing, widget.minSpacing);
+    });
+  }
+
+  void _validateMinDrag(DragUpdateDetails details) {
+    final delta = _panPosition - details.globalPosition;
+    final distance = delta.distanceSquared;
+    if (distance > 300) {
+      _isDragging = true;
+    }
+  }
+
+  void _onPanStart(DragStartDetails details) =>
+      _panPosition = details.globalPosition;
+
+  void _onPanUpdate(DragUpdateDetails details) {
+    if (_isDragging) {
+      _updateAlignedPosition(details.globalPosition);
+    } else {
+      _validateMinDrag(details);
+    }
+  }
+
+  void _onPanEnd(DragEndDetails details) {
+    _isDragging = false;
+    _panPosition = details.globalPosition;
+    _calculateAlignment();
+  }
+
+  Widget _buildAlignedPosition(BuildContext context, Widget child) {
+    switch (_alignment) {
+      case ButtonsAlignment.topLeft:
+        return Positioned(
+          left: _offset.dx,
+          top: _offset.dy,
+          child: child,
+        );
+      case ButtonsAlignment.topRight:
+        return Positioned(
+          right: _offset.dx,
+          top: _offset.dy,
+          child: child,
+        );
+      case ButtonsAlignment.bottomLeft:
+        return Positioned(
+          left: _offset.dx,
+          bottom: _offset.dy,
+          child: child,
+        );
+      case ButtonsAlignment.bottomRight:
+        return Positioned(
+          right: _offset.dx,
+          bottom: _offset.dy,
+          child: child,
+        );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _buildAlignedPosition(
+      context,
+      SafeArea(
+        child: widget.enableDrag
+            ? GestureDetector(
+                onPanStart: _onPanStart,
+                onPanUpdate: _onPanUpdate,
+                onPanEnd: _onPanEnd,
+                child: widget.child,
+              )
+            : widget.child,
+      ),
     );
   }
 }

@@ -1,3 +1,8 @@
+## 2.2.0
+
+* Added option to move the buttons around the screen
+* Added option to change the buttons alignment
+
 ## 2.1.0
 
 * Add accessibility checker for images without labels

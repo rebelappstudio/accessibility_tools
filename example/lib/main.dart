@@ -18,6 +18,7 @@ class MyApp extends StatelessWidget {
         // Add AccessibilityTools to the widget tree. The tools are available
         // only in debug mode
         return AccessibilityTools(
+          enableButtonsDrag: true,
           checkFontOverflows: true,
           checkImageLabels: true,
           child: child,
