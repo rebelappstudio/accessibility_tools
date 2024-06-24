@@ -543,6 +543,60 @@ void main() {
         .environment;
     expect(env, const TestEnvironment());
   });
+
+  testWidgets(
+    'Can move buttons when enableButtonsDrag is true',
+    (tester) async {
+      await tester.pumpWidget(
+        const TestApp(
+          enableButtonsDrag: true,
+          child: SizedBox(),
+        ),
+      );
+      await tester.pump();
+
+      final buttonFinder = find.byType(AccessibilityToolsToggle);
+      final view = tester.viewOf(buttonFinder);
+      final deviceSize = view.physicalSize / view.devicePixelRatio;
+
+      expect(buttonFinder, findsOneWidget);
+
+      Offset center() => tester.getCenter(buttonFinder);
+
+      expect(center().dx, greaterThan(deviceSize.width / 2));
+      expect(center().dy, greaterThan(deviceSize.height / 2));
+
+      await _pan(tester, buttonFinder, Offset(0, -deviceSize.height));
+
+      expect(center().dx, greaterThan(deviceSize.width / 2));
+      expect(center().dy, lessThan(deviceSize.height / 2));
+
+      await _pan(tester, buttonFinder, Offset(-deviceSize.width, 0));
+
+      expect(center().dx, lessThan(deviceSize.width / 2));
+      expect(center().dy, lessThan(deviceSize.height / 2));
+
+      await _pan(tester, buttonFinder, Offset(0, deviceSize.height));
+
+      expect(center().dx, lessThan(deviceSize.width / 2));
+      expect(center().dy, greaterThan(deviceSize.height / 2));
+
+      await _pan(tester, buttonFinder, Offset(deviceSize.width, 0));
+
+      expect(center().dx, greaterThan(deviceSize.width / 2));
+      expect(center().dy, greaterThan(deviceSize.height / 2));
+    },
+  );
+}
+
+Future<void> _pan(
+    WidgetTester tester, Finder buttonFinder, Offset offset) async {
+  await tester.fling(
+    buttonFinder,
+    offset,
+    offset.distance * 10,
+  );
+  await tester.pumpAndSettle();
 }
 
 Finder _toggleTile<T>(String tileName, String optionName) {

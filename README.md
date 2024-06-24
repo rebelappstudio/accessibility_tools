@@ -99,6 +99,10 @@ AccessibilityTools(
   checkImageLabels: true,
   // Set how much info about issues is printed
   logLevel: LogLevel.verbose,
+  // Set where the buttons are placed
+  buttonsAlignment: ButtonsAlignment.bottomRight,
+  // Enable or disable draging the buttons around
+  enableButtonsDrag: false,
   child: child,
 )
 ```

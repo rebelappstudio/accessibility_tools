@@ -13,11 +13,13 @@ class TestApp extends StatelessWidget {
     required this.child,
     this.minimumTapAreas = MinimumTapAreas.material,
     this.logLevel = LogLevel.verbose,
+    this.enableButtonsDrag = false,
   });
 
   final Widget child;
   final MinimumTapAreas? minimumTapAreas;
   final LogLevel logLevel;
+  final bool enableButtonsDrag;
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +36,7 @@ class TestApp extends StatelessWidget {
         checkFontOverflows: true,
         checkImageLabels: true,
         minimumTapAreas: minimumTapAreas,
+        enableButtonsDrag: enableButtonsDrag,
         logLevel: logLevel,
         child: child,
       ),
