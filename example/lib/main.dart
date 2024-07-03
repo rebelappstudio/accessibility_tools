@@ -21,6 +21,7 @@ class MyApp extends StatelessWidget {
           enableButtonsDrag: true,
           checkFontOverflows: true,
           checkImageLabels: true,
+          buttonsAlignment: ButtonsAlignment.bottomRight,
           child: child,
         );
       },
