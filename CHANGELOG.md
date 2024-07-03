@@ -1,3 +1,7 @@
+## 2.2.1
+
+* Fix ButtonsAlignment being not accessible
+
 ## 2.2.0
 
 * Added option to move the buttons around the screen
