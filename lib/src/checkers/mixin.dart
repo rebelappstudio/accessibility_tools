@@ -8,7 +8,7 @@ mixin SemanticUpdateMixin<T extends StatefulWidget> on State<T> {
 
   @override
   void initState() {
-    _rootSemanticsHandle = RendererBinding.instance.ensureSemantics();
+    _rootSemanticsHandle = SemanticsBinding.instance.ensureSemantics();
 
     RendererBinding.instance.rootPipelineOwner.visitChildren((child) {
       final client = SemanticsClient(child)..addListener(_update);
@@ -23,7 +23,9 @@ mixin SemanticUpdateMixin<T extends StatefulWidget> on State<T> {
     _rootSemanticsHandle.dispose();
 
     for (final client in _clients) {
-      client.dispose();
+      client
+        ..removeListener(_update)
+        ..dispose();
     }
 
     super.dispose();
@@ -42,14 +44,18 @@ mixin SemanticUpdateMixin<T extends StatefulWidget> on State<T> {
 
 class SemanticsClient extends ChangeNotifier {
   SemanticsClient(PipelineOwner pipelineOwner) {
-    semanticsHandle = pipelineOwner.ensureSemantics(listener: notifyListeners);
+    _semanticsOwner = pipelineOwner.semanticsOwner
+      ?..addListener(notifyListeners);
   }
 
-  late final SemanticsHandle semanticsHandle;
+  late final SemanticsOwner? _semanticsOwner;
 
   @override
   void dispose() {
-    semanticsHandle.dispose();
+    // Looks like disposing root semantics owner is enough to dispose all
+    // semantics owners so _semanticsOwner is not explicitly disposed here
+    _semanticsOwner?.removeListener(notifyListeners);
+
     super.dispose();
   }
 }
