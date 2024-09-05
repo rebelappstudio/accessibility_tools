@@ -1,3 +1,8 @@
+## 2.2.2
+
+* Flutter 3.24 fixes
+* Bump Flutter and Dart version constraints
+
 ## 2.2.1
 
 * Fix ButtonsAlignment being not accessible
