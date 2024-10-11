@@ -1,11 +1,19 @@
 name: accessibility_tools
 description: Checkers and tools to ensure your app is accessible to all. Ensures your app is accessible from day one, by checking your interface as you build it.
-version: 2.2.2
+version: 2.2.3
 homepage: https://github.com/rebelappstudio/accessibility_tools/
 topics:
   - accessibility
   - a11y
   - ui
+
+platforms:
+  android:
+  ios:
+  macos:
+  windows:
+  linux:
+  web:
 
 environment:
   sdk: ">=3.0.0 <4.0.0"

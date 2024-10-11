@@ -1,3 +1,7 @@
+## 2.2.3
+
+* Make package available on web
+
 ## 2.2.2
 
 * Flutter 3.24 fixes
