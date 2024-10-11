@@ -137,7 +137,6 @@ class _AccessibilityToolsState extends State<AccessibilityTools>
   @override
   Widget build(BuildContext context) {
     if (!kDebugMode ||
-        kIsWeb ||
         (!AccessibilityTools.debugRunCheckersInTests && _isTest)) {
       return widget.child!;
     }
