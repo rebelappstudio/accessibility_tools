@@ -1,6 +1,5 @@
 import 'dart:ui' as ui;
 
-import 'package:collection/collection.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter/widgets.dart';
 
@@ -37,7 +36,7 @@ abstract class SemanticsNodeChecker extends CheckerBase {
   void didUpdateSemantics(List<RenderObject> semanticRenderObjects) {
     issues = semanticRenderObjects
         .map((node) => checkNode(node.debugSemantics!, node))
-        .whereNotNull()
+        .nonNulls
         .toList();
   }
 

@@ -243,7 +243,6 @@ String _onOffSystemLabels(bool? value) {
     case false:
       return 'off';
     case null:
-    default:
       return 'System';
   }
 }

@@ -65,8 +65,8 @@ class _MyHomePageState extends State<MyHomePage> {
               // This chip theme is not very accessible: users with deuteranopia
               // might have problems recognizing which item is selected
               chipTheme: ChipThemeData(
-                backgroundColor: const Color(0xFFF44535).withOpacity(0.6),
-                selectedColor: const Color(0xFF8BC549).withOpacity(0.6),
+                backgroundColor: const Color(0xFFF44535).withValues(alpha: 0.6),
+                selectedColor: const Color(0xFF8BC549).withValues(alpha: 0.6),
                 showCheckmark: false,
                 side: BorderSide.none,
               ),
