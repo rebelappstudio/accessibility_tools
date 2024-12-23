@@ -1,3 +1,8 @@
+## 2.3.0
+
+* Use kMinInteractiveDimension and kMinInteractiveDimensionCupertino as default values for min tap area sizes
+* Add TestingToolsConfiguration to enable/disable tools panel and control text scale factors
+
 ## 2.2.3
 
 * Make package available on web

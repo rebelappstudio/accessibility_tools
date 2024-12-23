@@ -14,12 +14,14 @@ class TestApp extends StatelessWidget {
     this.minimumTapAreas = MinimumTapAreas.material,
     this.logLevel = LogLevel.verbose,
     this.enableButtonsDrag = false,
+    this.testingToolsConfiguration = const TestingToolsConfiguration(),
   });
 
   final Widget child;
   final MinimumTapAreas? minimumTapAreas;
   final LogLevel logLevel;
   final bool enableButtonsDrag;
+  final TestingToolsConfiguration testingToolsConfiguration;
 
   @override
   Widget build(BuildContext context) {
@@ -32,14 +34,17 @@ class TestApp extends StatelessWidget {
       localizationsDelegates: [
         MockLocalizationsDelegate(),
       ],
-      builder: (context, child) => AccessibilityTools(
-        checkFontOverflows: true,
-        checkImageLabels: true,
-        minimumTapAreas: minimumTapAreas,
-        enableButtonsDrag: enableButtonsDrag,
-        logLevel: logLevel,
-        child: child,
-      ),
+      builder: (context, child) {
+        return AccessibilityTools(
+          checkFontOverflows: true,
+          checkImageLabels: true,
+          minimumTapAreas: minimumTapAreas,
+          enableButtonsDrag: enableButtonsDrag,
+          logLevel: logLevel,
+          testingToolsConfiguration: testingToolsConfiguration,
+          child: child,
+        );
+      },
       home: Scaffold(
         body: Center(child: child),
       ),

@@ -5,6 +5,7 @@ import 'multi_value_toggle.dart';
 import 'slider_toggle.dart';
 import 'switch_toggle.dart';
 import 'test_environment.dart';
+import 'testing_tools_configuration.dart';
 
 /// Testing tools panel widget with various toggles and settings. Changing any
 /// setting produces a new instance of [TestEnvironment] delivered
@@ -15,8 +16,10 @@ class TestingToolsPanel extends StatefulWidget {
     required this.onClose,
     required this.environment,
     required this.onEnvironmentUpdate,
+    required this.configuration,
   });
 
+  final TestingToolsConfiguration configuration;
   final TestEnvironment environment;
   final VoidCallback onClose;
   final void Function(TestEnvironment environment) onEnvironmentUpdate;
@@ -82,8 +85,8 @@ class _TestingToolsPanelState extends State<TestingToolsPanel> {
                         info:
                             '''Change text scaler value to see how layouts behave with different font sizes''',
                         value: textScaleFactor.scale(1.0),
-                        min: 0.1,
-                        max: 10.0,
+                        min: widget.configuration.minTextScale,
+                        max: widget.configuration.maxTextScale,
                         onChanged: (value) {
                           this.textScaleFactor = value;
                           _notifyTestEnvironmentChanged();

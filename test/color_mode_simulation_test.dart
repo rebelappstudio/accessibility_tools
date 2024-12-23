@@ -8,40 +8,42 @@ void main() {
     await tester.pump();
     await expectLater(
       find.byType(_TestApp),
-      matchesGoldenFile('color-mode-original.png'),
+      matchesGoldenFile('goldens/color-mode-original.png'),
     );
 
     await tester.pumpWidget(const _TestApp(ColorModeSimulation.protanopia));
     await tester.pump();
     await expectLater(
       find.byType(_TestApp),
-      matchesGoldenFile('color-mode-protanopia.png'),
+      matchesGoldenFile('goldens/color-mode-protanopia.png'),
     );
 
     await tester.pumpWidget(const _TestApp(ColorModeSimulation.deuteranopia));
     await tester.pump();
     await expectLater(
       find.byType(_TestApp),
-      matchesGoldenFile('color-mode-deuteranopia.png'),
+      matchesGoldenFile('goldens/color-mode-deuteranopia.png'),
     );
 
     await tester.pumpWidget(const _TestApp(ColorModeSimulation.tritanopia));
     await tester.pump();
     await expectLater(
       find.byType(_TestApp),
-      matchesGoldenFile('color-mode-tritanopia.png'),
+      matchesGoldenFile('goldens/color-mode-tritanopia.png'),
     );
 
     await tester.pumpWidget(const _TestApp(ColorModeSimulation.inverted));
     await tester.pump();
     await expectLater(
-        find.byType(_TestApp), matchesGoldenFile('color-mode-inverted.png'));
+      find.byType(_TestApp),
+      matchesGoldenFile('goldens/color-mode-inverted.png'),
+    );
 
     await tester.pumpWidget(const _TestApp(ColorModeSimulation.grayscale));
     await tester.pump();
     await expectLater(
       find.byType(_TestApp),
-      matchesGoldenFile('color-mode-grayscale.png'),
+      matchesGoldenFile('goldens/color-mode-grayscale.png'),
     );
   });
 }

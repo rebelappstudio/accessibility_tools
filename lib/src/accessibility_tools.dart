@@ -19,6 +19,7 @@ import 'checkers/semantic_label_checker.dart';
 import 'enums/buttons_alignment.dart';
 import 'floating_action_buttons.dart';
 import 'testing_tools/test_environment.dart';
+import 'testing_tools/testing_tools_configuration.dart';
 import 'testing_tools/testing_tools_panel.dart';
 import 'testing_tools/testing_tools_wrapper.dart';
 
@@ -54,6 +55,7 @@ class AccessibilityTools extends StatefulWidget {
     this.checkImageLabels = true,
     this.buttonsAlignment = ButtonsAlignment.bottomRight,
     this.enableButtonsDrag = false,
+    this.testingToolsConfiguration = const TestingToolsConfiguration(),
   });
 
   /// Forces accessibility checkers to run when running from a test.
@@ -70,6 +72,7 @@ class AccessibilityTools extends StatefulWidget {
 
   final ButtonsAlignment buttonsAlignment;
   final bool enableButtonsDrag;
+  final TestingToolsConfiguration testingToolsConfiguration;
 
   @override
   State<AccessibilityTools> createState() => _AccessibilityToolsState();
@@ -168,6 +171,8 @@ class _AccessibilityToolsState extends State<AccessibilityTools>
                   checker: _checker,
                   buttonsAlignment: widget.buttonsAlignment,
                   enableButtonsDrag: widget.enableButtonsDrag,
+                  isTestingPanelEnabled:
+                      widget.testingToolsConfiguration.enabled,
                   onToolsButtonPressed: () {
                     setState(() {
                       _testingToolsVisible = !_testingToolsVisible;
@@ -179,21 +184,23 @@ class _AccessibilityToolsState extends State<AccessibilityTools>
                 );
               },
             ),
-            OverlayEntry(
-              builder: (context) {
-                if (!_testingToolsVisible) return const SizedBox();
+            if (widget.testingToolsConfiguration.enabled)
+              OverlayEntry(
+                builder: (context) {
+                  if (!_testingToolsVisible) return const SizedBox();
 
-                return TestingToolsPanel(
-                  environment: _environment,
-                  onClose: () {
-                    setState(() => _testingToolsVisible = false);
-                  },
-                  onEnvironmentUpdate: (TestEnvironment environment) {
-                    setState(() => _environment = environment);
-                  },
-                );
-              },
-            ),
+                  return TestingToolsPanel(
+                    environment: _environment,
+                    configuration: widget.testingToolsConfiguration,
+                    onClose: () {
+                      setState(() => _testingToolsVisible = false);
+                    },
+                    onEnvironmentUpdate: (TestEnvironment environment) {
+                      setState(() => _environment = environment);
+                    },
+                  );
+                },
+              ),
           ],
         ),
       ],
@@ -207,6 +214,7 @@ class CheckerOverlay extends StatefulWidget {
     required this.checker,
     required this.onToolsButtonPressed,
     required this.onHideTestingTools,
+    required this.isTestingPanelEnabled,
     this.buttonsAlignment = ButtonsAlignment.bottomRight,
     this.enableButtonsDrag = false,
   });
@@ -216,6 +224,7 @@ class CheckerOverlay extends StatefulWidget {
   final VoidCallback onHideTestingTools;
   final ButtonsAlignment buttonsAlignment;
   final bool enableButtonsDrag;
+  final bool isTestingPanelEnabled;
 
   @override
   State<CheckerOverlay> createState() => _CheckerOverlayState();
@@ -270,6 +279,7 @@ class _CheckerOverlayState extends State<CheckerOverlay> {
               enableDrag: widget.enableButtonsDrag,
               child: _WarningButton(
                 issues: issues,
+                isTestingPanelEnabled: widget.isTestingPanelEnabled,
                 onPressed: () {
                   setState(() {
                     showOverlays = !showOverlays;
@@ -439,9 +449,11 @@ class _WarningButton extends StatelessWidget {
     required this.onPressed,
     required this.onToolsButtonPressed,
     required this.toggled,
+    required this.isTestingPanelEnabled,
   });
 
   final bool toggled;
+  final bool isTestingPanelEnabled;
   final List<AccessibilityIssue> issues;
   final VoidCallback onPressed;
   final VoidCallback onToolsButtonPressed;
@@ -457,10 +469,12 @@ class _WarningButton extends StatelessWidget {
             issues: issues,
             onPressed: onPressed,
           ),
-        const SizedBox(height: 12),
-        AccessibilityToolsToggle(
-          onToolsButtonPressed: onToolsButtonPressed,
-        ),
+        if (isTestingPanelEnabled) ...[
+          const SizedBox(height: 12),
+          AccessibilityToolsToggle(
+            onToolsButtonPressed: onToolsButtonPressed,
+          ),
+        ],
       ],
     );
   }

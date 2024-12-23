@@ -429,6 +429,7 @@ void main() {
                 environment: const TestEnvironment(),
                 onClose: () {},
                 onEnvironmentUpdate: (_) {},
+                configuration: const TestingToolsConfiguration(),
               ),
             ),
           ),
@@ -587,6 +588,44 @@ void main() {
       expect(center().dy, greaterThan(deviceSize.height / 2));
     },
   );
+
+  testWidgets('Default scale configuration', (tester) async {
+    await tester.pumpWidget(
+      const TestApp(
+        enableButtonsDrag: true,
+        child: SizedBox(),
+      ),
+    );
+    await tester.pump();
+    await showTestingTools(tester);
+    const defaultTestingToolsConfiguration = TestingToolsConfiguration();
+
+    final slider = _slider('Text scale:');
+    final widget = slider.evaluate().single.widget as Slider;
+    expect(widget.min, defaultTestingToolsConfiguration.minTextScale);
+    expect(widget.max, defaultTestingToolsConfiguration.maxTextScale);
+  });
+
+  testWidgets('Custom scale configuration', (tester) async {
+    const customTestingToolsConfiguration = TestingToolsConfiguration(
+      minTextScale: 1,
+      maxTextScale: 100,
+    );
+    await tester.pumpWidget(
+      const TestApp(
+        enableButtonsDrag: true,
+        testingToolsConfiguration: customTestingToolsConfiguration,
+        child: SizedBox(),
+      ),
+    );
+    await tester.pump();
+    await showTestingTools(tester);
+
+    final slider = _slider('Text scale:');
+    final widget = slider.evaluate().single.widget as Slider;
+    expect(widget.min, customTestingToolsConfiguration.minTextScale);
+    expect(widget.max, customTestingToolsConfiguration.maxTextScale);
+  });
 }
 
 Future<void> _pan(
