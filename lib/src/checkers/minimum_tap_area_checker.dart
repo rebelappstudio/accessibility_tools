@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -19,7 +20,7 @@ class MinimumTapAreas {
   ///
   /// 48 on mobile devices with touch screens, and 28 on desktop devices.
   static const MinimumTapAreas material = MinimumTapAreas(
-    mobile: 48,
+    mobile: kMinInteractiveDimension,
     desktop: 28,
   );
 
@@ -28,7 +29,7 @@ class MinimumTapAreas {
   ///
   /// 44 on mobile devices with touch screens, and 28 on desktop devices.
   static const MinimumTapAreas cupertino = MinimumTapAreas(
-    mobile: 44,
+    mobile: kMinInteractiveDimensionCupertino,
     desktop: 28,
   );
 
