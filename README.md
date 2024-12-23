@@ -103,6 +103,12 @@ AccessibilityTools(
   buttonsAlignment: ButtonsAlignment.bottomRight,
   // Enable or disable draging the buttons around
   enableButtonsDrag: false,
+  // Customize testing tools configuration
+  testingToolsConfiguration: TestingToolsConfiguration(
+    enabled: true,
+    minTextScale: 1.0,
+    maxTextScale: 2,
+  ),
   child: child,
 )
 ```
