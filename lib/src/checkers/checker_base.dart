@@ -51,7 +51,6 @@ abstract class WidgetCheckerBase extends CheckerBase {
 }
 
 extension RenderObjectExtension on RenderObject {
-  @protected
   Rect getGlobalRect() {
     assert(attached, 'RenderObject must be attached to get global rect');
 
