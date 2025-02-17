@@ -163,23 +163,39 @@ Read more about screen readers: https://docs.flutter.dev/development/accessibili
         MaterialApp(
           builder: (context, child) => AccessibilityTools(child: child),
           home: WidgetInspector(
-            child: const Scaffold(),
-            selectButtonBuilder: (context, onPressed) {
+            exitWidgetSelectionButtonBuilder: (
+              BuildContext context, {
+              required VoidCallback onPressed,
+              required GlobalKey key,
+            }) {
               return FloatingActionButton(
+                key: key,
                 onPressed: onPressed,
-                child: const Icon(Icons.search),
+                child: const Icon(Icons.close),
               );
             },
+            moveExitWidgetSelectionButtonBuilder: (
+              BuildContext context, {
+              required VoidCallback onPressed,
+              bool? isLeftAligned,
+            }) {
+              return Align(
+                alignment: isLeftAligned!
+                    ? Alignment.centerLeft
+                    : Alignment.centerRight,
+                child: FloatingActionButton(
+                  onPressed: onPressed,
+                  child: const Icon(Icons.move_down),
+                ),
+              );
+            },
+            child: const Scaffold(),
           ),
         ),
       );
 
-      // Tap the scaffold to show the inspector button
+      // Tap the scaffold to active inspector's widget selection
       await tester.tap(find.byType(Scaffold), warnIfMissed: false);
-      await tester.pump();
-
-      // Verify inspector button is shown
-      expect(find.byIcon(Icons.search), findsOneWidget);
       await tester.pump();
 
       // Verify no accessibility issues found
