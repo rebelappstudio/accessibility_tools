@@ -66,9 +66,13 @@ class MinimumTapAreaChecker extends SemanticsNodeChecker {
   AccessibilityIssue? checkNode(SemanticsNode node, RenderObject renderObject) {
     final window = _flutterViewForRenderObject(renderObject);
 
-    if (window == null ||
-        node.isMergedIntoParent ||
-        !node.getSemanticsData().isTappable) {
+    if (window == null || node.isMergedIntoParent || !node.getSemanticsData().isTappable) {
+      return null;
+    }
+
+    // skip this node if explicitly ignored by user
+    final context = _contextForRenderObject(renderObject);
+    if (context != null && IgnoreMinimumTapAreaSize.maybeOf(context) != null) {
       return null;
     }
 
@@ -117,6 +121,15 @@ Icon(
     return null;
   }
 
+  BuildContext? _contextForRenderObject(RenderObject renderObject) {
+    final creator = renderObject.debugCreator;
+    if (creator is DebugCreator) {
+      return creator.element;
+    } else {
+      return null;
+    }
+  }
+
   @visibleForTesting
   static String format(double val) {
     // Round to N places after decimal point where N is 2
@@ -140,19 +153,40 @@ Icon(
     final widthDiff = (nodeSize.width - renderObjectSize.width).abs();
     final heightDiff = (nodeSize.height - renderObjectSize.height).abs();
     const offScreenDelta = 5.0;
-    final isNodeOffScreen =
-        widthDiff >= offScreenDelta || heightDiff >= offScreenDelta;
+    final isNodeOffScreen = widthDiff >= offScreenDelta || heightDiff >= offScreenDelta;
     if (isNodeOffScreen) {
       return true;
     }
 
     // Check if node's paint bounds are off screen
     const delta = 10.0;
-    final windowPhysicalSize =
-        flutterView.physicalSize * flutterView.devicePixelRatio;
+    final windowPhysicalSize = flutterView.physicalSize * flutterView.devicePixelRatio;
     return nodePaintBounds.top < -delta ||
         nodePaintBounds.left < -delta ||
         nodePaintBounds.bottom > windowPhysicalSize.height + delta ||
         nodePaintBounds.right > windowPhysicalSize.width + delta;
+  }
+}
+
+class IgnoreMinimumTapAreaSize extends InheritedWidget {
+  const IgnoreMinimumTapAreaSize({
+    super.key,
+    required super.child,
+  });
+
+  static IgnoreMinimumTapAreaSize? maybeOf(BuildContext context) {
+    return LookupBoundary.dependOnInheritedWidgetOfExactType<IgnoreMinimumTapAreaSize>(context);
+  }
+
+  static IgnoreMinimumTapAreaSize of(BuildContext context) {
+    final IgnoreMinimumTapAreaSize? result =
+        context.dependOnInheritedWidgetOfExactType<IgnoreMinimumTapAreaSize>();
+    assert(result != null, 'No IgnoreMinimumTapAreaSize found in context');
+    return result!;
+  }
+
+  @override
+  bool updateShouldNotify(IgnoreMinimumTapAreaSize oldWidget) {
+    return false;
   }
 }
