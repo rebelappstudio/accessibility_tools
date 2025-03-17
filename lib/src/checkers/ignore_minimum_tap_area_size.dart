@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+/// When added to the widget tree, warnings caused by <code>MinimumTapAreaSizeChecker</code>
+/// are ignored for all descendants of this widget.
 class IgnoreMinimumTapAreaSize extends InheritedWidget {
   const IgnoreMinimumTapAreaSize({
     super.key,
