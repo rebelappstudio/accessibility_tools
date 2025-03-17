@@ -1,5 +1,4 @@
 import 'package:accessibility_tools/accessibility_tools.dart';
-import 'package:accessibility_tools/src/checkers/ignore_minimum_tap_area_size.dart';
 import 'package:accessibility_tools/src/checkers/minimum_tap_area_checker.dart';
 import 'package:accessibility_tools/src/floating_action_buttons.dart';
 import 'package:flutter/foundation.dart';
