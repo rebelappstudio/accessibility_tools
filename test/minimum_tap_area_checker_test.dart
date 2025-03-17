@@ -389,7 +389,7 @@ Icon(
 
   testWidgets(
     "Doesn't show warning if explicitly ignored by user",
-        (WidgetTester tester) async {
+    (WidgetTester tester) async {
       await tester.pumpWidget(
         TestApp(
           child: IgnoreMinimumTapAreaSize(

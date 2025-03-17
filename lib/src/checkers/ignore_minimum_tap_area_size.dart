@@ -7,12 +7,13 @@ class IgnoreMinimumTapAreaSize extends InheritedWidget {
   });
 
   static IgnoreMinimumTapAreaSize? maybeOf(BuildContext context) {
-    return LookupBoundary.dependOnInheritedWidgetOfExactType<IgnoreMinimumTapAreaSize>(context);
+    return LookupBoundary.dependOnInheritedWidgetOfExactType<
+        IgnoreMinimumTapAreaSize>(context);
   }
 
   static IgnoreMinimumTapAreaSize of(BuildContext context) {
     final IgnoreMinimumTapAreaSize? result =
-    context.dependOnInheritedWidgetOfExactType<IgnoreMinimumTapAreaSize>();
+        context.dependOnInheritedWidgetOfExactType<IgnoreMinimumTapAreaSize>();
     assert(result != null, 'No IgnoreMinimumTapAreaSize found in context');
     return result!;
   }
