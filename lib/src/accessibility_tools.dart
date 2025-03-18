@@ -142,9 +142,11 @@ class _AccessibilityToolsState extends State<AccessibilityTools>
   /// should not be used.
   bool get _isTest {
     final bindingName = WidgetsBinding.instance.runtimeType.toString();
-    return bindingName == 'AutomatedTestWidgetsFlutterBinding' ||
-        bindingName == 'LiveTestWidgetsFlutterBinding' ||
-        bindingName == 'TestWidgetsFlutterBinding';
+    return const [
+      'AutomatedTestWidgetsFlutterBinding',
+      'LiveTestWidgetsFlutterBinding',
+      'TestWidgetsFlutterBinding',
+    ].contains(bindingName);
   }
 
   @override
