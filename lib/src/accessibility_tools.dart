@@ -5,7 +5,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_test/flutter_test.dart';
 
 import 'accessibility_issue.dart';
 import 'checker_manager.dart';
@@ -135,7 +134,20 @@ class _AccessibilityToolsState extends State<AccessibilityTools>
     ];
   }
 
-  late final _isTest = WidgetsBinding.instance is TestWidgetsFlutterBinding;
+  /// Returns true if currently running in a test environment (e.g.
+  /// widget tests).
+  ///
+  /// It uses type names instead of `is` operator because all test binginds are
+  /// part of flutter_test which uses dart:io. In order to support WASM, dart:io
+  /// should not be used.
+  bool get _isTest {
+    final bindingName = WidgetsBinding.instance.runtimeType.toString();
+    return const [
+      'AutomatedTestWidgetsFlutterBinding',
+      'LiveTestWidgetsFlutterBinding',
+      'TestWidgetsFlutterBinding',
+    ].contains(bindingName);
+  }
 
   @override
   Widget build(BuildContext context) {
