@@ -1,3 +1,8 @@
+## 2.4.0
+
+* Add IgnoreMinimumTapAreaSize widget for ignoring tap area size checks
+* Flutter 3.29 fixes
+
 ## 2.3.0
 
 * Use kMinInteractiveDimension and kMinInteractiveDimensionCupertino as default values for min tap area sizes
