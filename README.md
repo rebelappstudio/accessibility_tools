@@ -60,6 +60,9 @@ Adding a semantic label would fix this: `Icon(Icons.person, semanticLabel: 'Logi
 
 Makes sure all tappable widgets are large enough to easily tap. Defaults to the [Material Design minimum](https://m3.material.io/foundations/accessible-design/accessibility-basics#28032e45-c598-450c-b355-f9fe737b1cd8) of 48x48 on mobile devices, and 44x44 on desktop devices.
 
+For exceptional cases (e.g. a button for each day in a calendar widget), tap area checker warnings can be 
+ignored by wrapping the corresponding widget with `IgnoreMinimumTapAreaSize`.
+
 ### Large font overflow checker
 
 Experimental: ensures that no flex widgets, such as `Column` and `Row`, overflow when a user is using larger font sizes. This checker is experimental, and disabled by default, and can be enabled via `AccessibilityTools(checkFontOverflows: true)`.

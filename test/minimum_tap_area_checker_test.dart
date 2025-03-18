@@ -385,4 +385,29 @@ Icon(
       expect(format(100 / 6 /* 16.6(6) */), '16.67');
     },
   );
+
+  testWidgets(
+    "Doesn't show warning if explicitly ignored by user",
+    (WidgetTester tester) async {
+      await tester.pumpWidget(
+        TestApp(
+          child: IgnoreMinimumTapAreaSize(
+            child: SizedBox(
+              width: 10,
+              height: 10,
+              child: GestureDetector(
+                child: const Text('Tap area'),
+                onTap: () {},
+              ),
+            ),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AccessibilityIssuesToggle), findsNothing);
+      expect(find.byType(AccessibilityToolsToggle), findsOneWidget);
+    },
+  );
 }

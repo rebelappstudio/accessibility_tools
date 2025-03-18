@@ -7,6 +7,7 @@ import 'package:flutter/rendering.dart';
 
 import '../accessibility_issue.dart';
 import 'checker_base.dart';
+import 'ignore_minimum_tap_area_size.dart';
 
 /// Defines the minimum tap size per device type.
 class MinimumTapAreas {
@@ -72,6 +73,12 @@ class MinimumTapAreaChecker extends SemanticsNodeChecker {
       return null;
     }
 
+    // skip this node if explicitly ignored by user
+    final context = _contextForRenderObject(renderObject);
+    if (context != null && IgnoreMinimumTapAreaSize.maybeOf(context) != null) {
+      return null;
+    }
+
     final nodePaintBounds = getPaintBounds(node);
     final renderObjectPaintBounds = renderObject.paintBounds;
     if (_isNodeOffScreen(window, renderObjectPaintBounds, nodePaintBounds)) {
@@ -115,6 +122,15 @@ Icon(
     }
 
     return null;
+  }
+
+  BuildContext? _contextForRenderObject(RenderObject renderObject) {
+    final creator = renderObject.debugCreator;
+    if (creator is DebugCreator) {
+      return creator.element;
+    } else {
+      return null;
+    }
   }
 
   @visibleForTesting
