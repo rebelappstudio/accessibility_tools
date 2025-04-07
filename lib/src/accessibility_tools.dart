@@ -10,6 +10,7 @@ import 'accessibility_issue.dart';
 import 'checker_manager.dart';
 import 'checkers/checker_base.dart';
 import 'checkers/flex_overflow_checker.dart';
+import 'checkers/ignore_minimum_tap_area_size.dart';
 import 'checkers/image_label_checker.dart';
 import 'checkers/input_label_checker.dart';
 import 'checkers/minimum_tap_area_checker.dart';
@@ -60,6 +61,19 @@ class AccessibilityTools extends StatefulWidget {
   /// Forces accessibility checkers to run when running from a test.
   @visibleForTesting
   static bool debugRunCheckersInTests = false;
+
+  /// Forces accessibility tools to ignore its own tap area size issues.
+  ///
+  /// Accessibility tools uses Material widgets and is tested not to have
+  /// accessibility issues. However, in some rare cases issues can be
+  /// reported. For example, when [minimumTapAreas] is set to be bigger than
+  /// Material guidelines or when scrolling and widget is partially off screen.
+  ///
+  /// Setting this flag to true will ignore all accessibility issues in
+  /// accessibility tools. Setting this flag to false will report all
+  /// accessibility issues found in accessibility tools.
+  @visibleForTesting
+  static bool debugIgnoreTapAreaIssuesInTools = true;
 
   final Widget? child;
   final MinimumTapAreas? minimumTapAreas;
@@ -179,7 +193,7 @@ class _AccessibilityToolsState extends State<AccessibilityTools>
           initialEntries: [
             OverlayEntry(
               builder: (_) {
-                return CheckerOverlay(
+                final child = CheckerOverlay(
                   checker: _checker,
                   buttonsAlignment: widget.buttonsAlignment,
                   enableButtonsDrag: widget.enableButtonsDrag,
@@ -194,6 +208,10 @@ class _AccessibilityToolsState extends State<AccessibilityTools>
                     setState(() => _testingToolsVisible = false);
                   },
                 );
+
+                return AccessibilityTools.debugIgnoreTapAreaIssuesInTools
+                    ? IgnoreMinimumTapAreaSize(child: child)
+                    : child;
               },
             ),
             if (widget.testingToolsConfiguration.enabled)
@@ -201,7 +219,7 @@ class _AccessibilityToolsState extends State<AccessibilityTools>
                 builder: (context) {
                   if (!_testingToolsVisible) return const SizedBox();
 
-                  return TestingToolsPanel(
+                  final child = TestingToolsPanel(
                     environment: _environment,
                     configuration: widget.testingToolsConfiguration,
                     onClose: () {
@@ -211,6 +229,10 @@ class _AccessibilityToolsState extends State<AccessibilityTools>
                       setState(() => _environment = environment);
                     },
                   );
+
+                  return AccessibilityTools.debugIgnoreTapAreaIssuesInTools
+                      ? IgnoreMinimumTapAreaSize(child: child)
+                      : child;
                 },
               ),
           ],

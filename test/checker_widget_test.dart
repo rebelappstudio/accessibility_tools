@@ -7,6 +7,7 @@ void main() {
     "Builder doesn't prevent root widget changing",
     (WidgetTester tester) async {
       AccessibilityTools.debugRunCheckersInTests = true;
+      AccessibilityTools.debugIgnoreTapAreaIssuesInTools = false;
 
       await tester.pumpWidget(
         MaterialApp(
