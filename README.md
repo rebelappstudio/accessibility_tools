@@ -67,6 +67,8 @@ ignored by wrapping the corresponding widget with `IgnoreMinimumTapAreaSize`.
 
 Experimental: ensures that no flex widgets, such as `Column` and `Row`, overflow when a user is using larger font sizes. This checker is experimental, and disabled by default, and can be enabled via `AccessibilityTools(checkFontOverflows: true)`.
 
+This checker temporarily adjusts the text scale to simulate the effect of larger font sizes. When the check is performed, you might observe a visual increase in text size as part of this simulation (most noticeable after hot reload).
+
 ### Input label checker
 
 Makes sure text fields (`TextField`, `TextFormField`, `Autocomplete` etc) and inputs (`Checkbox`, `Radio`, `Switch` etc) have semantic labels.
