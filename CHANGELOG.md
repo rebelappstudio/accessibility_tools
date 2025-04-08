@@ -1,3 +1,7 @@
+## 2.4.1
+
+* Fix: accessibility_tools no longer report their own internal issues
+
 ## 2.4.0
 
 * Add IgnoreMinimumTapAreaSize widget for ignoring tap area size checks

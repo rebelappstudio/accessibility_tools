@@ -10,6 +10,7 @@ import 'test_utils.dart';
 void main() {
   setUp(() {
     AccessibilityTools.debugRunCheckersInTests = true;
+    AccessibilityTools.debugIgnoreTapAreaIssuesInTools = false;
   });
 
   testWidgets(
