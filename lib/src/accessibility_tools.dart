@@ -56,6 +56,7 @@ class AccessibilityTools extends StatefulWidget {
     this.buttonsAlignment = ButtonsAlignment.bottomRight,
     this.enableButtonsDrag = false,
     this.testingToolsConfiguration = const TestingToolsConfiguration(),
+    this.testEnvironment = const TestEnvironment(),
   });
 
   /// Forces accessibility checkers to run when running from a test.
@@ -86,6 +87,7 @@ class AccessibilityTools extends StatefulWidget {
   final ButtonsAlignment buttonsAlignment;
   final bool enableButtonsDrag;
   final TestingToolsConfiguration testingToolsConfiguration;
+  final TestEnvironment testEnvironment;
 
   @override
   State<AccessibilityTools> createState() => _AccessibilityToolsState();
@@ -99,7 +101,7 @@ class _AccessibilityToolsState extends State<AccessibilityTools>
   );
 
   bool _testingToolsVisible = false;
-  TestEnvironment _environment = const TestEnvironment();
+  late TestEnvironment _environment = widget.testEnvironment;
 
   @override
   void dispose() {
