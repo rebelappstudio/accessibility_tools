@@ -4,7 +4,6 @@ import 'package:accessibility_tools/src/testing_tools/color_mode_simulation.dart
 import 'package:accessibility_tools/src/testing_tools/multi_value_toggle.dart';
 import 'package:accessibility_tools/src/testing_tools/slider_toggle.dart';
 import 'package:accessibility_tools/src/testing_tools/switch_toggle.dart';
-import 'package:accessibility_tools/src/testing_tools/test_environment.dart';
 import 'package:accessibility_tools/src/testing_tools/testing_tools_panel.dart';
 import 'package:accessibility_tools/src/testing_tools/testing_tools_wrapper.dart';
 import 'package:flutter/material.dart';
@@ -430,6 +429,7 @@ void main() {
                 environment: const TestEnvironment(),
                 onClose: () {},
                 onEnvironmentUpdate: (_) {},
+                onResetAll: () {},
                 configuration: const TestingToolsConfiguration(),
               ),
             ),
