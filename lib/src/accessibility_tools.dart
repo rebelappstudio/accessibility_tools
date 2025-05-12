@@ -230,6 +230,9 @@ class _AccessibilityToolsState extends State<AccessibilityTools>
                     onEnvironmentUpdate: (TestEnvironment environment) {
                       setState(() => _environment = environment);
                     },
+                    onResetAll: () {
+                      setState(() => _environment = widget.testEnvironment);
+                    },
                   );
 
                   return AccessibilityTools.debugIgnoreTapAreaIssuesInTools
