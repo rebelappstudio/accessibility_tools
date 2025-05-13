@@ -65,6 +65,50 @@ void main() {
     expect(find.byType(AccessibilityToolsToggle), findsOneWidget);
   });
 
+  testWidgets('Custom testEnvironment is used as default values',
+      (tester) async {
+    late MediaQueryData mediaQueryData;
+    late ThemeData themeData;
+    late TextDirection textDirection;
+    late MockLocalizations localizations;
+
+    await tester.pumpWidget(
+      TestApp(
+        child: Builder(
+          builder: (context) {
+            mediaQueryData = MediaQuery.of(context);
+            themeData = Theme.of(context);
+            textDirection = Directionality.of(context);
+            localizations = MockLocalizations.of(context);
+
+            return Container();
+          },
+        ),
+      ),
+    );
+    await tester.pump();
+    final defaultPlatform = themeData.platform;
+
+    await showTestingTools(tester);
+
+    final env = tester
+        .widget<TestingToolsPanel>(find.byType(TestingToolsPanel))
+        .environment;
+    expect(
+      env,
+      equals(const TestEnvironment(visualDensity: VisualDensity.standard)),
+    );
+
+    expect(mediaQueryData.textScaler.scale(1.0), 1.0);
+    expect(localizations.locale, const Locale('en', 'US'));
+    expect(textDirection, TextDirection.ltr);
+    expect(themeData.platform, defaultPlatform);
+    expect(themeData.visualDensity, VisualDensity.standard);
+    expect(mediaQueryData.boldText, isFalse);
+    expect(find.byType(ColorModeSimulator), findsNothing);
+    expect(find.byType(SemanticsDebugger), findsNothing);
+  });
+
   testWidgets(
     'Warning boxes are hidden when panel is displayed',
     (tester) async {
@@ -535,7 +579,7 @@ void main() {
     expect(localizations.locale, const Locale('en', 'US'));
     expect(textDirection, TextDirection.ltr);
     expect(themeData.platform, defaultPlatform);
-    expect(themeData.visualDensity, VisualDensity.adaptivePlatformDensity);
+    expect(themeData.visualDensity, VisualDensity.standard);
     expect(mediaQueryData.boldText, isFalse);
     expect(find.byType(ColorModeSimulator), findsNothing);
     expect(find.byType(SemanticsDebugger), findsNothing);
@@ -543,7 +587,7 @@ void main() {
     env = tester
         .widget<TestingToolsPanel>(find.byType(TestingToolsPanel))
         .environment;
-    expect(env, const TestEnvironment());
+    expect(env, const TestEnvironment(visualDensity: VisualDensity.standard));
   });
 
   testWidgets(

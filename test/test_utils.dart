@@ -42,6 +42,9 @@ class TestApp extends StatelessWidget {
           enableButtonsDrag: enableButtonsDrag,
           logLevel: logLevel,
           testingToolsConfiguration: testingToolsConfiguration,
+          testEnvironment: const TestEnvironment(
+            visualDensity: VisualDensity.standard,
+          ),
           child: child,
         );
       },
