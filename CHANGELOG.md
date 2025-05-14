@@ -1,3 +1,7 @@
+## 2.5.0
+
+* Add option to provide default test environment for testing tools panel
+
 ## 2.4.1
 
 * Fix: accessibility_tools no longer report their own internal issues
