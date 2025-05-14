@@ -114,6 +114,11 @@ AccessibilityTools(
     minTextScale: 1.0,
     maxTextScale: 2,
   ),
+  // Customize default test environment
+  environment: TestEnvironment(
+    visualDensity: VisualDensity.standard,
+    // ...
+  ),
   child: child,
 )
 ```

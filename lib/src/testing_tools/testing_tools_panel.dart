@@ -16,6 +16,7 @@ class TestingToolsPanel extends StatefulWidget {
     required this.onClose,
     required this.environment,
     required this.onEnvironmentUpdate,
+    required this.onResetAll,
     required this.configuration,
   });
 
@@ -23,6 +24,7 @@ class TestingToolsPanel extends StatefulWidget {
   final TestEnvironment environment;
   final VoidCallback onClose;
   final void Function(TestEnvironment environment) onEnvironmentUpdate;
+  final void Function() onResetAll;
 
   @override
   State<TestingToolsPanel> createState() => _TestingToolsPanelState();
@@ -69,9 +71,7 @@ class _TestingToolsPanelState extends State<TestingToolsPanel> {
           children: [
             Toolbar(
               onClose: widget.onClose,
-              onResetAll: () => widget.onEnvironmentUpdate(
-                const TestEnvironment(),
-              ),
+              onResetAll: widget.onResetAll,
             ),
             Expanded(
               child: ListView(
