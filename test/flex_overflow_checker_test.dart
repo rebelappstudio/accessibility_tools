@@ -10,45 +10,39 @@ void main() {
     AccessibilityTools.debugIgnoreTapAreaIssuesInTools = false;
   });
 
-  testWidgets(
-    'Shows warning for overflowing text',
-    (WidgetTester tester) async {
+  testWidgets('Shows warning for overflowing text', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(
+      const TestApp(
+        child: SizedBox(width: 100, child: Row(children: [Text('Testing')])),
+      ),
+    );
+
+    await showAccessibilityIssues(tester);
+
+    expectAccessibilityWarning(
+      tester,
+      erroredWidgetFinder: find.byType(Row),
+      tooltipMessage: 'This RenderFlex will overflow at larger font sizes.',
+    );
+  });
+
+  testWidgets('Prints console warning for overflowing text', (
+    WidgetTester tester,
+  ) async {
+    final log = await recordDebugPrint(() async {
       await tester.pumpWidget(
         const TestApp(
-          child: SizedBox(
-            width: 100,
-            child: Row(children: [Text('Testing')]),
-          ),
+          child: SizedBox(width: 100, child: Row(children: [Text('Testing')])),
         ),
       );
 
       await showAccessibilityIssues(tester);
+    });
 
-      expectAccessibilityWarning(
-        tester,
-        erroredWidgetFinder: find.byType(Row),
-        tooltipMessage: 'This RenderFlex will overflow at larger font sizes.',
-      );
-    },
-  );
-
-  testWidgets(
-    'Prints console warning for overflowing text',
-    (WidgetTester tester) async {
-      final log = await recordDebugPrint(() async {
-        await tester.pumpWidget(
-          const TestApp(
-            child: SizedBox(
-              width: 100,
-              child: Row(children: [Text('Testing')]),
-            ),
-          ),
-        );
-
-        await showAccessibilityIssues(tester);
-      });
-
-      final expectedLog = '''
+    final expectedLog =
+        '''
 ==========================
 ACCESSIBILITY ISSUES FOUND
 ==========================
@@ -73,7 +67,6 @@ Read more about large fonts: https://docs.flutter.dev/development/accessibility-
 Read more about RenderFlex overflow: https://docs.flutter.dev/testing/common-errors#a-renderflex-overflowed
 ''';
 
-      expect(log, expectedLog);
-    },
-  );
+    expect(log, expectedLog);
+  });
 }

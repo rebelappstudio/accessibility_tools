@@ -8,10 +8,7 @@ final localizationDelegates = <LocalizationsDelegate>[
   GlobalCupertinoLocalizations.delegate,
 ];
 
-const supportedLocales = [
-  Locale('fi', 'FI'),
-  Locale('en', 'US'),
-];
+const supportedLocales = [Locale('fi', 'FI'), Locale('en', 'US')];
 
 class AppLocalizations {
   final Locale locale;
@@ -65,112 +62,112 @@ class AppLocalizations {
   String get password {
     return switch (locale.languageCode.toLowerCase()) {
       'fi' => 'Salasana',
-      _ => 'Password'
+      _ => 'Password',
     };
   }
 
   String get productNameCucumber {
     return switch (locale.languageCode.toLowerCase()) {
       "fi" => 'Kurkku',
-      _ => 'Cucumber'
+      _ => 'Cucumber',
     };
   }
 
   String get productNameTomato {
     return switch (locale.languageCode.toLowerCase()) {
       "fi" => 'Tomaatti',
-      _ => 'Tomato'
+      _ => 'Tomato',
     };
   }
 
   String get productNameApple {
     return switch (locale.languageCode.toLowerCase()) {
       "fi" => 'Omena',
-      _ => 'Apple'
+      _ => 'Apple',
     };
   }
 
   String get productNameBanana {
     return switch (locale.languageCode.toLowerCase()) {
       "fi" => 'Banaani',
-      _ => 'Banana'
+      _ => 'Banana',
     };
   }
 
   String get productNamePineapple {
     return switch (locale.languageCode.toLowerCase()) {
       "fi" => 'Ananas',
-      _ => 'Pineapple'
+      _ => 'Pineapple',
     };
   }
 
   String get productNameOrange {
     return switch (locale.languageCode.toLowerCase()) {
       "fi" => 'Appelsiini',
-      _ => 'Orange'
+      _ => 'Orange',
     };
   }
 
   String get productNameGrapes {
     return switch (locale.languageCode.toLowerCase()) {
       "fi" => 'Viinirypäleet',
-      _ => 'Grapes'
+      _ => 'Grapes',
     };
   }
 
   String get productNameWatermelon {
     return switch (locale.languageCode.toLowerCase()) {
       "fi" => 'Vesimeloni',
-      _ => 'Watermelon'
+      _ => 'Watermelon',
     };
   }
 
   String get productNameStrawberry {
     return switch (locale.languageCode.toLowerCase()) {
       "fi" => 'Mansikka',
-      _ => 'Strawberry'
+      _ => 'Strawberry',
     };
   }
 
   String get productNameMango {
     return switch (locale.languageCode.toLowerCase()) {
       "fi" => 'Mango',
-      _ => 'Mango'
+      _ => 'Mango',
     };
   }
 
   String get productNamePeach {
     return switch (locale.languageCode.toLowerCase()) {
       "fi" => 'Persikka',
-      _ => 'Peach'
+      _ => 'Peach',
     };
   }
 
   String get productNamePear {
     return switch (locale.languageCode.toLowerCase()) {
       "fi" => 'Päärynä',
-      _ => 'Pear'
+      _ => 'Pear',
     };
   }
 
   String get productNameLemon {
     return switch (locale.languageCode.toLowerCase()) {
       "fi" => 'Sitruuna',
-      _ => 'Lemon'
+      _ => 'Lemon',
     };
   }
 
   String get productNameBlueberry {
     return switch (locale.languageCode.toLowerCase()) {
       "fi" => 'Mustikka',
-      _ => 'Blueberry'
+      _ => 'Blueberry',
     };
   }
 
   String get productNameRaspberry {
     return switch (locale.languageCode.toLowerCase()) {
       "fi" => 'Vadelma',
-      _ => 'Raspberry'
+      _ => 'Raspberry',
     };
   }
 

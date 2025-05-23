@@ -10,68 +10,61 @@ void main() {
     AccessibilityTools.debugIgnoreTapAreaIssuesInTools = false;
   });
 
-  testWidgets(
-    'of returns parent IgnoreMinimumTapAreaSize',
-    (WidgetTester tester) async {
-      final childKey = GlobalKey();
-      await tester.pumpWidget(
-        TestApp(
-          child: IgnoreMinimumTapAreaSize(
-            child: Placeholder(key: childKey),
-          ),
-        ),
-      );
+  testWidgets('of returns parent IgnoreMinimumTapAreaSize', (
+    WidgetTester tester,
+  ) async {
+    final childKey = GlobalKey();
+    await tester.pumpWidget(
+      TestApp(
+        child: IgnoreMinimumTapAreaSize(child: Placeholder(key: childKey)),
+      ),
+    );
 
-      await tester.pumpAndSettle();
+    await tester.pumpAndSettle();
 
-      expect(() => IgnoreMinimumTapAreaSize.of(childKey.currentContext!),
-          returnsNormally);
-    },
-  );
+    expect(
+      () => IgnoreMinimumTapAreaSize.of(childKey.currentContext!),
+      returnsNormally,
+    );
+  });
 
-  testWidgets(
-    'maybe of returns parent IgnoreMinimumTapAreaSize if present',
-    (WidgetTester tester) async {
-      final childKey = GlobalKey();
-      await tester.pumpWidget(
-        TestApp(
-          child: IgnoreMinimumTapAreaSize(
-            child: Placeholder(key: childKey),
-          ),
-        ),
-      );
+  testWidgets('maybe of returns parent IgnoreMinimumTapAreaSize if present', (
+    WidgetTester tester,
+  ) async {
+    final childKey = GlobalKey();
+    await tester.pumpWidget(
+      TestApp(
+        child: IgnoreMinimumTapAreaSize(child: Placeholder(key: childKey)),
+      ),
+    );
 
-      await tester.pumpAndSettle();
+    await tester.pumpAndSettle();
 
-      expect(IgnoreMinimumTapAreaSize.maybeOf(childKey.currentContext!),
-          isNotNull);
-    },
-  );
+    expect(
+      IgnoreMinimumTapAreaSize.maybeOf(childKey.currentContext!),
+      isNotNull,
+    );
+  });
 
   testWidgets(
     'maybe of returns null if there is no IgnoreMinimumTapAreaSize parent',
     (WidgetTester tester) async {
       final childKey = GlobalKey();
-      await tester.pumpWidget(
-        TestApp(
-          child: Placeholder(key: childKey),
-        ),
-      );
+      await tester.pumpWidget(TestApp(child: Placeholder(key: childKey)));
 
       await tester.pumpAndSettle();
 
       expect(
-          IgnoreMinimumTapAreaSize.maybeOf(childKey.currentContext!), isNull);
+        IgnoreMinimumTapAreaSize.maybeOf(childKey.currentContext!),
+        isNull,
+      );
     },
   );
 
-  test(
-    'updateShouldNotify returns false',
-    () {
-      const widget1 = IgnoreMinimumTapAreaSize(child: Placeholder());
-      const widget2 = IgnoreMinimumTapAreaSize(child: Text(''));
+  test('updateShouldNotify returns false', () {
+    const widget1 = IgnoreMinimumTapAreaSize(child: Placeholder());
+    const widget2 = IgnoreMinimumTapAreaSize(child: Text(''));
 
-      expect(widget1.updateShouldNotify(widget2), isFalse);
-    },
-  );
+    expect(widget1.updateShouldNotify(widget2), isFalse);
+  });
 }

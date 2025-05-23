@@ -37,10 +37,7 @@ class SwitchToggle extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 8),
-        Switch(
-          value: value,
-          onChanged: onChanged,
-        ),
+        Switch(value: value, onChanged: onChanged),
       ],
     );
   }

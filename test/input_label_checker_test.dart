@@ -11,30 +11,29 @@ void main() {
     AccessibilityTools.debugIgnoreTapAreaIssuesInTools = false;
   });
 
-  testWidgets(
-    'Shows warning when label is provided as a separate widget',
-    (tester) async {
-      final key = UniqueKey();
-      await tester.pumpWidget(
-        TestApp(
-          child: Column(
-            children: [
-              const Text('Label'),
-              TextField(key: key),
-            ],
-          ),
+  testWidgets('Shows warning when label is provided as a separate widget', (
+    tester,
+  ) async {
+    final key = UniqueKey();
+    await tester.pumpWidget(
+      TestApp(
+        child: Column(
+          children: [
+            const Text('Label'),
+            TextField(key: key),
+          ],
         ),
-      );
+      ),
+    );
 
-      await showAccessibilityIssues(tester);
+    await showAccessibilityIssues(tester);
 
-      expectAccessibilityWarning(
-        tester,
-        erroredWidgetFinder: find.byKey(key),
-        tooltipMessage: 'Text field is missing a label.',
-      );
-    },
-  );
+    expectAccessibilityWarning(
+      tester,
+      erroredWidgetFinder: find.byKey(key),
+      tooltipMessage: 'Text field is missing a label.',
+    );
+  });
 
   testWidgets('Shows warning when TextField has no hint', (tester) async {
     final key = UniqueKey();
@@ -76,28 +75,25 @@ void main() {
     );
   });
 
-  testWidgets(
-    "Shows warning when TextFields's hint is blank",
-    (tester) async {
-      final key = UniqueKey();
-      await tester.pumpWidget(
-        TestApp(
-          child: TextField(
-            key: key,
-            decoration: const InputDecoration(hintText: '   '),
-          ),
+  testWidgets("Shows warning when TextFields's hint is blank", (tester) async {
+    final key = UniqueKey();
+    await tester.pumpWidget(
+      TestApp(
+        child: TextField(
+          key: key,
+          decoration: const InputDecoration(hintText: '   '),
         ),
-      );
+      ),
+    );
 
-      await showAccessibilityIssues(tester);
+    await showAccessibilityIssues(tester);
 
-      expectAccessibilityWarning(
-        tester,
-        erroredWidgetFinder: find.byKey(key),
-        tooltipMessage: 'Text field is missing a label.',
-      );
-    },
-  );
+    expectAccessibilityWarning(
+      tester,
+      erroredWidgetFinder: find.byKey(key),
+      tooltipMessage: 'Text field is missing a label.',
+    );
+  });
 
   testWidgets('Shows warning when TextFormField has no hint', (tester) async {
     final key = UniqueKey();
@@ -119,8 +115,9 @@ void main() {
     );
   });
 
-  testWidgets("Shows warning when TextFormField's hint is empty",
-      (tester) async {
+  testWidgets("Shows warning when TextFormField's hint is empty", (
+    tester,
+  ) async {
     final key = UniqueKey();
     await tester.pumpWidget(
       TestApp(
@@ -140,90 +137,86 @@ void main() {
     );
   });
 
-  testWidgets(
-    "Shows warning when TextFormFields's hint is blank",
-    (tester) async {
-      final key = UniqueKey();
-      await tester.pumpWidget(
-        TestApp(
+  testWidgets("Shows warning when TextFormFields's hint is blank", (
+    tester,
+  ) async {
+    final key = UniqueKey();
+    await tester.pumpWidget(
+      TestApp(
+        child: TextFormField(
+          key: key,
+          decoration: const InputDecoration(hintText: '   '),
+        ),
+      ),
+    );
+
+    await showAccessibilityIssues(tester);
+
+    expectAccessibilityWarning(
+      tester,
+      erroredWidgetFinder: find.byKey(key),
+      tooltipMessage: 'Text field is missing a label.',
+    );
+  });
+
+  testWidgets("Shows warning when Autocomplete's hint is blank", (
+    tester,
+  ) async {
+    final key = UniqueKey();
+    await tester.pumpWidget(
+      TestApp(
+        child: Autocomplete<int>(
+          key: key,
+          optionsBuilder: (TextEditingValue textEditingValue) => const [],
+        ),
+      ),
+    );
+
+    await showAccessibilityIssues(tester);
+
+    expectAccessibilityWarning(
+      tester,
+      erroredWidgetFinder: find.byKey(key),
+      tooltipMessage: 'Text field is missing a label.',
+    );
+  });
+
+  testWidgets("Doesn't show warning when TextField has non-empty hint ", (
+    tester,
+  ) async {
+    final key = UniqueKey();
+    await tester.pumpWidget(
+      TestApp(
+        child: TextField(
+          key: key,
+          decoration: const InputDecoration(hintText: 'Hint'),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byType(AccessibilityIssuesToggle), findsNothing);
+    expect(find.byType(AccessibilityToolsToggle), findsOneWidget);
+  });
+
+  testWidgets("Doesn't show warning when TextFormField has non-empty hint ", (
+    tester,
+  ) async {
+    final key = UniqueKey();
+    await tester.pumpWidget(
+      TestApp(
+        child: Form(
           child: TextFormField(
-            key: key,
-            decoration: const InputDecoration(hintText: '   '),
-          ),
-        ),
-      );
-
-      await showAccessibilityIssues(tester);
-
-      expectAccessibilityWarning(
-        tester,
-        erroredWidgetFinder: find.byKey(key),
-        tooltipMessage: 'Text field is missing a label.',
-      );
-    },
-  );
-
-  testWidgets(
-    "Shows warning when Autocomplete's hint is blank",
-    (tester) async {
-      final key = UniqueKey();
-      await tester.pumpWidget(
-        TestApp(
-          child: Autocomplete<int>(
-            key: key,
-            optionsBuilder: (TextEditingValue textEditingValue) => const [],
-          ),
-        ),
-      );
-
-      await showAccessibilityIssues(tester);
-
-      expectAccessibilityWarning(
-        tester,
-        erroredWidgetFinder: find.byKey(key),
-        tooltipMessage: 'Text field is missing a label.',
-      );
-    },
-  );
-
-  testWidgets(
-    "Doesn't show warning when TextField has non-empty hint ",
-    (tester) async {
-      final key = UniqueKey();
-      await tester.pumpWidget(
-        TestApp(
-          child: TextField(
             key: key,
             decoration: const InputDecoration(hintText: 'Hint'),
           ),
         ),
-      );
-      await tester.pumpAndSettle();
+      ),
+    );
+    await tester.pumpAndSettle();
 
-      expect(find.byType(AccessibilityIssuesToggle), findsNothing);
-      expect(find.byType(AccessibilityToolsToggle), findsOneWidget);
-    },
-  );
-
-  testWidgets(
-    "Doesn't show warning when TextFormField has non-empty hint ",
-    (tester) async {
-      final key = UniqueKey();
-      await tester.pumpWidget(
-        TestApp(
-          child: Form(
-            child: TextFormField(
-              key: key,
-              decoration: const InputDecoration(hintText: 'Hint'),
-            ),
-          ),
-        ),
-      );
-      await tester.pumpAndSettle();
-
-      expect(find.byType(AccessibilityIssuesToggle), findsNothing);
-    },
-  );
+    expect(find.byType(AccessibilityIssuesToggle), findsNothing);
+  });
 
   testWidgets(
     "Doesn't show warning when TextField has labelText instead of hint",
@@ -243,93 +236,81 @@ void main() {
     },
   );
 
-  testWidgets(
-    "Doesn't show warning when TextField has label widget",
-    (tester) async {
-      final key = UniqueKey();
-      await tester.pumpWidget(
-        TestApp(
-          child: TextField(
-            key: key,
-            decoration: const InputDecoration(
-              label: Text('This is label'),
-            ),
+  testWidgets("Doesn't show warning when TextField has label widget", (
+    tester,
+  ) async {
+    final key = UniqueKey();
+    await tester.pumpWidget(
+      TestApp(
+        child: TextField(
+          key: key,
+          decoration: const InputDecoration(label: Text('This is label')),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byType(AccessibilityIssuesToggle), findsNothing);
+  });
+
+  testWidgets('Shows warning when TextField has icon label and no text hint', (
+    tester,
+  ) async {
+    final key = UniqueKey();
+    await tester.pumpWidget(
+      TestApp(
+        child: TextField(
+          key: key,
+          decoration: const InputDecoration(
+            label: Icon(Icons.label, semanticLabel: null),
           ),
         ),
-      );
-      await tester.pumpAndSettle();
+      ),
+    );
 
-      expect(find.byType(AccessibilityIssuesToggle), findsNothing);
-    },
-  );
+    await showAccessibilityIssues(tester);
 
-  testWidgets(
-    'Shows warning when TextField has icon label and no text hint',
-    (tester) async {
-      final key = UniqueKey();
-      await tester.pumpWidget(
-        TestApp(
-          child: TextField(
-            key: key,
-            decoration: const InputDecoration(
-              label: Icon(
-                Icons.label,
-                semanticLabel: null,
-              ),
-            ),
+    expectAccessibilityWarning(
+      tester,
+      erroredWidgetFinder: find.byKey(key),
+      tooltipMessage: 'Text field is missing a label.',
+    );
+  });
+
+  testWidgets("Doesn't show warning when icon labels has semantic label", (
+    tester,
+  ) async {
+    final key = UniqueKey();
+    await tester.pumpWidget(
+      TestApp(
+        child: TextField(
+          key: key,
+          decoration: const InputDecoration(
+            label: Icon(Icons.label, semanticLabel: 'Icon hint'),
           ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byType(AccessibilityIssuesToggle), findsNothing);
+  });
+
+  testWidgets('Prints console warning for empty hint', (
+    WidgetTester tester,
+  ) async {
+    final log = await recordDebugPrint(() async {
+      await tester.pumpWidget(
+        const TestApp(
+          child: TextField(decoration: InputDecoration(hintText: null)),
         ),
       );
 
       await showAccessibilityIssues(tester);
+    });
 
-      expectAccessibilityWarning(
-        tester,
-        erroredWidgetFinder: find.byKey(key),
-        tooltipMessage: 'Text field is missing a label.',
-      );
-    },
-  );
-
-  testWidgets(
-    "Doesn't show warning when icon labels has semantic label",
-    (tester) async {
-      final key = UniqueKey();
-      await tester.pumpWidget(
-        TestApp(
-          child: TextField(
-            key: key,
-            decoration: const InputDecoration(
-              label: Icon(
-                Icons.label,
-                semanticLabel: 'Icon hint',
-              ),
-            ),
-          ),
-        ),
-      );
-      await tester.pumpAndSettle();
-
-      expect(find.byType(AccessibilityIssuesToggle), findsNothing);
-    },
-  );
-
-  testWidgets(
-    'Prints console warning for empty hint',
-    (WidgetTester tester) async {
-      final log = await recordDebugPrint(() async {
-        await tester.pumpWidget(
-          const TestApp(
-            child: TextField(
-              decoration: InputDecoration(hintText: null),
-            ),
-          ),
-        );
-
-        await showAccessibilityIssues(tester);
-      });
-
-      final expectedLog = '''
+    final expectedLog =
+        '''
 ==========================
 ACCESSIBILITY ISSUES FOUND
 ==========================
@@ -349,19 +330,14 @@ Consider adding a hint or a label to the text field widget. For example:
 Read more about screen readers: https://docs.flutter.dev/development/accessibility-and-localization/accessibility?tab=talkback#screen-readers
 ''';
 
-      expect(log, expectedLog);
-    },
-  );
+    expect(log, expectedLog);
+  });
 
   testWidgets('Shows warning for Checkbox', (tester) async {
     final key = UniqueKey();
     await tester.pumpWidget(
       TestApp(
-        child: Checkbox(
-          key: key,
-          onChanged: (_) {},
-          value: false,
-        ),
+        child: Checkbox(key: key, onChanged: (_) {}, value: false),
       ),
     );
 
@@ -380,11 +356,7 @@ Read more about screen readers: https://docs.flutter.dev/development/accessibili
       TestApp(
         child: Semantics(
           label: 'Checkbox',
-          child: Checkbox(
-            key: key,
-            onChanged: (_) {},
-            value: false,
-          ),
+          child: Checkbox(key: key, onChanged: (_) {}, value: false),
         ),
       ),
     );
@@ -454,11 +426,7 @@ Read more about screen readers: https://docs.flutter.dev/development/accessibili
     final key = UniqueKey();
     await tester.pumpWidget(
       TestApp(
-        child: Switch(
-          key: key,
-          onChanged: (_) {},
-          value: false,
-        ),
+        child: Switch(key: key, onChanged: (_) {}, value: false),
       ),
     );
 
@@ -494,21 +462,12 @@ Read more about screen readers: https://docs.flutter.dev/development/accessibili
       TestApp(
         child: SizedBox(
           child: ToggleButtons(
-            isSelected: const [
-              true,
-              false,
-            ],
+            isSelected: const [true, false],
             // renderBorder: false,
             borderWidth: 0,
             children: [
-              Icon(
-                Icons.sunny,
-                key: key,
-              ),
-              Semantics(
-                label: 'Cloudy',
-                child: const Icon(Icons.cloud),
-              ),
+              Icon(Icons.sunny, key: key),
+              Semantics(label: 'Cloudy', child: const Icon(Icons.cloud)),
             ],
           ),
         ),

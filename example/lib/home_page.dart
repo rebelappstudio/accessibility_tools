@@ -41,7 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
               onTap: () {},
               child: const Icon(Icons.person, size: 24),
             ),
-          )
+          ),
         ],
       ),
       body: ListView(
@@ -115,10 +115,7 @@ class _MyHomePageState extends State<MyHomePage> {
             onPressed: () {},
             child: Padding(
               padding: EdgeInsets.all(baseInset),
-              child: const Icon(
-                Icons.shopping_cart,
-                size: 42,
-              ),
+              child: const Icon(Icons.shopping_cart, size: 42),
             ),
           ),
           SizedBox(height: baseInset * 2),
@@ -127,9 +124,7 @@ class _MyHomePageState extends State<MyHomePage> {
           // for screen reader users
           ConstrainedBox(
             constraints: const BoxConstraints(maxHeight: 200),
-            child: Card(
-              child: Image.asset('assets/banner.png'),
-            ),
+            child: Card(child: Image.asset('assets/banner.png')),
           ),
           SizedBox(height: baseInset * 2),
           Card(

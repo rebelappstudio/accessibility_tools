@@ -30,10 +30,7 @@ class MultiValueToggle<T> extends StatelessWidget {
         Row(
           children: [
             Flexible(
-              child: Text(
-                title,
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
+              child: Text(title, style: Theme.of(context).textTheme.titleLarge),
             ),
             const SizedBox(width: 8),
             InfoButton(text: info),
@@ -41,7 +38,6 @@ class MultiValueToggle<T> extends StatelessWidget {
         ),
         const SizedBox.square(dimension: 8),
         Wrap(
-          alignment: WrapAlignment.start,
           spacing: 8,
           runSpacing: 8,
           children: [

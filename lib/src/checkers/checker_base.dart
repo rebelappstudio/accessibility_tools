@@ -21,8 +21,10 @@ abstract class CheckerBase extends ChangeNotifier {
     SemanticsNode? current = node;
     while (current != null) {
       if (current.transform != null) {
-        paintBounds =
-            MatrixUtils.transformRect(current.transform!, paintBounds);
+        paintBounds = MatrixUtils.transformRect(
+          current.transform!,
+          paintBounds,
+        );
       }
       current = current.parent;
     }
@@ -40,10 +42,7 @@ abstract class SemanticsNodeChecker extends CheckerBase {
         .toList();
   }
 
-  AccessibilityIssue? checkNode(
-    SemanticsNode node,
-    RenderObject renderObject,
-  );
+  AccessibilityIssue? checkNode(SemanticsNode node, RenderObject renderObject);
 }
 
 abstract class WidgetCheckerBase extends CheckerBase {

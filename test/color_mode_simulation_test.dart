@@ -79,10 +79,7 @@ class _TestApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: simulation != null
-            ? ColorModeSimulator(
-                simulation: simulation!,
-                child: spectrum,
-              )
+            ? ColorModeSimulator(simulation: simulation!, child: spectrum)
             : spectrum,
       ),
     );

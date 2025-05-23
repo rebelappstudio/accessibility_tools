@@ -13,36 +13,31 @@ void main() {
     AccessibilityTools.debugIgnoreTapAreaIssuesInTools = false;
   });
 
-  testWidgets(
-    "Disabling testing tools doesn't show the action button",
-    (tester) async {
-      await tester.pumpWidget(
-        const TestApp(
-          testingToolsConfiguration: TestingToolsConfiguration(
-            enabled: true,
-          ),
-          child: SizedBox(),
-        ),
-      );
-      await tester.pump();
+  testWidgets("Disabling testing tools doesn't show the action button", (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      const TestApp(
+        testingToolsConfiguration: TestingToolsConfiguration(enabled: true),
+        child: SizedBox(),
+      ),
+    );
+    await tester.pump();
 
-      expect(find.byType(AccessibilityToolsToggle), findsOneWidget);
-      expect(find.byType(TestingToolsPanel), findsNothing);
+    expect(find.byType(AccessibilityToolsToggle), findsOneWidget);
+    expect(find.byType(TestingToolsPanel), findsNothing);
 
-      await tester.pumpWidget(
-        const TestApp(
-          testingToolsConfiguration: TestingToolsConfiguration(
-            enabled: false,
-          ),
-          child: SizedBox(),
-        ),
-      );
-      await tester.pump();
+    await tester.pumpWidget(
+      const TestApp(
+        testingToolsConfiguration: TestingToolsConfiguration(enabled: false),
+        child: SizedBox(),
+      ),
+    );
+    await tester.pump();
 
-      expect(find.byType(AccessibilityToolsToggle), findsNothing);
-      expect(find.byType(TestingToolsPanel), findsNothing);
-    },
-  );
+    expect(find.byType(AccessibilityToolsToggle), findsNothing);
+    expect(find.byType(TestingToolsPanel), findsNothing);
+  });
 
   test('Invalid text scale values are not allowed', () {
     expect(
@@ -54,10 +49,7 @@ void main() {
       ),
     );
     expect(
-      const TestingToolsConfiguration(
-        minTextScale: 1,
-        maxTextScale: 15,
-      ),
+      const TestingToolsConfiguration(minTextScale: 1, maxTextScale: 15),
       const TestingToolsConfiguration(
         enabled: true,
         minTextScale: 1,
@@ -65,45 +57,30 @@ void main() {
       ),
     );
     expect(
-      () => TestingToolsConfiguration(
-        minTextScale: -1,
-      ),
+      () => TestingToolsConfiguration(minTextScale: -1),
       throwsAssertionError,
     );
     expect(
-      () => TestingToolsConfiguration(
-        minTextScale: -1,
-        maxTextScale: 0,
-      ),
+      () => TestingToolsConfiguration(minTextScale: -1, maxTextScale: 0),
       throwsAssertionError,
     );
     expect(
-      () => TestingToolsConfiguration(
-        minTextScale: 0,
-      ),
+      () => TestingToolsConfiguration(minTextScale: 0),
       throwsAssertionError,
     );
     expect(
-      () => TestingToolsConfiguration(
-        maxTextScale: 1000,
-      ),
+      () => TestingToolsConfiguration(maxTextScale: 1000),
       throwsAssertionError,
     );
     expect(
-      () => TestingToolsConfiguration(
-        minTextScale: 10,
-        maxTextScale: 5,
-      ),
+      () => TestingToolsConfiguration(minTextScale: 10, maxTextScale: 5),
       throwsAssertionError,
     );
   });
 
   test('Objects equality', () {
     expect(
-      const TestingToolsConfiguration(
-        minTextScale: 1,
-        maxTextScale: 10,
-      ),
+      const TestingToolsConfiguration(minTextScale: 1, maxTextScale: 10),
       equals(
         const TestingToolsConfiguration(
           enabled: true,

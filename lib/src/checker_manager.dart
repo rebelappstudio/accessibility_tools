@@ -10,10 +10,7 @@ import 'checkers/checker_base.dart';
 /// Checks for accessibility issues, updating whenever the semantic tree
 /// changes.
 class CheckerManager extends ChangeNotifier {
-  CheckerManager({
-    required this.checkers,
-    required this.logLevel,
-  });
+  CheckerManager({required this.checkers, required this.logLevel});
 
   final Iterable<CheckerBase> checkers;
   final LogLevel logLevel;
@@ -102,9 +99,9 @@ extension on DebugCreator {
   /// associated with, including the location in the source code the widget was
   /// created.
   String toWidgetCreatorString() {
-    final diagnosticsNodes = debugTransformDebugCreator(
-      [DiagnosticsDebugCreator(this)],
-    );
+    final diagnosticsNodes = debugTransformDebugCreator([
+      DiagnosticsDebugCreator(this),
+    ]);
     return diagnosticsNodes.map((e) => e.toStringDeep()).join('\n');
   }
 }

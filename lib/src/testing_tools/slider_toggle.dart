@@ -29,8 +29,6 @@ class SliderTile extends StatelessWidget {
       children: [
         // TODO editable value
         Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Flexible(
               child: Row(

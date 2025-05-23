@@ -13,16 +13,14 @@ void main() {
   testWidgets('Can print all available logs', (tester) async {
     final log = await recordDebugPrint(() async {
       await tester.pumpWidget(
-        const TestApp(
-          logLevel: LogLevel.verbose,
-          child: TextField(),
-        ),
+        const TestApp(logLevel: LogLevel.verbose, child: TextField()),
       );
       await tester.pumpAndSettle();
       await showAccessibilityIssues(tester);
     });
 
-    final expectedLog = '''
+    final expectedLog =
+        '''
 ==========================
 ACCESSIBILITY ISSUES FOUND
 ==========================
@@ -48,16 +46,14 @@ Read more about screen readers: https://docs.flutter.dev/development/accessibili
   testWidgets('Can log warning messages only', (tester) async {
     final log = await recordDebugPrint(() async {
       await tester.pumpWidget(
-        const TestApp(
-          logLevel: LogLevel.warning,
-          child: TextField(),
-        ),
+        const TestApp(logLevel: LogLevel.warning, child: TextField()),
       );
       await tester.pumpAndSettle();
       await showAccessibilityIssues(tester);
     });
 
-    final expectedLog = '''
+    final expectedLog =
+        '''
 ==========================
 ACCESSIBILITY ISSUES FOUND
 ==========================
@@ -75,9 +71,7 @@ ${getWidgetLocationDescription(tester, find.byType(TextField))}
       await tester.pumpWidget(
         const TestApp(
           logLevel: LogLevel.none,
-          child: TextField(
-            decoration: InputDecoration(hintText: null),
-          ),
+          child: TextField(decoration: InputDecoration(hintText: null)),
         ),
       );
     });

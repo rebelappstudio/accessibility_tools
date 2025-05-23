@@ -27,13 +27,8 @@ class TestApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       locale: const Locale('en'),
-      supportedLocales: const [
-        Locale('en', 'US'),
-        Locale('fi', 'FI'),
-      ],
-      localizationsDelegates: [
-        MockLocalizationsDelegate(),
-      ],
+      supportedLocales: const [Locale('en', 'US'), Locale('fi', 'FI')],
+      localizationsDelegates: [MockLocalizationsDelegate()],
       builder: (context, child) {
         return AccessibilityTools(
           checkFontOverflows: true,
@@ -48,9 +43,7 @@ class TestApp extends StatelessWidget {
           child: child,
         );
       },
-      home: Scaffold(
-        body: Center(child: child),
-      ),
+      home: Scaffold(body: Center(child: child)),
     );
   }
 }
@@ -92,19 +85,22 @@ void expectAccessibilityWarning(
   expect(
     warningBoxFinder,
     findsOneWidget,
-    reason: '''
+    reason:
+        '''
 Couldn't find warning box with tooltip '$tooltipMessage'.
           
 ${debugWarningBoxesText(tester)}''',
   );
 
   // Verify accessibility tooltip
-  final warningBox = tester.renderObject(
-    find.descendant(
-      of: warningBoxFinder,
-      matching: find.byType(CustomPaint),
-    ),
-  ) as RenderBox;
+  final warningBox =
+      tester.renderObject(
+            find.descendant(
+              of: warningBoxFinder,
+              matching: find.byType(CustomPaint),
+            ),
+          )
+          as RenderBox;
 
   final buttonRenderBox = tester.renderObject<RenderBox>(erroredWidgetFinder);
   const borderSize = 5.0;
@@ -145,8 +141,9 @@ ${warningBoxes.mapIndexed((i, warningBox) {
 /// Returns the diagnostic location of the widget.
 String getWidgetLocationDescription(WidgetTester tester, Finder finder) {
   final debugCreator = tester.element(finder).renderObject!.debugCreator!;
-  final diagnosticsNodes =
-      debugTransformDebugCreator([DiagnosticsDebugCreator(debugCreator)]);
+  final diagnosticsNodes = debugTransformDebugCreator([
+    DiagnosticsDebugCreator(debugCreator),
+  ]);
   return diagnosticsNodes.map((e) => e.toStringDeep()).join('\n');
 }
 

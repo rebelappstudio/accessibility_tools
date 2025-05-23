@@ -10,37 +10,33 @@ void main() {
     AccessibilityTools.debugIgnoreTapAreaIssuesInTools = false;
   });
 
-  testWidgets(
-    'Can check for both a too small tap area and no semantic label',
-    (WidgetTester tester) async {
-      final tapKey = UniqueKey();
+  testWidgets('Can check for both a too small tap area and no semantic label', (
+    WidgetTester tester,
+  ) async {
+    final tapKey = UniqueKey();
 
-      await tester.pumpWidget(
-        TestApp(
-          child: SizedBox(
-            width: 10,
-            height: 10,
-            child: GestureDetector(
-              key: tapKey,
-              onTap: () {},
-            ),
-          ),
+    await tester.pumpWidget(
+      TestApp(
+        child: SizedBox(
+          width: 10,
+          height: 10,
+          child: GestureDetector(key: tapKey, onTap: () {}),
         ),
-      );
+      ),
+    );
 
-      await showAccessibilityIssues(tester);
+    await showAccessibilityIssues(tester);
 
-      expectAccessibilityWarning(
-        tester,
-        erroredWidgetFinder: find.byKey(tapKey),
-        tooltipMessage: '''
+    expectAccessibilityWarning(
+      tester,
+      erroredWidgetFinder: find.byKey(tapKey),
+      tooltipMessage: '''
 Tap area is missing a semantic label
 
 Tap area of 10x10 is too small:
 should be at least 48x48''',
-      );
-    },
-  );
+    );
+  });
 
   testWidgets(
     'Prints warning for both a too small tap area and no semantic label',
@@ -61,7 +57,8 @@ should be at least 48x48''',
         await showAccessibilityIssues(tester);
       });
 
-      final expectedLog = '''
+      final expectedLog =
+          '''
 ==========================
 ACCESSIBILITY ISSUES FOUND
 ==========================

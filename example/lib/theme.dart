@@ -7,31 +7,23 @@ final roundedRectangleShape = RoundedRectangleBorder(
 ThemeData get lightTheme => ThemeData(
       colorSchemeSeed: Colors.blue,
       brightness: Brightness.light,
-      chipTheme: ChipThemeData(
-        shape: roundedRectangleShape,
-      ),
+      chipTheme: ChipThemeData(shape: roundedRectangleShape),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(shape: roundedRectangleShape),
       ),
-      cardTheme: CardTheme(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(32),
-        ),
+      cardTheme: CardThemeData(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
       ),
     );
 
 ThemeData get darkTheme => ThemeData(
       colorSchemeSeed: Colors.blue,
       brightness: Brightness.dark,
-      chipTheme: ChipThemeData(
-        shape: roundedRectangleShape,
-      ),
+      chipTheme: ChipThemeData(shape: roundedRectangleShape),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(shape: roundedRectangleShape),
       ),
-      cardTheme: CardTheme(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(32),
-        ),
+      cardTheme: CardThemeData(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
       ),
     );

@@ -1,3 +1,7 @@
+## 2.6.0
+
+* Flutter 3.32 fixes
+
 ## 2.5.0
 
 * Add option to provide default test environment for testing tools panel

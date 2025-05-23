@@ -6,34 +6,30 @@ import 'package:flutter_test/flutter_test.dart';
 import 'test_utils.dart';
 
 void main() {
-  testWidgets(
-    'Does not show accessibility warnings when running from tests',
-    (WidgetTester tester) async {
-      // Ensure debug flag is not toggled
-      expect(AccessibilityTools.debugRunCheckersInTests, isFalse);
+  testWidgets('Does not show accessibility warnings when running from tests', (
+    WidgetTester tester,
+  ) async {
+    // Ensure debug flag is not toggled
+    expect(AccessibilityTools.debugRunCheckersInTests, isFalse);
 
-      await tester.pumpWidget(
-        TestApp(
-          child: ElevatedButton(
-            child: const SizedBox(),
-            onPressed: () {},
-          ),
-        ),
-      );
+    await tester.pumpWidget(
+      TestApp(
+        child: ElevatedButton(child: const SizedBox(), onPressed: () {}),
+      ),
+    );
 
-      await tester.pump();
-      await tester.pump();
+    await tester.pump();
+    await tester.pump();
 
-      // Verify no overlay inserted by checker
-      expect(find.byType(CheckerOverlay), findsNothing);
+    // Verify no overlay inserted by checker
+    expect(find.byType(CheckerOverlay), findsNothing);
 
-      // Verify no accessibility warning icon is shown
-      expect(find.byIcon(Icons.accessibility_new), findsNothing);
+    // Verify no accessibility warning icon is shown
+    expect(find.byIcon(Icons.accessibility_new), findsNothing);
 
-      // Verify button is rendered
-      expect(find.byType(SizedBox), findsOneWidget);
-    },
-  );
+    // Verify button is rendered
+    expect(find.byType(SizedBox), findsOneWidget);
+  });
 
   test(
     'debugIgnoreTapAreaIssuesInTools set to true by default and can be changed',
@@ -107,10 +103,7 @@ void main() {
       );
 
       // Issue caused by the testing tools panel buttons being too small
-      expect(
-        log,
-        contains('Accessibility issue 24: Tap area of'),
-      );
+      expect(log, contains('Accessibility issue 24: Tap area of'));
     },
   );
 }

@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 
 class InfoButton extends StatelessWidget {
-  const InfoButton({
-    required this.text,
-    super.key,
-  });
+  const InfoButton({required this.text, super.key});
 
   final String text;
 
