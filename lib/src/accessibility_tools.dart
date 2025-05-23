@@ -142,9 +142,7 @@ class _AccessibilityToolsState extends State<AccessibilityTools>
           minTapArea: minTapAreas.forPlatform(targetPlatform),
         ),
       if (widget.checkFontOverflows)
-        FlexOverflowChecker(
-          textScaleFactor: iOSLargestTextScaleFactor,
-        ),
+        FlexOverflowChecker(textScaleFactor: iOSLargestTextScaleFactor),
       if (widget.checkMissingInputLabels) InputLabelChecker(),
       if (widget.checkImageLabels) ImageLabelChecker(),
     ];
@@ -187,10 +185,7 @@ class _AccessibilityToolsState extends State<AccessibilityTools>
     return Stack(
       textDirection: ui.TextDirection.ltr,
       children: [
-        TestingToolsWrapper(
-          environment: _environment,
-          child: child,
-        ),
+        TestingToolsWrapper(environment: _environment, child: child),
         Overlay(
           initialEntries: [
             OverlayEntry(
@@ -301,8 +296,9 @@ class _CheckerOverlayState extends State<CheckerOverlay> {
             if (showOverlays)
               for (final entry in rects.entries)
                 Positioned.fromRect(
-                  rect: _inflateToMinimumSize(entry.key)
-                      .inflate(errorBorderWidth),
+                  rect: _inflateToMinimumSize(
+                    entry.key,
+                  ).inflate(errorBorderWidth),
                   child: WarningBox(
                     borderWidth: errorBorderWidth,
                     message: entry.value.map((e) => e.message).join('\n\n'),
@@ -370,16 +366,12 @@ class _DraggablePositionedState extends State<_DraggablePositioned> {
     switch (_alignment) {
       case ButtonsAlignment.topLeft:
         _offset = Offset(_offset.dx + delta.dx, _offset.dy + delta.dy);
-        break;
       case ButtonsAlignment.topRight:
         _offset = Offset(_offset.dx - delta.dx, _offset.dy + delta.dy);
-        break;
       case ButtonsAlignment.bottomLeft:
         _offset = Offset(_offset.dx + delta.dx, _offset.dy - delta.dy);
-        break;
       case ButtonsAlignment.bottomRight:
         _offset = Offset(_offset.dx - delta.dx, _offset.dy - delta.dy);
-        break;
     }
     setState(() => _panPosition = position);
   }
@@ -438,29 +430,13 @@ class _DraggablePositionedState extends State<_DraggablePositioned> {
   Widget _buildAlignedPosition(BuildContext context, Widget child) {
     switch (_alignment) {
       case ButtonsAlignment.topLeft:
-        return Positioned(
-          left: _offset.dx,
-          top: _offset.dy,
-          child: child,
-        );
+        return Positioned(left: _offset.dx, top: _offset.dy, child: child);
       case ButtonsAlignment.topRight:
-        return Positioned(
-          right: _offset.dx,
-          top: _offset.dy,
-          child: child,
-        );
+        return Positioned(right: _offset.dx, top: _offset.dy, child: child);
       case ButtonsAlignment.bottomLeft:
-        return Positioned(
-          left: _offset.dx,
-          bottom: _offset.dy,
-          child: child,
-        );
+        return Positioned(left: _offset.dx, bottom: _offset.dy, child: child);
       case ButtonsAlignment.bottomRight:
-        return Positioned(
-          right: _offset.dx,
-          bottom: _offset.dy,
-          child: child,
-        );
+        return Positioned(right: _offset.dx, bottom: _offset.dy, child: child);
     }
   }
 
@@ -510,9 +486,7 @@ class _WarningButton extends StatelessWidget {
           ),
         if (isTestingPanelEnabled) ...[
           const SizedBox(height: 12),
-          AccessibilityToolsToggle(
-            onToolsButtonPressed: onToolsButtonPressed,
-          ),
+          AccessibilityToolsToggle(onToolsButtonPressed: onToolsButtonPressed),
         ],
       ],
     );
@@ -542,16 +516,11 @@ class WarningBox extends StatelessWidget {
           color: Colors.blue,
           borderRadius: BorderRadius.all(Radius.circular(8)),
         ),
-        textStyle: const TextStyle(
-          fontSize: 15,
-          color: Colors.white,
-        ),
+        textStyle: const TextStyle(fontSize: 15, color: Colors.white),
         child: Center(
           child: CustomPaint(
             size: size,
-            painter: WarningBoxPainter(
-              borderWidth: borderWidth,
-            ),
+            painter: WarningBoxPainter(borderWidth: borderWidth),
           ),
         ),
       ),

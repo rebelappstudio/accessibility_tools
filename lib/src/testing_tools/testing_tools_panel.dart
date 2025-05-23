@@ -56,7 +56,7 @@ class _TestingToolsPanelState extends State<TestingToolsPanel> {
 
     final supportedLocales =
         context.findAncestorWidgetOfExactType<WidgetsApp>()?.supportedLocales ??
-            const [];
+        const [];
     final mediaQuery = MediaQuery.of(context);
     final textScaleFactor = this.textScaleFactor != null
         ? TextScaler.linear(this.textScaleFactor!)
@@ -69,10 +69,7 @@ class _TestingToolsPanelState extends State<TestingToolsPanel> {
         padding: MediaQuery.paddingOf(context),
         child: Column(
           children: [
-            Toolbar(
-              onClose: widget.onClose,
-              onResetAll: widget.onResetAll,
-            ),
+            Toolbar(onClose: widget.onClose, onResetAll: widget.onResetAll),
             Expanded(
               child: ListView(
                 padding: const EdgeInsets.all(16),
@@ -247,11 +244,7 @@ String _onOffSystemLabels(bool? value) {
 
 @visibleForTesting
 class Toolbar extends StatelessWidget {
-  const Toolbar({
-    super.key,
-    required this.onClose,
-    required this.onResetAll,
-  });
+  const Toolbar({super.key, required this.onClose, required this.onResetAll});
 
   final VoidCallback onClose;
   final VoidCallback onResetAll;
@@ -275,10 +268,7 @@ class Toolbar extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
           ),
-          TextButton(
-            onPressed: onResetAll,
-            child: const Text('Reset all'),
-          ),
+          TextButton(onPressed: onResetAll, child: const Text('Reset all')),
         ],
       ),
     );

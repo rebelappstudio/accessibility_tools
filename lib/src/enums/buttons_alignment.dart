@@ -1,6 +1,1 @@
-enum ButtonsAlignment {
-  topLeft,
-  topRight,
-  bottomLeft,
-  bottomRight,
-}
+enum ButtonsAlignment { topLeft, topRight, bottomLeft, bottomRight }

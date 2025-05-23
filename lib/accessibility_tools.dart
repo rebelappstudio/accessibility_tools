@@ -1,4 +1,4 @@
-library accessibility_tools;
+library;
 
 export 'src/accessibility_tools.dart';
 export 'src/checkers/ignore_minimum_tap_area_size.dart';

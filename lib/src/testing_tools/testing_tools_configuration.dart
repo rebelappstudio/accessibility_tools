@@ -7,18 +7,18 @@ class TestingToolsConfiguration {
     this.enabled = true,
     this.minTextScale = 0.1,
     this.maxTextScale = 10.0,
-  })  : assert(
-          minTextScale > 0 && minTextScale <= 1.0,
-          'minTextScale must be greater than 0 and less than or equal to 1',
-        ),
-        assert(
-          minTextScale < maxTextScale,
-          'minTextScale must be less than maxTextScale',
-        ),
-        assert(
-          maxTextScale > 0 && maxTextScale <= 100,
-          'maxTextScale must be greater than 0 and less than or equal to 100',
-        );
+  }) : assert(
+         minTextScale > 0 && minTextScale <= 1.0,
+         'minTextScale must be greater than 0 and less than or equal to 1',
+       ),
+       assert(
+         minTextScale < maxTextScale,
+         'minTextScale must be less than maxTextScale',
+       ),
+       assert(
+         maxTextScale > 0 && maxTextScale <= 100,
+         'maxTextScale must be greater than 0 and less than or equal to 100',
+       );
 
   /// Indicates whether the testing tools are enabled and can be used
   final bool enabled;

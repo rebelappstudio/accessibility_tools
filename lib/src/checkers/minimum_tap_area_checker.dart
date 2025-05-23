@@ -11,10 +11,7 @@ import 'ignore_minimum_tap_area_size.dart';
 
 /// Defines the minimum tap size per device type.
 class MinimumTapAreas {
-  const MinimumTapAreas({
-    required this.mobile,
-    required this.desktop,
-  });
+  const MinimumTapAreas({required this.mobile, required this.desktop});
 
   /// The minimum tap areas as defined by the Material Design guidelines:
   /// https://m3.material.io/foundations/accessible-design/accessibility-basics#28032e45-c598-450c-b355-f9fe737b1cd8
@@ -89,10 +86,12 @@ class MinimumTapAreaChecker extends SemanticsNodeChecker {
     final size = nodePaintBounds.size / window.devicePixelRatio;
     if (size.width < minTapArea - delta || size.height < minTapArea - delta) {
       return AccessibilityIssue(
-        message: '''
+        message:
+            '''
 Tap area of ${format(size.width)}x${format(size.height)} is too small:
 should be at least ${format(minTapArea)}x${format(minTapArea)}''',
-        resolutionGuidance: '''
+        resolutionGuidance:
+            '''
 Consider making the tap area bigger. For example, wrap the widget in a SizedBox:
 
 InkWell(

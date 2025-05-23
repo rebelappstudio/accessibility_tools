@@ -59,10 +59,7 @@ class TestingToolsWrapper extends StatelessWidget {
 
     return MediaQuery(
       data: mediaQueryData,
-      child: Theme(
-        data: themeData,
-        child: body,
-      ),
+      child: Theme(data: themeData, child: body),
     );
   }
 }

@@ -55,9 +55,9 @@ InkWell(
       return false;
     }
 
-    return creator.element
-        .debugGetDiagnosticChain()
-        .any((element) => element.widget is WidgetInspector);
+    return creator.element.debugGetDiagnosticChain().any(
+      (element) => element.widget is WidgetInspector,
+    );
   }
 }
 

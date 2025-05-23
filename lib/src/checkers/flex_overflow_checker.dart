@@ -45,10 +45,7 @@ class FlexOverflowChecker extends WidgetCheckerBase {
 
   @override
   Widget build(BuildContext context, Widget child) {
-    return _FlexOverflowCheckerInjector(
-      checker: this,
-      child: child,
-    );
+    return _FlexOverflowCheckerInjector(checker: this, child: child);
   }
 }
 
@@ -66,7 +63,8 @@ class _FlexOverflowCheckerInjector extends StatefulWidget {
 }
 
 class _FlexOverflowCheckerInjectorState
-    extends State<_FlexOverflowCheckerInjector> with SemanticUpdateMixin {
+    extends State<_FlexOverflowCheckerInjector>
+    with SemanticUpdateMixin {
   @override
   void didUpdateSemantics() {
     _checkForOverflows();

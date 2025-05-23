@@ -13,17 +13,81 @@ void main() {
     AccessibilityTools.debugIgnoreTapAreaIssuesInTools = false;
   });
 
-  testWidgets(
-    'Shows warning for a small tap area on mobile',
-    (WidgetTester tester) async {
-      final tapKey = UniqueKey();
+  testWidgets('Shows warning for a small tap area on mobile', (
+    WidgetTester tester,
+  ) async {
+    final tapKey = UniqueKey();
 
+    await tester.pumpWidget(
+      TestApp(
+        minimumTapAreas: const MinimumTapAreas(desktop: 0, mobile: 50),
+        child: SizedBox(
+          width: 10,
+          height: 10,
+          child: GestureDetector(
+            key: tapKey,
+            child: const Text('Tap area'),
+            onTap: () {},
+          ),
+        ),
+      ),
+    );
+
+    await showAccessibilityIssues(tester);
+
+    expectAccessibilityWarning(
+      tester,
+      erroredWidgetFinder: find.byKey(tapKey),
+      tooltipMessage:
+          'Tap area of 10x10 is too small:\nshould be at least 50x50',
+    );
+  });
+
+  testWidgets('Shows warning for a small tap area on desktop', (
+    WidgetTester tester,
+  ) async {
+    debugDefaultTargetPlatformOverride = TargetPlatform.macOS;
+
+    final tapKey = UniqueKey();
+
+    await tester.pumpWidget(
+      TestApp(
+        minimumTapAreas: const MinimumTapAreas(desktop: 100, mobile: 0),
+        child: SizedBox(
+          width: 50,
+          height: 50,
+          child: GestureDetector(
+            key: tapKey,
+            child: const Text('Tap area'),
+            onTap: () {},
+          ),
+        ),
+      ),
+    );
+
+    await showAccessibilityIssues(tester);
+
+    expectAccessibilityWarning(
+      tester,
+      erroredWidgetFinder: find.byKey(tapKey),
+      tooltipMessage:
+          'Tap area of 50x50 is too small:\nshould be at least 100x100',
+    );
+
+    debugDefaultTargetPlatformOverride = null;
+  });
+
+  testWidgets('Prints console warning for a tap area that is too small', (
+    WidgetTester tester,
+  ) async {
+    final tapKey = UniqueKey();
+    final log = await recordDebugPrint(() async {
       await tester.pumpWidget(
         TestApp(
-          minimumTapAreas: const MinimumTapAreas(desktop: 0, mobile: 50),
+          minimumTapAreas: const MinimumTapAreas(desktop: 48, mobile: 48),
           child: SizedBox(
-            width: 10,
-            height: 10,
+            width: 20,
+            height: 20,
             child: GestureDetector(
               key: tapKey,
               child: const Text('Tap area'),
@@ -34,75 +98,10 @@ void main() {
       );
 
       await showAccessibilityIssues(tester);
+    });
 
-      expectAccessibilityWarning(
-        tester,
-        erroredWidgetFinder: find.byKey(tapKey),
-        tooltipMessage:
-            'Tap area of 10x10 is too small:\nshould be at least 50x50',
-      );
-    },
-  );
-
-  testWidgets(
-    'Shows warning for a small tap area on desktop',
-    (WidgetTester tester) async {
-      debugDefaultTargetPlatformOverride = TargetPlatform.macOS;
-
-      final tapKey = UniqueKey();
-
-      await tester.pumpWidget(
-        TestApp(
-          minimumTapAreas: const MinimumTapAreas(desktop: 100, mobile: 0),
-          child: SizedBox(
-            width: 50,
-            height: 50,
-            child: GestureDetector(
-              key: tapKey,
-              child: const Text('Tap area'),
-              onTap: () {},
-            ),
-          ),
-        ),
-      );
-
-      await showAccessibilityIssues(tester);
-
-      expectAccessibilityWarning(
-        tester,
-        erroredWidgetFinder: find.byKey(tapKey),
-        tooltipMessage:
-            'Tap area of 50x50 is too small:\nshould be at least 100x100',
-      );
-
-      debugDefaultTargetPlatformOverride = null;
-    },
-  );
-
-  testWidgets(
-    'Prints console warning for a tap area that is too small',
-    (WidgetTester tester) async {
-      final tapKey = UniqueKey();
-      final log = await recordDebugPrint(() async {
-        await tester.pumpWidget(
-          TestApp(
-            minimumTapAreas: const MinimumTapAreas(desktop: 48, mobile: 48),
-            child: SizedBox(
-              width: 20,
-              height: 20,
-              child: GestureDetector(
-                key: tapKey,
-                child: const Text('Tap area'),
-                onTap: () {},
-              ),
-            ),
-          ),
-        );
-
-        await showAccessibilityIssues(tester);
-      });
-
-      final expectedLog = '''
+    final expectedLog =
+        '''
 ==========================
 ACCESSIBILITY ISSUES FOUND
 ==========================
@@ -128,34 +127,30 @@ Icon(
 )
 ''';
 
-      expect(log, expectedLog);
-    },
-  );
+    expect(log, expectedLog);
+  });
 
-  testWidgets(
-    "Doesn't show warning for tap area that's big enough",
-    (WidgetTester tester) async {
-      await tester.pumpWidget(
-        TestApp(
-          child: ElevatedButton(
-            child: Semantics(
-              label: 'Label',
-              child: const SizedBox(),
-            ),
-            onPressed: () {},
-          ),
+  testWidgets("Doesn't show warning for tap area that's big enough", (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(
+      TestApp(
+        child: ElevatedButton(
+          child: Semantics(label: 'Label', child: const SizedBox()),
+          onPressed: () {},
         ),
-      );
+      ),
+    );
 
-      await tester.pumpAndSettle();
-      expect(
-        find.byWidgetPredicate((w) =>
-            w is Tooltip &&
-            w.message == 'Tap area is missing a semantic label'),
-        findsNothing,
-      );
-    },
-  );
+    await tester.pumpAndSettle();
+    expect(
+      find.byWidgetPredicate(
+        (w) =>
+            w is Tooltip && w.message == 'Tap area is missing a semantic label',
+      ),
+      findsNothing,
+    );
+  });
 
   test('MinimumTapAreas.forPlatform returns correct values per platform', () {
     const desktopValue = 10.0;
@@ -185,10 +180,7 @@ Icon(
           child: SizedBox(
             width: 32,
             height: 32,
-            child: GestureDetector(
-              child: const Text('Tap area'),
-              onTap: () {},
-            ),
+            child: GestureDetector(child: const Text('Tap area'), onTap: () {}),
           ),
         ),
       ),
@@ -287,7 +279,8 @@ Icon(
       expectAccessibilityWarning(
         tester,
         erroredWidgetFinder: find.byKey(key),
-        tooltipMessage: 'Tap area of 33.33x16.67 is too small:'
+        tooltipMessage:
+            'Tap area of 33.33x16.67 is too small:'
             '\nshould be at least 100x100',
       );
     },
@@ -344,17 +337,10 @@ Icon(
                   onTap: () {},
                   child: Semantics(
                     label: 'Label',
-                    child: Container(
-                      color: Colors.blue,
-                      height: 100,
-                    ),
+                    child: Container(color: Colors.blue, height: 100),
                   ),
                 ),
-                Container(
-                  width: 10,
-                  height: 10000,
-                  color: Colors.white,
-                ),
+                Container(width: 10, height: 10000, color: Colors.white),
               ],
             ),
           ),
@@ -369,46 +355,39 @@ Icon(
     },
   );
 
-  test(
-    'Formatted size is not too long (max 2 places after decimal point)',
-    () {
-      const format = MinimumTapAreaChecker.format;
-      expect(format(100), '100');
-      expect(format(1), '1');
-      expect(format(0), '0');
-      expect(format(0.00), '0');
-      expect(format(100.00), '100');
-      expect(format(100.01), '100.01');
-      expect(format(100.10), '100.10');
-      expect(format(99.99), '99.99');
-      expect(format(99.999), '100');
-      expect(format(100 / 3 /* 33.3(3) */), '33.33');
-      expect(format(100 / 6 /* 16.6(6) */), '16.67');
-    },
-  );
+  test('Formatted size is not too long (max 2 places after decimal point)', () {
+    const format = MinimumTapAreaChecker.format;
+    expect(format(100), '100');
+    expect(format(1), '1');
+    expect(format(0), '0');
+    expect(format(0.00), '0');
+    expect(format(100.00), '100');
+    expect(format(100.01), '100.01');
+    expect(format(100.10), '100.10');
+    expect(format(99.99), '99.99');
+    expect(format(99.999), '100');
+    expect(format(100 / 3 /* 33.3(3) */), '33.33');
+    expect(format(100 / 6 /* 16.6(6) */), '16.67');
+  });
 
-  testWidgets(
-    "Doesn't show warning if explicitly ignored by user",
-    (WidgetTester tester) async {
-      await tester.pumpWidget(
-        TestApp(
-          child: IgnoreMinimumTapAreaSize(
-            child: SizedBox(
-              width: 10,
-              height: 10,
-              child: GestureDetector(
-                child: const Text('Tap area'),
-                onTap: () {},
-              ),
-            ),
+  testWidgets("Doesn't show warning if explicitly ignored by user", (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(
+      TestApp(
+        child: IgnoreMinimumTapAreaSize(
+          child: SizedBox(
+            width: 10,
+            height: 10,
+            child: GestureDetector(child: const Text('Tap area'), onTap: () {}),
           ),
         ),
-      );
+      ),
+    );
 
-      await tester.pumpAndSettle();
+    await tester.pumpAndSettle();
 
-      expect(find.byType(AccessibilityIssuesToggle), findsNothing);
-      expect(find.byType(AccessibilityToolsToggle), findsOneWidget);
-    },
-  );
+    expect(find.byType(AccessibilityIssuesToggle), findsNothing);
+    expect(find.byType(AccessibilityToolsToggle), findsOneWidget);
+  });
 }

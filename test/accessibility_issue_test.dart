@@ -4,25 +4,27 @@ import 'package:flutter/semantics.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  test('Accessibility issues are equal with same semantics node and message',
-      () {
-    final semanticsNode = SemanticsNode();
+  test(
+    'Accessibility issues are equal with same semantics node and message',
+    () {
+      final semanticsNode = SemanticsNode();
 
-    final issue1 = AccessibilityIssue(
-      message: 'message',
-      resolutionGuidance: 'guidance',
-      renderObject: TestRenderObject(semanticsNode),
-    );
+      final issue1 = AccessibilityIssue(
+        message: 'message',
+        resolutionGuidance: 'guidance',
+        renderObject: TestRenderObject(semanticsNode),
+      );
 
-    final issue2 = AccessibilityIssue(
-      message: 'message',
-      resolutionGuidance: 'guidance',
-      renderObject: TestRenderObject(semanticsNode),
-    );
+      final issue2 = AccessibilityIssue(
+        message: 'message',
+        resolutionGuidance: 'guidance',
+        renderObject: TestRenderObject(semanticsNode),
+      );
 
-    expect(issue1, issue2);
-    expect(issue1.hashCode, issue2.hashCode);
-  });
+      expect(issue1, issue2);
+      expect(issue1.hashCode, issue2.hashCode);
+    },
+  );
 
   test('Accessibility issues are not equal with different semantics nodes', () {
     final issue1 = AccessibilityIssue(

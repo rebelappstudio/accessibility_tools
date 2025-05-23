@@ -20,23 +20,23 @@ class AccessibilityIssuesToggle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final String message;
-    final tapToChangeIssuesVisibility =
-        toggled ? 'Tap to hide issues' : 'Tap to show issues';
+    final tapToChangeIssuesVisibility = toggled
+        ? 'Tap to hide issues'
+        : 'Tap to show issues';
     switch (issues.length) {
       case 1:
         message = 'Accessibility issue found\n\n$tapToChangeIssuesVisibility';
-        break;
       default:
         message =
             '''${issues.length} accessibility issues found\n\n$tapToChangeIssuesVisibility''';
-        break;
     }
 
     final double elevation = toggled ? 0 : _elevation;
     final Color backgroundColor = toggled ? Colors.orange : Colors.red;
     final Color foregroundColor = toggled ? Colors.white : Colors.yellow;
-    final String semanticLabel =
-        toggled ? 'Hide accessibility issues\n' : 'Show accessibility issues\n';
+    final String semanticLabel = toggled
+        ? 'Hide accessibility issues\n'
+        : 'Show accessibility issues\n';
 
     return SizedBox.square(
       dimension: toolsBoxMinSize,
