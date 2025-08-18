@@ -66,12 +66,12 @@ extension SemanticsDataExtension on SemanticsData {
   }
 
   bool get isFormWidget {
-    return hasFlag(SemanticsFlag.isTextField) ||
-        hasFlag(SemanticsFlag.hasCheckedState) ||
-        hasFlag(SemanticsFlag.hasToggledState);
+    return flagsCollection.isTextField ||
+        flagsCollection.hasCheckedState ||
+        flagsCollection.hasToggledState;
   }
 
   bool get isImage {
-    return hasFlag(SemanticsFlag.isImage);
+    return flagsCollection.isImage;
   }
 }

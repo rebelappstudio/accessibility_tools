@@ -386,11 +386,9 @@ Read more about screen readers: https://docs.flutter.dev/development/accessibili
     final key = UniqueKey();
     await tester.pumpWidget(
       TestApp(
-        child: Radio(
-          key: key,
-          groupValue: 'group',
-          onChanged: (_) {},
-          value: false,
+        child: RadioGroup(
+          onChanged: (value) {},
+          child: Radio(key: key, value: false),
         ),
       ),
     );
@@ -408,12 +406,13 @@ Read more about screen readers: https://docs.flutter.dev/development/accessibili
     final key = UniqueKey();
     await tester.pumpWidget(
       TestApp(
-        child: RadioListTile(
-          key: key,
-          groupValue: 'group',
-          onChanged: (_) {},
-          value: false,
-          title: const Text('Radio'),
+        child: RadioGroup(
+          onChanged: (value) {},
+          child: RadioListTile(
+            key: key,
+            value: false,
+            title: const Text('Radio'),
+          ),
         ),
       ),
     );

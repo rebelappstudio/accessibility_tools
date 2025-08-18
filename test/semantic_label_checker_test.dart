@@ -157,7 +157,7 @@ Read more about screen readers: https://docs.flutter.dev/development/accessibili
                 context, {
                 required onPressed,
                 required selectionOnTapEnabled,
-                required semanticLabel,
+                required semanticsLabel,
               }) {
                 return const SizedBox();
               },
@@ -165,7 +165,7 @@ Read more about screen readers: https://docs.flutter.dev/development/accessibili
               (
                 BuildContext context, {
                 required VoidCallback onPressed,
-                required String semanticLabel,
+                required String semanticsLabel,
                 required GlobalKey key,
               }) {
                 return FloatingActionButton(
@@ -178,11 +178,11 @@ Read more about screen readers: https://docs.flutter.dev/development/accessibili
               (
                 BuildContext context, {
                 required VoidCallback onPressed,
-                required String semanticLabel,
-                bool? isLeftAligned,
+                required String semanticsLabel,
+                bool? usesDefaultAlignment,
               }) {
                 return Align(
-                  alignment: isLeftAligned!
+                  alignment: (usesDefaultAlignment ?? true)
                       ? Alignment.centerLeft
                       : Alignment.centerRight,
                   child: FloatingActionButton(
