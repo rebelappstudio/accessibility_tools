@@ -45,7 +45,8 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
       body: ListView(
-        padding: MediaQuery.paddingOf(context).copyWith(top: 0) +
+        padding:
+            MediaQuery.paddingOf(context).copyWith(top: 0) +
             EdgeInsets.all(baseInset * 2),
         children: <Widget>[
           SizedBox(
