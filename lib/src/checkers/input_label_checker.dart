@@ -15,7 +15,7 @@ class InputLabelChecker extends SemanticsNodeChecker {
   AccessibilityIssue? checkNode(SemanticsNode node, RenderObject renderObject) {
     if (node.isMergedIntoParent ||
         node.isInvisible ||
-        node.hasFlag(SemanticsFlag.isHidden)) {
+        node.flagsCollection.isHidden) {
       return null;
     }
 
@@ -27,11 +27,11 @@ class InputLabelChecker extends SemanticsNodeChecker {
     final hasLabel = data.label.trim().isNotEmpty;
     if (hasLabel) return null;
 
-    if (node.hasFlag(SemanticsFlag.isTextField)) {
+    if (node.flagsCollection.isTextField) {
       return _getTextFieldIssue(renderObject);
-    } else if (node.hasFlag(SemanticsFlag.hasCheckedState)) {
+    } else if (node.flagsCollection.hasCheckedState) {
       return _getCheckboxRadioIssue(renderObject);
-    } else if (node.hasFlag(SemanticsFlag.hasToggledState)) {
+    } else if (node.flagsCollection.hasToggledState) {
       return _getSwitchIssue(renderObject);
     }
 

@@ -1,5 +1,3 @@
-import 'dart:ui' as ui;
-
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
@@ -11,7 +9,7 @@ class SemanticLabelChecker extends SemanticsNodeChecker {
   AccessibilityIssue? checkNode(SemanticsNode node, RenderObject renderObject) {
     if (node.isMergedIntoParent ||
         node.isInvisible ||
-        node.hasFlag(ui.SemanticsFlag.isHidden)) {
+        node.flagsCollection.isHidden) {
       return null;
     }
 

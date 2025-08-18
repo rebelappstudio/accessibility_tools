@@ -11,7 +11,7 @@ class ImageLabelChecker extends SemanticsNodeChecker {
   AccessibilityIssue? checkNode(SemanticsNode node, RenderObject renderObject) {
     if (node.isMergedIntoParent ||
         node.isInvisible ||
-        node.hasFlag(SemanticsFlag.isHidden)) {
+        node.flagsCollection.isHidden) {
       return null;
     }
 
