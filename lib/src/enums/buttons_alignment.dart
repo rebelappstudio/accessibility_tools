@@ -1,14 +1,14 @@
-/// Accessibility tools' and testing tools' buttons alignment.
+/// The alignment of the buttons for accessibility tools and testing tools.
 enum ButtonsAlignment {
-  /// Top left corner.
+  /// Top left corner of the screen.
   topLeft,
 
-  /// Top right corner.
+  /// Top right corner of the screen.
   topRight,
 
-  /// Bottom left corner.
+  /// Bottom left corner of the screen.
   bottomLeft,
 
-  /// Bottom right corner.
+  /// Bottom right corner of the screen.
   bottomRight,
 }

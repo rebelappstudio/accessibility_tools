@@ -51,7 +51,7 @@ mixin SemanticUpdateMixin<T extends StatefulWidget> on State<T> {
   void didUpdateSemantics();
 }
 
-/// A client to get
+/// A client to listen to semantics updates of a pipeline owner.
 class SemanticsClient extends ChangeNotifier {
   /// Default constructor.
   SemanticsClient(PipelineOwner pipelineOwner) {

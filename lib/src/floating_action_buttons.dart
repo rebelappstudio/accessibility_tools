@@ -17,7 +17,7 @@ class AccessibilityIssuesToggle extends StatelessWidget {
 
   /// Whether the toggle is on.
   ///
-  /// True if issues are visible.
+  /// True if issues are highlighted using warning boxes.
   final bool toggled;
 
   /// The list of accessibility issues.

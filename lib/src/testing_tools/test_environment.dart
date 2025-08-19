@@ -29,9 +29,9 @@ class TestEnvironment {
   /// platforms.
   ///
   /// Used to simulate a target platform. This may not result in drastic
-  /// changes in the UI, but it may affect the behavior of some widgets:
-  /// * scrollable behavior
-  /// * toolbar back icon (chevron on iOS, arrow on Android)
+  /// changes in the UI, but it may affect some widgets:
+  /// * scroll physics (e.g. bouncy vs linear)
+  /// * toolbar back icon (e.g. chevron on iOS vs arrow on Android)
   final TargetPlatform? targetPlatform;
 
   /// Visual density to simulate different visual densities.

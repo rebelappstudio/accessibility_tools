@@ -143,7 +143,7 @@ class AccessibilityTools extends StatefulWidget {
   /// This is an experimental feature and is disabled by default.
   final bool checkFontOverflows;
 
-  /// Whether to check if text fields' input labels are present.
+  /// Whether to check if input labels of text fields are present.
   ///
   /// True by default.
   final bool checkMissingInputLabels;
@@ -153,7 +153,7 @@ class AccessibilityTools extends StatefulWidget {
   /// True by default.
   final bool checkImageLabels;
 
-  /// Accessibility tools buttons' alignment.
+  /// Accessibility tools buttons alignment.
   ///
   /// By default it's set to [ButtonsAlignment.bottomRight] which places the
   /// buttons at the bottom right corner of the screen.
@@ -354,7 +354,7 @@ class CheckerOverlay extends StatefulWidget {
   /// Callback that is called when testing tools are hidden.
   final VoidCallback onHideTestingTools;
 
-  /// Accessibility tools buttons' alignment.
+  /// Accessibility tools buttons alignment.
   ///
   /// By default it's set to [ButtonsAlignment.bottomRight] which places the
   /// buttons at the bottom right corner of the screen.
@@ -609,8 +609,6 @@ class _WarningButton extends StatelessWidget {
 }
 
 /// Warning box that highlights an accessibility issue.
-///
-/// For internal use only.
 @visibleForTesting
 class WarningBox extends StatelessWidget {
   /// Default constructor.
@@ -627,7 +625,8 @@ class WarningBox extends StatelessWidget {
   /// Width of the border.
   final double borderWidth;
 
-  /// Message to display as a tooltip when warning box is tapped or hovered.
+  /// Message to display as a tooltip when warning box is tapped (iOS, Android)
+  /// or hovered (desktop platforms and the web).
   final String message;
 
   @override
