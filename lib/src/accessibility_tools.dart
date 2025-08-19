@@ -80,7 +80,7 @@ class AccessibilityTools extends StatefulWidget {
     this.checkFontOverflows = false,
     this.checkImageLabels = true,
     this.buttonsAlignment = ButtonsAlignment.bottomRight,
-    this.enableButtonsDrag = false,
+    this.enableButtonsDrag = true,
     this.testingToolsConfiguration = const TestingToolsConfiguration(),
     this.testEnvironment = const TestEnvironment(),
   });
