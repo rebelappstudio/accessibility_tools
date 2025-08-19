@@ -106,7 +106,7 @@ AccessibilityTools(
   logLevel: LogLevel.verbose,
   // Set where the buttons are placed
   buttonsAlignment: ButtonsAlignment.bottomRight,
-  // Enable or disable draging the buttons around
+  // Enable or disable dragging the buttons around
   enableButtonsDrag: false,
   // Customize testing tools configuration
   testingToolsConfiguration: TestingToolsConfiguration(

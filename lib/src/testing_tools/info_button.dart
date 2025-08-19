@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 
+/// An info button that shows a tooltip with a message.
 class InfoButton extends StatelessWidget {
+  /// Default constructor.
   const InfoButton({required this.text, super.key});
 
+  /// The message to display.
   final String text;
 
   @override

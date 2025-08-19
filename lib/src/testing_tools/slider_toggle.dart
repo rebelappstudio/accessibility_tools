@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'info_button.dart';
 
+/// A slider to set a value.
 class SliderTile extends StatelessWidget {
+  /// Default constructor.
   const SliderTile({
     super.key,
     required this.label,
@@ -13,12 +15,22 @@ class SliderTile extends StatelessWidget {
     required this.onChanged,
   });
 
+  /// Label of the slider.
   final String label;
+
+  /// Text to display as a tooltip.
   final String info;
 
+  /// Current value of the slider.
   final double value;
+
+  /// Minimum value of the slider.
   final double min;
+
+  /// Maximum value of the slider.
   final double max;
+
+  /// Callback to call when the value is changed.
   final void Function(double? value) onChanged;
 
   @override
@@ -27,7 +39,6 @@ class SliderTile extends StatelessWidget {
 
     return Column(
       children: [
-        // TODO editable value
         Row(
           children: [
             Flexible(

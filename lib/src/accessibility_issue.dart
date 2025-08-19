@@ -1,18 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
+/// A possible accessibility issue that was discovered by a checker.
 @immutable
 class AccessibilityIssue {
+  /// Default constructor.
   const AccessibilityIssue({
     required this.message,
     required this.resolutionGuidance,
     required this.renderObject,
   });
 
+  /// Description of the issue.
+  ///
+  /// For example "Tappable area is missing a semantic label".
   final String message;
+
+  /// Resolution guidance for the issue.
+  ///
+  /// May contain code example or another guidance on how to fix the issue.
   final String resolutionGuidance;
+
+  /// Render object that this issue belongs to.
   final RenderObject renderObject;
 
+  /// Semantics node that this issue belongs to.
   SemanticsNode? get semanticsNode => renderObject.debugSemantics;
 
   @override
@@ -28,6 +40,7 @@ class AccessibilityIssue {
           message == other.message &&
           resolutionGuidance == other.resolutionGuidance;
 
+  /// Returns the debug creator of the render object that this issue belongs to.
   DebugCreator? getDebugCreator() {
     final creator = renderObject.debugCreator;
 

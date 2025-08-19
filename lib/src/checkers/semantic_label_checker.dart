@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import '../accessibility_issue.dart';
 import 'checker_base.dart';
 
+/// A checker to check if widgets have missing semantic labels.
 class SemanticLabelChecker extends SemanticsNodeChecker {
   @override
   AccessibilityIssue? checkNode(SemanticsNode node, RenderObject renderObject) {
@@ -59,6 +60,10 @@ InkWell(
   }
 }
 
+/// Returns a resolution guidance message about semantic labels.
+///
+/// Includes basic info about screen readers, a link to the Flutter docs and
+/// the [message].
 String semanticLabelMessage(String message) {
   return '''
 Semantic labels are used by screen readers to enable visually impaired users to

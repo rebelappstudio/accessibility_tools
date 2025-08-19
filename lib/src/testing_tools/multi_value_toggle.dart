@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'info_button.dart';
 
+/// A toggle for selecting a value from a list of values.
 class MultiValueToggle<T> extends StatelessWidget {
+  /// Default constructor.
   const MultiValueToggle({
     super.key,
     required this.value,
@@ -13,13 +15,22 @@ class MultiValueToggle<T> extends StatelessWidget {
     required this.nameBuilder,
   });
 
+  /// Label of the toggle.
   final String title;
+
+  /// Text to display as a tooltip.
   final String info;
 
+  /// List of values to select from.
   final List<T> values;
+
+  /// Function to build the name of a value.
   final String Function(T? value) nameBuilder;
 
+  /// Currently selected value.
   final T? value;
+
+  /// Callback to call when a value is selected.
   final void Function(T? value) onTap;
 
   @override

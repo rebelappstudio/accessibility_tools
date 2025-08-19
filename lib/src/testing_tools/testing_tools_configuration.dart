@@ -1,8 +1,15 @@
 import 'package:flutter/foundation.dart';
 
-/// Configuration for the testing tools panel
+import 'test_environment.dart';
+
+/// A configuration for the testing tools panel.
+///
+/// This class configures the testing tools panel as part of accessibility
+/// tools. See [TestEnvironment] for more information on configuring the
+/// testing environment.
 @immutable
 class TestingToolsConfiguration {
+  /// Default constructor.
   const TestingToolsConfiguration({
     this.enabled = true,
     this.minTextScale = 0.1,
@@ -20,13 +27,13 @@ class TestingToolsConfiguration {
          'maxTextScale must be greater than 0 and less than or equal to 100',
        );
 
-  /// Indicates whether the testing tools are enabled and can be used
+  /// Indicates whether the testing tools are enabled and can be used.
   final bool enabled;
 
-  /// The minimum allowed text scale factor
+  /// The minimum allowed text scale factor.
   final double minTextScale;
 
-  /// The maximum allowed text scale factor
+  /// The maximum allowed text scale factor.
   final double maxTextScale;
 
   @override

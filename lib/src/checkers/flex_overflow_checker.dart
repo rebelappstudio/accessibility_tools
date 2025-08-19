@@ -7,37 +7,38 @@ import '../accessibility_issue.dart';
 import 'checker_base.dart';
 import 'mixin.dart';
 
-/*
-
-iOS default font scales:
-
-  Extra small: x0.823
-  Small:       x0.882
-  Medium:      x0.941
-  Large:       x1.12
-  Extra large: x1.24
-  XXL:         x1.35
-
-iOS larger font sizes:
-
-  x1.64
-  x1.94
-  x2.35
-  x2.76
-  x3.12
-
-Android font scales:
-
-  Small:   x0.85
-  Default: x1.00
-  Large:   x1.15
-  Largest: x1.3
-
-*/
-
+/// An experimental checker that checks for overflows in [RenderFlex] widgets.
+///
+/// This checker temporarily adjusts the text scale factor to simulate the
+/// effect of a larger font size. When the check is performed, user may observe
+/// a visual increase in text size as part of this simulation (most noticeable
+/// after hot reload).
+///
+/// iOS default font scales:
+/// * Extra small: x0.823
+/// * Small:       x0.882
+/// * Medium:      x0.941
+/// * Large:       x1.12
+/// * Extra large: x1.24
+/// * XXL:         x1.35
+///
+/// iOS larger font sizes:
+/// * x1.64
+/// * x1.94
+/// * x2.35
+/// * x2.76
+/// * x3.12
+///
+/// Android font scales:
+/// * Small:   x0.85
+/// * Default: x1.00
+/// * Large:   x1.15
+/// * Largest: x1.3
 class FlexOverflowChecker extends WidgetCheckerBase {
+  /// Default constructor.
   FlexOverflowChecker({required this.textScaleFactor});
 
+  /// The text scale factor to use to simulate a larger font size.
   final double textScaleFactor;
 
   @override

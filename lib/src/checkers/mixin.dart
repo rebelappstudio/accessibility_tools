@@ -2,6 +2,14 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
+/// A mixin to update the semantics of the widget tree.
+///
+/// A listener is set up in [initState] to notify this mixin's descendants that
+/// the semantics of the widget tree has changed and it's time to check the
+/// accessibility of the widget tree.
+///
+/// Descendants should implement [didUpdateSemantics] to get notified about the
+/// semantics updates.
 mixin SemanticUpdateMixin<T extends StatefulWidget> on State<T> {
   late final List<SemanticsClient> _clients = [];
   late final SemanticsHandle _rootSemanticsHandle;
@@ -39,10 +47,13 @@ mixin SemanticUpdateMixin<T extends StatefulWidget> on State<T> {
     });
   }
 
+  /// Notifies the mixin that the semantics of the widget tree has changed.
   void didUpdateSemantics();
 }
 
+/// A client to get
 class SemanticsClient extends ChangeNotifier {
+  /// Default constructor.
   SemanticsClient(PipelineOwner pipelineOwner) {
     _semanticsOwner = pipelineOwner.semanticsOwner
       ?..addListener(notifyListeners);
@@ -53,7 +64,7 @@ class SemanticsClient extends ChangeNotifier {
   @override
   void dispose() {
     // Looks like disposing root semantics owner is enough to dispose all
-    // semantics owners so _semanticsOwner is not explicitly disposed here
+    // semantics owners so _semanticsOwner is not explicitly disposed here.
     _semanticsOwner?.removeListener(notifyListeners);
 
     super.dispose();

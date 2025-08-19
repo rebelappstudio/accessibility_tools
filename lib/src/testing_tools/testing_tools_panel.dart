@@ -7,10 +7,12 @@ import 'switch_toggle.dart';
 import 'test_environment.dart';
 import 'testing_tools_configuration.dart';
 
-/// Testing tools panel widget with various toggles and settings. Changing any
-/// setting produces a new instance of [TestEnvironment] delivered
-/// via [onEnvironmentUpdate]
+/// Testing tools panel widget with various toggles and settings.
+///
+/// Changing any setting produces a new instance of [TestEnvironment] delivered
+/// via [onEnvironmentUpdate].
 class TestingToolsPanel extends StatefulWidget {
+  /// Default constructor.
   const TestingToolsPanel({
     super.key,
     required this.onClose,
@@ -20,10 +22,19 @@ class TestingToolsPanel extends StatefulWidget {
     required this.configuration,
   });
 
+  /// Current configuration of the testing tools.
   final TestingToolsConfiguration configuration;
+
+  /// Current environment of the testing tools.
   final TestEnvironment environment;
+
+  /// Callback to call when the panel is closed.
   final VoidCallback onClose;
+
+  /// Callback to call when the environment is updated.
   final void Function(TestEnvironment environment) onEnvironmentUpdate;
+
+  /// Callback to call when all settings are reset.
   final void Function() onResetAll;
 
   @override
@@ -242,11 +253,17 @@ String _onOffSystemLabels(bool? value) {
   }
 }
 
+/// A toolbar with a close button and a reset all button to use in testing
+/// tools.
 @visibleForTesting
 class Toolbar extends StatelessWidget {
+  /// Default constructor.
   const Toolbar({super.key, required this.onClose, required this.onResetAll});
 
+  /// Callback to call when the close button is pressed.
   final VoidCallback onClose;
+
+  /// Callback to call when the reset all button is pressed.
   final VoidCallback onResetAll;
 
   @override
