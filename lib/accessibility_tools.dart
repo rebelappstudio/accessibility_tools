@@ -1,3 +1,4 @@
+/// A set of tools for checking accessibility issues in Flutter widgets.
 library;
 
 export 'src/accessibility_tools.dart';

@@ -6,13 +6,17 @@ import 'test_environment.dart';
 /// Widget that applies [environment] to [child] using [MediaQuery], [Theme],
 /// [Localizations] and debug flags
 class TestingToolsWrapper extends StatelessWidget {
+  /// Default constructor.
   const TestingToolsWrapper({
     super.key,
     required this.environment,
     required this.child,
   });
 
+  /// Test environment to apply to the child.
   final TestEnvironment? environment;
+
+  /// Widget to apply the test environment to.
   final Widget child;
 
   @override

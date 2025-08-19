@@ -23,27 +23,53 @@ import 'testing_tools/testing_tools_configuration.dart';
 import 'testing_tools/testing_tools_panel.dart';
 import 'testing_tools/testing_tools_wrapper.dart';
 
+/// Layout overflows are checked against this value. It's the largest text
+/// scale factor supported by iOS accessibility settings.
 const iOSLargestTextScaleFactor = 1.35;
 
-/// Set log level for the accessibility tools. By default it prints all
-/// available info about found issues and suggested solutions
+/// Log level for the accessibility tools.
+///
+/// By default it prints all available info about found issues and suggested
+/// solutions.
 enum LogLevel {
-  /// Print found issues and suggested solution
+  /// Print found issues and suggested solutions.
   verbose,
 
-  /// Print info about found issues but not resolution guidance
+  /// Print info about found issues but not resolution guidance.
   warning,
 
-  /// Don't print anything to the log. Useful when you don't want logs polluted
-  /// with too many messages (developing the app or only using accessibility
-  /// tools UI)
+  /// Don't print anything to the logs. Useful when you don't want logs to be
+  /// polluted with too many messages (during app development or only using
+  /// accessibility tools UI to perform manual checks).
   none,
 }
 
-/// A checker for debug mode that highlights accessibility issues.
+/// A checker for debug mode that highlights accessibility issues and provides
+/// various tools for testing app's accessibility.
 ///
-/// Issues are highlighted by a red box.
+/// Issues are highlighted using a warning box.
+///
+/// Add this widget to your MaterialApp's or CupertinoApp's builder method:
+/// ```dart
+/// return MaterialApp(
+///   builder: (context, child) {
+///     return AccessibilityTools(
+///       child: child,
+///     );
+///   },
+/// );
+/// ```
+///
+/// Accessibility tools are only enabled in debug mode. In release mode, they
+/// are not available and don't show any UI. This is done because Accessibility
+/// tools use some components that are not available in release mode.
+/// See https://github.com/rebelappstudio/accessibility_tools/issues/36 for more
+/// details.
+///
+/// For widget tests, you can set [debugRunCheckersInTests] to true to enable
+/// accessibility checkers.
 class AccessibilityTools extends StatefulWidget {
+  /// Default constructor.
   const AccessibilityTools({
     super.key,
     required this.child,
@@ -60,6 +86,8 @@ class AccessibilityTools extends StatefulWidget {
   });
 
   /// Forces accessibility checkers to run when running from a test.
+  ///
+  /// For internal use only.
   @visibleForTesting
   static bool debugRunCheckersInTests = false;
 
@@ -73,20 +101,79 @@ class AccessibilityTools extends StatefulWidget {
   /// Setting this flag to true will ignore all accessibility issues in
   /// accessibility tools. Setting this flag to false will report all
   /// accessibility issues found in accessibility tools.
+  ///
+  /// For internal use only.
   @visibleForTesting
   static bool debugIgnoreTapAreaIssuesInTools = true;
 
+  /// The child widget to wrap accessibility tools around.
+  ///
+  /// Usually it's your app's root widget :
+  ///
+  /// ```dart
+  /// return MaterialApp(
+  ///   builder: (context, child) {
+  ///     return AccessibilityTools(
+  ///       child: child,
+  ///     );
+  ///   },
+  /// );
+  /// ```
   final Widget? child;
+
+  /// Minimum tap areas to check.
+  ///
+  /// By default it's set to [MinimumTapAreas.material] which is the minimum tap
+  /// area as defined by the Material Design guidelines.
   final MinimumTapAreas? minimumTapAreas;
+
+  /// Log level for the accessibility tools.
+  ///
+  /// By default it's set to [LogLevel.verbose] which prints all available info
+  /// about found issues and suggested solutions.
   final LogLevel logLevel;
+
+  /// Whether to check if semantic labels are present.
+  ///
+  /// True by default.
   final bool checkSemanticLabels;
+
+  /// Whether to check font overflows.
+  ///
+  /// This is an experimental feature and is disabled by default.
   final bool checkFontOverflows;
+
+  /// Whether to check if input labels of text fields are present.
+  ///
+  /// True by default.
   final bool checkMissingInputLabels;
+
+  /// Whether to check if image labels are present.
+  ///
+  /// True by default.
   final bool checkImageLabels;
 
+  /// Accessibility tools buttons alignment.
+  ///
+  /// By default it's set to [ButtonsAlignment.bottomRight] which places the
+  /// buttons at the bottom right corner of the screen.
   final ButtonsAlignment buttonsAlignment;
+
+  /// Whether accessibility tools buttons are draggable from their initial
+  /// position to another corner of the screen.
+  ///
+  /// True by default.
   final bool enableButtonsDrag;
+
+  /// Configuration for the testing tools.
+  ///
+  /// Testing tools is a panel that allows you to test your app's accessibility
+  /// by changing the [testEnvironment] in the UI.
+  ///
+  /// Check [TestingToolsConfiguration] for default values.
   final TestingToolsConfiguration testingToolsConfiguration;
+
+  /// Default test environment for the testing tools.
   final TestEnvironment testEnvironment;
 
   @override
@@ -151,7 +238,7 @@ class _AccessibilityToolsState extends State<AccessibilityTools>
   /// Returns true if currently running in a test environment (e.g.
   /// widget tests).
   ///
-  /// It uses type names instead of `is` operator because all test binginds are
+  /// It uses type names instead of `is` operator because all test bindings are
   /// part of flutter_test which uses dart:io. In order to support WASM, dart:io
   /// should not be used.
   bool get _isTest {
@@ -242,7 +329,12 @@ class _AccessibilityToolsState extends State<AccessibilityTools>
   }
 }
 
+/// Overlay that highlights accessibility issues.
+///
+/// For internal use only.
+@visibleForTesting
 class CheckerOverlay extends StatefulWidget {
+  /// Default constructor.
   const CheckerOverlay({
     super.key,
     required this.checker,
@@ -250,14 +342,34 @@ class CheckerOverlay extends StatefulWidget {
     required this.onHideTestingTools,
     required this.isTestingPanelEnabled,
     this.buttonsAlignment = ButtonsAlignment.bottomRight,
-    this.enableButtonsDrag = false,
+    this.enableButtonsDrag = true,
   });
 
+  /// A [CheckerManager] that manages the enabled checkers.
   final CheckerManager checker;
+
+  /// Callback that is called when tools button is pressed.
   final VoidCallback onToolsButtonPressed;
+
+  /// Callback that is called when testing tools are hidden.
   final VoidCallback onHideTestingTools;
+
+  /// Accessibility tools buttons alignment.
+  ///
+  /// By default it's set to [ButtonsAlignment.bottomRight] which places the
+  /// buttons at the bottom right corner of the screen.
   final ButtonsAlignment buttonsAlignment;
+
+  /// Whether accessibility tools buttons are draggable from their initial
+  /// position to another corner of the screen.
+  ///
+  /// True by default.
   final bool enableButtonsDrag;
+
+  /// Whether testing tools panel is enabled.
+  ///
+  /// True by default (tools panel button is visible which makes panel
+  /// accessible).
   final bool isTestingPanelEnabled;
 
   @override
@@ -267,12 +379,15 @@ class CheckerOverlay extends StatefulWidget {
 class _CheckerOverlayState extends State<CheckerOverlay> {
   bool showOverlays = false;
 
+  /// Minimum size of the warning box
+  static const _warningBoxMinSize = 48.0;
+
   static Rect _inflateToMinimumSize(Rect rect) {
-    if (rect.shortestSide < toolsBoxMinSize) {
+    if (rect.shortestSide < _warningBoxMinSize) {
       return Rect.fromCenter(
         center: rect.center,
-        width: max(toolsBoxMinSize, rect.width),
-        height: max(toolsBoxMinSize, rect.height),
+        width: max(_warningBoxMinSize, rect.width),
+        height: max(_warningBoxMinSize, rect.height),
       );
     }
 
@@ -493,7 +608,10 @@ class _WarningButton extends StatelessWidget {
   }
 }
 
+/// Warning box that highlights an accessibility issue.
+@visibleForTesting
 class WarningBox extends StatelessWidget {
+  /// Default constructor.
   const WarningBox({
     super.key,
     required this.size,
@@ -501,8 +619,14 @@ class WarningBox extends StatelessWidget {
     required this.message,
   });
 
+  /// Size of the warning box.
   final Size size;
+
+  /// Width of the border.
   final double borderWidth;
+
+  /// Message to display as a tooltip when warning box is tapped (iOS, Android)
+  /// or hovered (desktop platforms and the web).
   final String message;
 
   @override
@@ -528,9 +652,15 @@ class WarningBox extends StatelessWidget {
   }
 }
 
+/// Painter that paints the warning box (striped black and yellow background).
+///
+/// For internal use only.
+@visibleForTesting
 class WarningBoxPainter extends CustomPainter {
+  /// Default constructor.
   WarningBoxPainter({required this.borderWidth});
 
+  /// Width of the border.
   final double borderWidth;
 
   static const Color _black = Color(0xBF000000);

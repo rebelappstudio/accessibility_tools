@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 
 import 'accessibility_issue.dart';
 
-const toolsBoxMinSize = 48.0;
+const _floatingActionButtonSize = 48.0;
 const _elevation = 10.0;
 
+/// A toggle for changing visibility of accessibility issues.
 class AccessibilityIssuesToggle extends StatelessWidget {
+  /// Default constructor.
   const AccessibilityIssuesToggle({
     super.key,
     required this.toggled,
@@ -13,8 +15,15 @@ class AccessibilityIssuesToggle extends StatelessWidget {
     required this.onPressed,
   });
 
+  /// Whether the toggle is on.
+  ///
+  /// True if issues are highlighted using warning boxes.
   final bool toggled;
+
+  /// The list of accessibility issues.
   final List<AccessibilityIssue> issues;
+
+  /// The callback to call when the toggle is pressed.
   final VoidCallback onPressed;
 
   @override
@@ -39,7 +48,7 @@ class AccessibilityIssuesToggle extends StatelessWidget {
         : 'Show accessibility issues\n';
 
     return SizedBox.square(
-      dimension: toolsBoxMinSize,
+      dimension: _floatingActionButtonSize,
       child: Tooltip(
         message: message,
         child: FloatingActionButton(
@@ -60,12 +69,15 @@ class AccessibilityIssuesToggle extends StatelessWidget {
   }
 }
 
+/// A toggle for opening testing tools.
 class AccessibilityToolsToggle extends StatelessWidget {
+  /// Default constructor.
   const AccessibilityToolsToggle({
     super.key,
     required this.onToolsButtonPressed,
   });
 
+  /// The callback to call when the toggle is pressed.
   final VoidCallback onToolsButtonPressed;
 
   @override
@@ -73,7 +85,7 @@ class AccessibilityToolsToggle extends StatelessWidget {
     const label = 'Open testing tools';
 
     return SizedBox.square(
-      dimension: toolsBoxMinSize,
+      dimension: _floatingActionButtonSize,
       child: Tooltip(
         message: label,
         child: FloatingActionButton(

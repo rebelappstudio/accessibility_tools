@@ -7,23 +7,36 @@ import 'accessibility_issue.dart';
 import 'accessibility_tools.dart';
 import 'checkers/checker_base.dart';
 
+/// Manages the checkers and updates the accessibility issues.
+///
 /// Checks for accessibility issues, updating whenever the semantic tree
 /// changes.
 class CheckerManager extends ChangeNotifier {
+  /// Default constructor.
   CheckerManager({required this.checkers, required this.logLevel});
 
+  /// A list of enabled checkers.
   final Iterable<CheckerBase> checkers;
+
+  /// Log level for the accessibility issues.
   final LogLevel logLevel;
 
   /// A list of current accessibility issues.
   List<AccessibilityIssue> get issues => _issues;
+
+  /// A list of current accessibility issues.
   List<AccessibilityIssue> _issues = [];
+
+  /// Sets the issues and notifies listeners.
   void _setIssues(List<AccessibilityIssue> issues) {
     _issues = issues;
     notifyListeners();
   }
 
-  /// Called whenever the semantic tree updates.
+  /// Notifies checkers to update their issues and updates the issues.
+  ///
+  /// Called whenever the semantic tree updates (time to check for new issues
+  /// and issue updates).
   void update() {
     final renderObjects = _getRenderObjectsWithSemantics();
 
@@ -34,6 +47,7 @@ class CheckerManager extends ChangeNotifier {
     _updateIssues();
   }
 
+  /// Updates the accessibility issues.
   void _updateIssues() {
     final newIssues = checkers.map((e) => e.issues).flattened.toList();
     final issuesHaveChanged = !listEquals(issues, newIssues);
@@ -45,6 +59,7 @@ class CheckerManager extends ChangeNotifier {
     }
   }
 
+  /// Returns a list of all render objects that contain semantics information.
   static List<RenderObject> _getRenderObjectsWithSemantics() {
     final renderObjects = <RenderObject>[];
     late final RenderObjectVisitor visitor;

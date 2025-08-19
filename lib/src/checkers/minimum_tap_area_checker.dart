@@ -11,6 +11,7 @@ import 'ignore_minimum_tap_area_size.dart';
 
 /// Defines the minimum tap size per device type.
 class MinimumTapAreas {
+  /// Default constructor.
   const MinimumTapAreas({required this.mobile, required this.desktop});
 
   /// The minimum tap areas as defined by the Material Design guidelines:
@@ -54,10 +55,15 @@ class MinimumTapAreas {
   }
 }
 
+/// A checker to check if the tap area of a widget is at least the minimum tap
+/// area size.
+///
 /// Modified from package:flutter_test/lib/src/accessibility.dart
 class MinimumTapAreaChecker extends SemanticsNodeChecker {
+  /// Default constructor.
   MinimumTapAreaChecker({required this.minTapArea});
 
+  /// Value of the minimum tap area size to check against.
   final double minTapArea;
 
   @override
@@ -70,7 +76,7 @@ class MinimumTapAreaChecker extends SemanticsNodeChecker {
       return null;
     }
 
-    // skip this node if explicitly ignored by user
+    // Skip this node if explicitly ignored by user.
     final context = _contextForRenderObject(renderObject);
     if (context != null && IgnoreMinimumTapAreaSize.maybeOf(context) != null) {
       return null;
@@ -82,6 +88,8 @@ class MinimumTapAreaChecker extends SemanticsNodeChecker {
       return null;
     }
 
+    // Compare the size of the node with the minimum tap area size. Use delta
+    // to account for rounding errors.
     const delta = 0.001;
     final size = nodePaintBounds.size / window.devicePixelRatio;
     if (size.width < minTapArea - delta || size.height < minTapArea - delta) {
@@ -132,6 +140,7 @@ Icon(
     }
   }
 
+  /// Formats [val] to a string with 2 decimal places.
   @visibleForTesting
   static String format(double val) {
     // Round to N places after decimal point where N is 2

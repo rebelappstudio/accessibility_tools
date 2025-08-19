@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 /// https://www.inf.ufrgs.br/~oliveira/pubs_files/CVD_Simulation/CVD_Simulation.html
 ///
 enum ColorModeSimulation {
+  /// Protanopia color mode simulation.
   protanopia([
     //
     0.152286, 1.052583, -0.204868, 0, 0,
@@ -20,6 +21,7 @@ enum ColorModeSimulation {
     0, 0, 0, 1, 0,
   ]),
 
+  /// Deuteranopia color mode simulation.
   deuteranopia([
     //
     0.367322, 0.860646, -0.227968, 0, 0,
@@ -28,6 +30,7 @@ enum ColorModeSimulation {
     0, 0, 0, 1, 0,
   ]),
 
+  /// Tritanopia color mode simulation.
   tritanopia([
     //
     1.255528, -0.076749, -0.178779, 0, 0,
@@ -36,6 +39,7 @@ enum ColorModeSimulation {
     0, 0, 0, 1, 0,
   ]),
 
+  /// Inverted color mode simulation.
   inverted([
     //
     -1, 0, 0, 0, 255,
@@ -44,6 +48,7 @@ enum ColorModeSimulation {
     0, 0, 0, 1, 0,
   ]),
 
+  /// Grayscale color mode simulation.
   grayscale([
     //
     0.2126, 0.7152, 0.0722, 0, 0,
@@ -54,18 +59,23 @@ enum ColorModeSimulation {
 
   const ColorModeSimulation(this.matrix);
 
+  /// Color mode's matrix to use with [ColorFilter].
   final List<double> matrix;
 }
 
 /// Widget that uses color filters to simulate various color modes
 class ColorModeSimulator extends StatelessWidget {
+  /// Default constructor.
   const ColorModeSimulator({
     super.key,
     required this.simulation,
     required this.child,
   });
 
+  /// The color mode simulation to use.
   final ColorModeSimulation simulation;
+
+  /// The child widget to simulate the color mode for.
   final Widget child;
 
   @override

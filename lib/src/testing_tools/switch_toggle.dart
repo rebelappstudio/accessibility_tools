@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'info_button.dart';
 
+/// A switch widget to toggle a boolean value.
 class SwitchToggle extends StatelessWidget {
+  /// Default constructor.
   const SwitchToggle({
     super.key,
     required this.title,
@@ -11,9 +13,16 @@ class SwitchToggle extends StatelessWidget {
     required this.onChanged,
   });
 
+  /// Label of the switch.
   final String title;
+
+  /// Text to display as a tooltip.
   final String info;
+
+  /// Current value of the switch.
   final bool value;
+
+  /// Callback to call when the value is changed.
   final void Function(bool value) onChanged;
 
   @override
