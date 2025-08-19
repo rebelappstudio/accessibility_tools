@@ -1,3 +1,10 @@
+## 2.7.0
+
+* Public API documentation update
+* Flutter 3.35 compatibility fixes
+* Minimum supported Flutter version is 3.35
+* BEHAVIOUR CHANGE: Accessibility tools buttons are draggable by default
+
 ## 2.6.0
 
 * Flutter 3.32 fixes
