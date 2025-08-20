@@ -17,6 +17,7 @@ import 'checkers/minimum_tap_area_checker.dart';
 import 'checkers/mixin.dart';
 import 'checkers/semantic_label_checker.dart';
 import 'enums/buttons_alignment.dart';
+import 'enums/log_level.dart';
 import 'floating_action_buttons.dart';
 import 'testing_tools/test_environment.dart';
 import 'testing_tools/testing_tools_configuration.dart';
@@ -25,24 +26,7 @@ import 'testing_tools/testing_tools_wrapper.dart';
 
 /// Layout overflows are checked against this value. It's the largest text
 /// scale factor supported by iOS accessibility settings.
-const iOSLargestTextScaleFactor = 1.35;
-
-/// Log level for the accessibility tools.
-///
-/// By default it prints all available info about found issues and suggested
-/// solutions.
-enum LogLevel {
-  /// Print found issues and suggested solutions.
-  verbose,
-
-  /// Print info about found issues but not resolution guidance.
-  warning,
-
-  /// Don't print anything to the logs. Useful when you don't want logs to be
-  /// polluted with too many messages (during app development or only using
-  /// accessibility tools UI to perform manual checks).
-  none,
-}
+const _iOSLargestTextScaleFactor = 1.35;
 
 /// A checker for debug mode that highlights accessibility issues and provides
 /// various tools for testing app's accessibility.
@@ -229,7 +213,7 @@ class _AccessibilityToolsState extends State<AccessibilityTools>
           minTapArea: minTapAreas.forPlatform(targetPlatform),
         ),
       if (widget.checkFontOverflows)
-        FlexOverflowChecker(textScaleFactor: iOSLargestTextScaleFactor),
+        FlexOverflowChecker(textScaleFactor: _iOSLargestTextScaleFactor),
       if (widget.checkMissingInputLabels) InputLabelChecker(),
       if (widget.checkImageLabels) ImageLabelChecker(),
     ];

@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 import 'accessibility_issue.dart';
-import 'accessibility_tools.dart';
 import 'checkers/checker_base.dart';
+import 'enums/log_level.dart';
 
 /// Manages the checkers and updates the accessibility issues.
 ///

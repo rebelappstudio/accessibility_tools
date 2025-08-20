@@ -1,3 +1,7 @@
+## 2.7.1
+
+* Fix visibility of internal components
+
 ## 2.7.0
 
 * Public API documentation update
