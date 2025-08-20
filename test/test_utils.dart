@@ -1,4 +1,5 @@
 import 'package:accessibility_tools/accessibility_tools.dart';
+import 'package:accessibility_tools/src/accessibility_tools.dart';
 import 'package:accessibility_tools/src/floating_action_buttons.dart';
 import 'package:accessibility_tools/src/testing_tools/testing_tools_panel.dart';
 import 'package:collection/collection.dart';
