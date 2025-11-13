@@ -100,8 +100,8 @@ extension SemanticsDataExtension on SemanticsData {
   /// Returns true if the semantics data is marked as a form widget.
   bool get isFormWidget {
     return flagsCollection.isTextField ||
-        flagsCollection.hasCheckedState ||
-        flagsCollection.hasToggledState;
+        flagsCollection.isChecked != ui.CheckedState.none ||
+        flagsCollection.isToggled != ui.Tristate.none;
   }
 
   /// Returns true if the semantics data is marked as an image.

@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 
@@ -29,9 +31,9 @@ class InputLabelChecker extends SemanticsNodeChecker {
 
     if (node.flagsCollection.isTextField) {
       return _getTextFieldIssue(renderObject);
-    } else if (node.flagsCollection.hasCheckedState) {
+    } else if (node.flagsCollection.isChecked != CheckedState.none) {
       return _getCheckboxRadioIssue(renderObject);
-    } else if (node.flagsCollection.hasToggledState) {
+    } else if (node.flagsCollection.isToggled != Tristate.none) {
       return _getSwitchIssue(renderObject);
     }
 

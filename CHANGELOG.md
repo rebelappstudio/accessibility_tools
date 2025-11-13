@@ -1,3 +1,8 @@
+## 2.8.0
+
+* Flutter 3.38 fixes
+* Minimum supported Flutter version is 3.38
+
 ## 2.7.1
 
 * Fix visibility of internal components
