@@ -67,6 +67,7 @@ class AccessibilityTools extends StatefulWidget {
     this.enableButtonsDrag = true,
     this.testingToolsConfiguration = const TestingToolsConfiguration(),
     this.testEnvironment = const TestEnvironment(),
+    this.enabled = kDebugMode,
   });
 
   /// Forces accessibility checkers to run when running from a test.
@@ -148,6 +149,25 @@ class AccessibilityTools extends StatefulWidget {
   ///
   /// True by default.
   final bool enableButtonsDrag;
+
+  /// Whether to enable accessibility tools.
+  ///
+  /// Defaults to [kDebugMode], meaning tools are active only in debug builds.
+  ///
+  /// You can explicitly set this to `true` to enable tools in profile mode,
+  /// for example to run accessibility checks on a profiling build:
+  ///
+  /// ```dart
+  /// AccessibilityTools(
+  ///   enabled: kDebugMode || kProfileMode,
+  ///   child: child,
+  /// )
+  /// ```
+  ///
+  /// Note: accessibility tools are **never** shown in release mode, regardless
+  /// of this value. Passing `enabled: true` in a release build is safe and
+  /// has no effect.
+  final bool enabled;
 
   /// Configuration for the testing tools.
   ///
@@ -237,6 +257,7 @@ class _AccessibilityToolsState extends State<AccessibilityTools>
   @override
   Widget build(BuildContext context) {
     if (kReleaseMode ||
+        !widget.enabled ||
         (!AccessibilityTools.debugRunCheckersInTests && _isTest)) {
       return widget.child!;
     }
