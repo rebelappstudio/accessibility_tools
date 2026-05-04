@@ -13,13 +13,20 @@ import 'enums/log_level.dart';
 /// changes.
 class CheckerManager extends ChangeNotifier {
   /// Default constructor.
-  CheckerManager({required this.checkers, required this.logLevel});
+  CheckerManager({required this.checkers, required this.logLevel, this.debugLogsEnabled = true});
 
   /// A list of enabled checkers.
   final Iterable<CheckerBase> checkers;
 
   /// Log level for the accessibility issues.
   final LogLevel logLevel;
+
+  /// Whether to enable debug logs for accessibility issues.
+  ///
+  /// When false, accessibility issues are still detected and displayed
+  /// in the UI, but no console logs are printed.
+  /// Useful when enabling accessibility controls in release mode.
+  final bool debugLogsEnabled;
 
   /// A list of current accessibility issues.
   List<AccessibilityIssue> get issues => _issues;
@@ -71,17 +78,13 @@ class CheckerManager extends ChangeNotifier {
       child.visitChildrenForSemantics(visitor);
     };
 
-    WidgetsBinding.instance.rootElement?.renderObject
-        ?.visitChildrenForSemantics(visitor);
+    WidgetsBinding.instance.rootElement?.renderObject?.visitChildrenForSemantics(visitor);
 
     return renderObjects;
   }
 
-  void _logAccessibilityIssues(
-    LogLevel logLevel,
-    List<AccessibilityIssue> issues,
-  ) {
-    if (logLevel == LogLevel.none) return;
+  void _logAccessibilityIssues(LogLevel logLevel, List<AccessibilityIssue> issues) {
+    if (logLevel == LogLevel.none || !debugLogsEnabled) return;
 
     debugPrint('''
 ==========================
@@ -114,9 +117,7 @@ extension on DebugCreator {
   /// associated with, including the location in the source code the widget was
   /// created.
   String toWidgetCreatorString() {
-    final diagnosticsNodes = debugTransformDebugCreator([
-      DiagnosticsDebugCreator(this),
-    ]);
+    final diagnosticsNodes = debugTransformDebugCreator([DiagnosticsDebugCreator(this)]);
     return diagnosticsNodes.map((e) => e.toStringDeep()).join('\n');
   }
 }

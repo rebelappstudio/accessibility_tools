@@ -67,6 +67,7 @@ class AccessibilityTools extends StatefulWidget {
     this.enableButtonsDrag = true,
     this.testingToolsConfiguration = const TestingToolsConfiguration(),
     this.testEnvironment = const TestEnvironment(),
+    this.enableAccessibilityControlsOnReleaseMode = false,
   });
 
   /// Forces accessibility checkers to run when running from a test.
@@ -160,16 +161,19 @@ class AccessibilityTools extends StatefulWidget {
   /// Default test environment for the testing tools.
   final TestEnvironment testEnvironment;
 
+  /// Whether to enable accessibility controls when running in release mode.
+  ///
+  /// This is useful for testing accessibility in release mode,
+  /// but should be used with caution as it may have performance implications.
+  /// False by default.
+  final bool enableAccessibilityControlsOnReleaseMode;
+
   @override
   State<AccessibilityTools> createState() => _AccessibilityToolsState();
 }
 
-class _AccessibilityToolsState extends State<AccessibilityTools>
-    with SemanticUpdateMixin {
-  late CheckerManager _checker = CheckerManager(
-    checkers: _getCheckers(),
-    logLevel: widget.logLevel,
-  );
+class _AccessibilityToolsState extends State<AccessibilityTools> with SemanticUpdateMixin {
+  late CheckerManager _checker = CheckerManager(checkers: _getCheckers(), logLevel: widget.logLevel, debugLogsEnabled: !kReleaseMode || !widget.enableAccessibilityControlsOnReleaseMode);
 
   bool _testingToolsVisible = false;
   late TestEnvironment _environment = widget.testEnvironment;
@@ -195,10 +199,7 @@ class _AccessibilityToolsState extends State<AccessibilityTools>
   @override
   void didUpdateWidget(covariant AccessibilityTools oldWidget) {
     _checker.dispose();
-    _checker = CheckerManager(
-      checkers: _getCheckers(),
-      logLevel: widget.logLevel,
-    );
+    _checker = CheckerManager(checkers: _getCheckers(), logLevel: widget.logLevel, debugLogsEnabled: !kReleaseMode || !widget.enableAccessibilityControlsOnReleaseMode);
     super.didUpdateWidget(oldWidget);
   }
 
@@ -208,12 +209,8 @@ class _AccessibilityToolsState extends State<AccessibilityTools>
 
     return [
       if (widget.checkSemanticLabels) SemanticLabelChecker(),
-      if (minTapAreas != null)
-        MinimumTapAreaChecker(
-          minTapArea: minTapAreas.forPlatform(targetPlatform),
-        ),
-      if (widget.checkFontOverflows)
-        FlexOverflowChecker(textScaleFactor: _iOSLargestTextScaleFactor),
+      if (minTapAreas != null) MinimumTapAreaChecker(minTapArea: minTapAreas.forPlatform(targetPlatform)),
+      if (widget.checkFontOverflows) FlexOverflowChecker(textScaleFactor: _iOSLargestTextScaleFactor),
       if (widget.checkMissingInputLabels) InputLabelChecker(),
       if (widget.checkImageLabels) ImageLabelChecker(),
     ];
@@ -227,17 +224,14 @@ class _AccessibilityToolsState extends State<AccessibilityTools>
   /// should not be used.
   bool get _isTest {
     final bindingName = WidgetsBinding.instance.runtimeType.toString();
-    return const [
-      'AutomatedTestWidgetsFlutterBinding',
-      'LiveTestWidgetsFlutterBinding',
-      'TestWidgetsFlutterBinding',
-    ].contains(bindingName);
+    return const ['AutomatedTestWidgetsFlutterBinding', 'LiveTestWidgetsFlutterBinding', 'TestWidgetsFlutterBinding'].contains(bindingName);
   }
 
   @override
   Widget build(BuildContext context) {
-    if (kReleaseMode ||
-        (!AccessibilityTools.debugRunCheckersInTests && _isTest)) {
+    final shouldDisableAccessibilityTools = (kReleaseMode && !widget.enableAccessibilityControlsOnReleaseMode) || (!AccessibilityTools.debugRunCheckersInTests && _isTest);
+
+    if (shouldDisableAccessibilityTools) {
       return widget.child!;
     }
 
@@ -265,8 +259,7 @@ class _AccessibilityToolsState extends State<AccessibilityTools>
                   checker: _checker,
                   buttonsAlignment: widget.buttonsAlignment,
                   enableButtonsDrag: widget.enableButtonsDrag,
-                  isTestingPanelEnabled:
-                      widget.testingToolsConfiguration.enabled,
+                  isTestingPanelEnabled: widget.testingToolsConfiguration.enabled,
                   onToolsButtonPressed: () {
                     setState(() {
                       _testingToolsVisible = !_testingToolsVisible;
@@ -277,9 +270,7 @@ class _AccessibilityToolsState extends State<AccessibilityTools>
                   },
                 );
 
-                return AccessibilityTools.debugIgnoreTapAreaIssuesInTools
-                    ? IgnoreMinimumTapAreaSize(child: child)
-                    : child;
+                return AccessibilityTools.debugIgnoreTapAreaIssuesInTools ? IgnoreMinimumTapAreaSize(child: child) : child;
               },
             ),
             if (widget.testingToolsConfiguration.enabled)
@@ -301,9 +292,7 @@ class _AccessibilityToolsState extends State<AccessibilityTools>
                     },
                   );
 
-                  return AccessibilityTools.debugIgnoreTapAreaIssuesInTools
-                      ? IgnoreMinimumTapAreaSize(child: child)
-                      : child;
+                  return AccessibilityTools.debugIgnoreTapAreaIssuesInTools ? IgnoreMinimumTapAreaSize(child: child) : child;
                 },
               ),
           ],
@@ -368,11 +357,7 @@ class _CheckerOverlayState extends State<CheckerOverlay> {
 
   static Rect _inflateToMinimumSize(Rect rect) {
     if (rect.shortestSide < _warningBoxMinSize) {
-      return Rect.fromCenter(
-        center: rect.center,
-        width: max(_warningBoxMinSize, rect.width),
-        height: max(_warningBoxMinSize, rect.height),
-      );
+      return Rect.fromCenter(center: rect.center, width: max(_warningBoxMinSize, rect.width), height: max(_warningBoxMinSize, rect.height));
     }
 
     return rect;
@@ -384,9 +369,7 @@ class _CheckerOverlayState extends State<CheckerOverlay> {
       animation: widget.checker,
       builder: (context, _) {
         final issues = List<AccessibilityIssue>.of(widget.checker.issues);
-        final rects = issues
-            .where((element) => element.renderObject.attached)
-            .groupListsBy((issue) => issue.renderObject.getGlobalRect());
+        final rects = issues.where((element) => element.renderObject.attached).groupListsBy((issue) => issue.renderObject.getGlobalRect());
 
         const errorBorderWidth = 5.0;
 
@@ -395,17 +378,8 @@ class _CheckerOverlayState extends State<CheckerOverlay> {
             if (showOverlays)
               for (final entry in rects.entries)
                 Positioned.fromRect(
-                  rect: _inflateToMinimumSize(
-                    entry.key,
-                  ).inflate(errorBorderWidth),
-                  child: WarningBox(
-                    borderWidth: errorBorderWidth,
-                    message: entry.value.map((e) => e.message).join('\n\n'),
-                    size: Size(
-                      max(5, entry.key.width) + errorBorderWidth,
-                      max(5, entry.key.height) + errorBorderWidth,
-                    ),
-                  ),
+                  rect: _inflateToMinimumSize(entry.key).inflate(errorBorderWidth),
+                  child: WarningBox(borderWidth: errorBorderWidth, message: entry.value.map((e) => e.message).join('\n\n'), size: Size(max(5, entry.key.width) + errorBorderWidth, max(5, entry.key.height) + errorBorderWidth)),
                 ),
             _DraggablePositioned(
               minSpacing: 10,
@@ -437,12 +411,7 @@ class _CheckerOverlayState extends State<CheckerOverlay> {
 }
 
 class _DraggablePositioned extends StatefulWidget {
-  const _DraggablePositioned({
-    this.initialAlignment = ButtonsAlignment.bottomRight,
-    required this.minSpacing,
-    required this.enableDrag,
-    required this.child,
-  });
+  const _DraggablePositioned({this.initialAlignment = ButtonsAlignment.bottomRight, required this.minSpacing, required this.enableDrag, required this.child});
 
   final ButtonsAlignment initialAlignment;
   final double minSpacing;
@@ -509,8 +478,7 @@ class _DraggablePositionedState extends State<_DraggablePositioned> {
     }
   }
 
-  void _onPanStart(DragStartDetails details) =>
-      _panPosition = details.globalPosition;
+  void _onPanStart(DragStartDetails details) => _panPosition = details.globalPosition;
 
   void _onPanUpdate(DragUpdateDetails details) {
     if (_isDragging) {
@@ -544,27 +512,14 @@ class _DraggablePositionedState extends State<_DraggablePositioned> {
     return _buildAlignedPosition(
       context,
       SafeArea(
-        child: widget.enableDrag
-            ? GestureDetector(
-                onPanStart: _onPanStart,
-                onPanUpdate: _onPanUpdate,
-                onPanEnd: _onPanEnd,
-                child: widget.child,
-              )
-            : widget.child,
+        child: widget.enableDrag ? GestureDetector(onPanStart: _onPanStart, onPanUpdate: _onPanUpdate, onPanEnd: _onPanEnd, child: widget.child) : widget.child,
       ),
     );
   }
 }
 
 class _WarningButton extends StatelessWidget {
-  const _WarningButton({
-    required this.issues,
-    required this.onPressed,
-    required this.onToolsButtonPressed,
-    required this.toggled,
-    required this.isTestingPanelEnabled,
-  });
+  const _WarningButton({required this.issues, required this.onPressed, required this.onToolsButtonPressed, required this.toggled, required this.isTestingPanelEnabled});
 
   final bool toggled;
   final bool isTestingPanelEnabled;
@@ -577,16 +532,8 @@ class _WarningButton extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (issues.isNotEmpty)
-          AccessibilityIssuesToggle(
-            toggled: toggled,
-            issues: issues,
-            onPressed: onPressed,
-          ),
-        if (isTestingPanelEnabled) ...[
-          const SizedBox(height: 12),
-          AccessibilityToolsToggle(onToolsButtonPressed: onToolsButtonPressed),
-        ],
+        if (issues.isNotEmpty) AccessibilityIssuesToggle(toggled: toggled, issues: issues, onPressed: onPressed),
+        if (isTestingPanelEnabled) ...[const SizedBox(height: 12), AccessibilityToolsToggle(onToolsButtonPressed: onToolsButtonPressed)],
       ],
     );
   }
@@ -596,12 +543,7 @@ class _WarningButton extends StatelessWidget {
 @visibleForTesting
 class WarningBox extends StatelessWidget {
   /// Default constructor.
-  const WarningBox({
-    super.key,
-    required this.size,
-    required this.borderWidth,
-    required this.message,
-  });
+  const WarningBox({super.key, required this.size, required this.borderWidth, required this.message});
 
   /// Size of the warning box.
   final Size size;
@@ -620,10 +562,7 @@ class WarningBox extends StatelessWidget {
       child: Tooltip(
         padding: const EdgeInsets.all(10),
         message: message,
-        decoration: const BoxDecoration(
-          color: Colors.blue,
-          borderRadius: BorderRadius.all(Radius.circular(8)),
-        ),
+        decoration: const BoxDecoration(color: Colors.blue, borderRadius: BorderRadius.all(Radius.circular(8))),
         textStyle: const TextStyle(fontSize: 15, color: Colors.white),
         child: Center(
           child: CustomPaint(
@@ -652,21 +591,12 @@ class WarningBoxPainter extends CustomPainter {
 
   static final Paint _indicatorPaint = Paint()
     ..style = PaintingStyle.stroke
-    ..shader = ui.Gradient.linear(
-      Offset.zero,
-      const Offset(10.0, 10.0),
-      <Color>[_black, _yellow, _yellow, _black],
-      <double>[0.25, 0.25, 0.75, 0.75],
-      TileMode.repeated,
-    )
+    ..shader = ui.Gradient.linear(Offset.zero, const Offset(10.0, 10.0), <Color>[_black, _yellow, _yellow, _black], <double>[0.25, 0.25, 0.75, 0.75], TileMode.repeated)
     ..strokeWidth = 5.0;
 
   @override
   void paint(Canvas canvas, Size size) {
-    canvas.drawRect(
-      Rect.fromLTWH(0, 0, size.width, size.height),
-      _indicatorPaint,
-    );
+    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), _indicatorPaint);
   }
 
   @override
