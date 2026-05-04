@@ -128,6 +128,16 @@ Icon(
       return View.maybeOf(creator.element);
     }
 
+    // debugCreator is only populated in debug mode. In release mode, walk the
+    // render tree to find the owning RenderView.
+    RenderObject? current = renderObject.parent;
+    while (current != null) {
+      if (current is RenderView) {
+        return current.flutterView;
+      }
+      current = current.parent;
+    }
+
     return null;
   }
 
