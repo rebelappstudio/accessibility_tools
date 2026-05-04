@@ -78,12 +78,16 @@ class CheckerManager extends ChangeNotifier {
       child.visitChildrenForSemantics(visitor);
     };
 
-    WidgetsBinding.instance.rootElement?.renderObject?.visitChildrenForSemantics(visitor);
+    WidgetsBinding.instance.rootElement?.renderObject
+        ?.visitChildrenForSemantics(visitor);
 
     return renderObjects;
   }
 
-  void _logAccessibilityIssues(LogLevel logLevel, List<AccessibilityIssue> issues) {
+  void _logAccessibilityIssues(
+    LogLevel logLevel,
+    List<AccessibilityIssue> issues,
+  ) {
     if (logLevel == LogLevel.none || !debugLogsEnabled) return;
 
     debugPrint('''
@@ -117,7 +121,9 @@ extension on DebugCreator {
   /// associated with, including the location in the source code the widget was
   /// created.
   String toWidgetCreatorString() {
-    final diagnosticsNodes = debugTransformDebugCreator([DiagnosticsDebugCreator(this)]);
+    final diagnosticsNodes = debugTransformDebugCreator([
+      DiagnosticsDebugCreator(this),
+    ]);
     return diagnosticsNodes.map((e) => e.toStringDeep()).join('\n');
   }
 }
