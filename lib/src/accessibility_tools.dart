@@ -67,7 +67,7 @@ class AccessibilityTools extends StatefulWidget {
     this.enableButtonsDrag = true,
     this.testingToolsConfiguration = const TestingToolsConfiguration(),
     this.testEnvironment = const TestEnvironment(),
-    this.enableAccessibilityControlsOnReleaseMode = false,
+    this.enableInReleaseMode = false,
   });
 
   /// Forces accessibility checkers to run when running from a test.
@@ -166,14 +166,14 @@ class AccessibilityTools extends StatefulWidget {
   /// This is useful for testing accessibility in release mode,
   /// but should be used with caution as it may have performance implications.
   /// False by default.
-  final bool enableAccessibilityControlsOnReleaseMode;
+  final bool enableInReleaseMode;
 
   @override
   State<AccessibilityTools> createState() => _AccessibilityToolsState();
 }
 
 class _AccessibilityToolsState extends State<AccessibilityTools> with SemanticUpdateMixin {
-  late CheckerManager _checker = CheckerManager(checkers: _getCheckers(), logLevel: widget.logLevel, debugLogsEnabled: !kReleaseMode || !widget.enableAccessibilityControlsOnReleaseMode);
+  late CheckerManager _checker = CheckerManager(checkers: _getCheckers(), logLevel: widget.logLevel, debugLogsEnabled: !kReleaseMode || !widget.enableInReleaseMode);
 
   bool _testingToolsVisible = false;
   late TestEnvironment _environment = widget.testEnvironment;
@@ -199,7 +199,7 @@ class _AccessibilityToolsState extends State<AccessibilityTools> with SemanticUp
   @override
   void didUpdateWidget(covariant AccessibilityTools oldWidget) {
     _checker.dispose();
-    _checker = CheckerManager(checkers: _getCheckers(), logLevel: widget.logLevel, debugLogsEnabled: !kReleaseMode || !widget.enableAccessibilityControlsOnReleaseMode);
+    _checker = CheckerManager(checkers: _getCheckers(), logLevel: widget.logLevel, debugLogsEnabled: !kReleaseMode || !widget.enableInReleaseMode);
     super.didUpdateWidget(oldWidget);
   }
 
@@ -229,7 +229,7 @@ class _AccessibilityToolsState extends State<AccessibilityTools> with SemanticUp
 
   @override
   Widget build(BuildContext context) {
-    final shouldDisableAccessibilityTools = (kReleaseMode && !widget.enableAccessibilityControlsOnReleaseMode) || (!AccessibilityTools.debugRunCheckersInTests && _isTest);
+    final shouldDisableAccessibilityTools = (kReleaseMode && !widget.enableInReleaseMode) || (!AccessibilityTools.debugRunCheckersInTests && _isTest);
 
     if (shouldDisableAccessibilityTools) {
       return widget.child!;

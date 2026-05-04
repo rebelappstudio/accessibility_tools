@@ -10,11 +10,11 @@ void main() {
     AccessibilityTools.debugIgnoreTapAreaIssuesInTools = false;
   });
 
-  testWidgets('enableAccessibilityControlsOnReleaseMode allows accessibility controls to be visible', (WidgetTester tester) async {
+  testWidgets('enableInReleaseMode allows accessibility controls to be visible', (WidgetTester tester) async {
     // Create an app with accessibility controls enabled in release mode
     await tester.pumpWidget(
       MaterialApp(
-        builder: (context, child) => AccessibilityTools(child: child, enableAccessibilityControlsOnReleaseMode: true, checkSemanticLabels: true, minimumTapAreas: MinimumTapAreas.material),
+        builder: (context, child) => AccessibilityTools(child: child, enableInReleaseMode: true, checkSemanticLabels: true, minimumTapAreas: MinimumTapAreas.material),
         home: Scaffold(
           body: GestureDetector(
             onTap: () {},
@@ -30,10 +30,10 @@ void main() {
     expect(find.byType(Scaffold), findsOneWidget);
   });
 
-  testWidgets('Accessibility controls work normally when enableAccessibilityControlsOnReleaseMode is false', (WidgetTester tester) async {
+  testWidgets('Accessibility controls work normally when enableInReleaseMode is false', (WidgetTester tester) async {
     await tester.pumpWidget(
       MaterialApp(
-        builder: (context, child) => AccessibilityTools(child: child, enableAccessibilityControlsOnReleaseMode: false, checkSemanticLabels: true, minimumTapAreas: MinimumTapAreas.material),
+        builder: (context, child) => AccessibilityTools(child: child, enableInReleaseMode: false, checkSemanticLabels: true, minimumTapAreas: MinimumTapAreas.material),
         home: Scaffold(
           body: GestureDetector(
             onTap: () {},
@@ -49,11 +49,11 @@ void main() {
     expect(find.byType(Scaffold), findsOneWidget);
   });
 
-  testWidgets('Default value of enableAccessibilityControlsOnReleaseMode is false', (WidgetTester tester) async {
-    // Create an AccessibilityTools without specifying enableAccessibilityControlsOnReleaseMode
+  testWidgets('Default value of enableInReleaseMode is false', (WidgetTester tester) async {
+    // Create an AccessibilityTools without specifying enableInReleaseMode
     final tools = AccessibilityTools(child: Container());
 
     // Verify the default value is false
-    expect(tools.enableAccessibilityControlsOnReleaseMode, isFalse);
+    expect(tools.enableInReleaseMode, isFalse);
   });
 }
