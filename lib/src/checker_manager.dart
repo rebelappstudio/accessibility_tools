@@ -13,7 +13,11 @@ import 'enums/log_level.dart';
 /// changes.
 class CheckerManager extends ChangeNotifier {
   /// Default constructor.
-  CheckerManager({required this.checkers, required this.logLevel, this.debugLogsEnabled = true});
+  CheckerManager({
+    required this.checkers,
+    required this.logLevel,
+    this.debugLogsEnabled = true,
+  });
 
   /// A list of enabled checkers.
   final Iterable<CheckerBase> checkers;
