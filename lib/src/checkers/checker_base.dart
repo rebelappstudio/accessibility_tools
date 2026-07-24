@@ -79,13 +79,12 @@ abstract class WidgetCheckerBase extends CheckerBase {
 
 /// Extension on [RenderObject]
 extension RenderObjectExtension on RenderObject {
-  /// Returns the global rect of the render object.
-  Rect getGlobalRect() {
-    assert(attached, 'RenderObject must be attached to get global rect');
+  /// Returns the paint bounds in the coordinate system of [target].
+  Rect getRectRelativeTo(RenderObject target) {
+    assert(attached, 'RenderObject must be attached to get its relative rect');
+    assert(target.attached, 'Target must be attached to get a relative rect');
 
-    final translation = getTransformTo(null).getTranslation();
-    final offset = Offset(translation.x, translation.y);
-    return paintBounds.shift(offset);
+    return MatrixUtils.transformRect(getTransformTo(target), paintBounds);
   }
 }
 
