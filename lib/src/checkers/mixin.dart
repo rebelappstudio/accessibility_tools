@@ -13,6 +13,7 @@ import 'package:flutter/widgets.dart';
 mixin SemanticUpdateMixin<T extends StatefulWidget> on State<T> {
   late final List<SemanticsClient> _clients = [];
   late final SemanticsHandle _rootSemanticsHandle;
+  bool _semanticsUpdateScheduled = false;
 
   @override
   void initState() {
@@ -40,9 +41,16 @@ mixin SemanticUpdateMixin<T extends StatefulWidget> on State<T> {
   }
 
   void _update() {
+    // Avoid setState here: rebuilding this State on every semantics update can
+    // invalidate semantics again and schedule frames forever (pumpAndSettle
+    // never completes). Descendants that need a rebuild should call setState
+    // themselves inside [didUpdateSemantics].
+    if (_semanticsUpdateScheduled) return;
+    _semanticsUpdateScheduled = true;
     SchedulerBinding.instance.addPostFrameCallback((Duration _) {
+      _semanticsUpdateScheduled = false;
       if (mounted) {
-        setState(didUpdateSemantics);
+        didUpdateSemantics();
       }
     });
   }
