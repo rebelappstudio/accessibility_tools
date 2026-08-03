@@ -185,7 +185,8 @@ class _AccessibilityToolsState extends State<AccessibilityTools>
     SchedulerBinding.instance.addPostFrameCallback((Duration _) {
       // Semantic information are only available at the end of a frame and our
       // only chance to paint them on the screen is the next frame. To achieve
-      // this, we call setState() in a post-frame callback.
+      // this, we update checkers in a post-frame callback; [CheckerOverlay]
+      // listens to [CheckerManager] and rebuilds via [AnimatedBuilder].
       if (mounted) {
         _checker.update();
       }
