@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// An info button that shows a tooltip with a message.
 class InfoButton extends StatelessWidget {

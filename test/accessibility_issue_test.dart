@@ -1,7 +1,7 @@
 import 'package:accessibility_tools/src/accessibility_issue.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 
 void main() {
   test(

@@ -1,6 +1,6 @@
 import 'package:example/app_localizations.dart';
 import 'package:example/data.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});

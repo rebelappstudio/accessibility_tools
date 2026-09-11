@@ -1,7 +1,7 @@
 import 'package:accessibility_tools/src/testing_tools/color_mode_simulation.dart';
 import 'package:accessibility_tools/src/testing_tools/test_environment.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 
 void main() {
   test('TestEnvironment comparison works', () {

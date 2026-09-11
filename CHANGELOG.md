@@ -1,3 +1,12 @@
+## 3.0.0
+
+* **BREAKING:** Migrate to standalone `material_ui` and `cupertino_ui` packages.
+  Apps using this package must also use `package:material_ui` (not
+  `package:flutter/material.dart`), or wrap their app with
+  `MaterialUiCompatibilityBridge` when hosting mixed Material trees.
+* Minimum supported Flutter version is 3.47
+* Minimum supported Dart version is 3.13
+
 ## 2.8.0
 
 * Flutter 3.38 fixes

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Various color modes that can be simulated to check if the app is accessible
 /// in certain color modes.

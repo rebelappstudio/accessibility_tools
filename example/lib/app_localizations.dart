@@ -1,11 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 final localizationDelegates = <LocalizationsDelegate>[
   AppLocalizationDelegate(),
-  GlobalMaterialLocalizations.delegate,
-  GlobalWidgetsLocalizations.delegate,
-  GlobalCupertinoLocalizations.delegate,
+  ...GlobalMaterialLocalizations.delegates,
 ];
 
 const supportedLocales = [Locale('fi', 'FI'), Locale('en', 'US')];

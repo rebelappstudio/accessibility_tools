@@ -2,7 +2,7 @@ import 'package:accessibility_tools/accessibility_tools.dart';
 import 'package:example/app_localizations.dart';
 import 'package:example/home_page.dart';
 import 'package:example/theme.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 void main() {
   runApp(const MyApp());

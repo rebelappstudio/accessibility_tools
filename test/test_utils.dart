@@ -4,9 +4,9 @@ import 'package:accessibility_tools/src/floating_action_buttons.dart';
 import 'package:accessibility_tools/src/testing_tools/testing_tools_panel.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 
 class TestApp extends StatelessWidget {
   const TestApp({
@@ -94,14 +94,9 @@ ${debugWarningBoxesText(tester)}''',
   );
 
   // Verify accessibility tooltip
-  final warningBox =
-      tester.renderObject(
-            find.descendant(
-              of: warningBoxFinder,
-              matching: find.byType(CustomPaint),
-            ),
-          )
-          as RenderBox;
+  final warningBox = tester.renderObject(
+    find.descendant(of: warningBoxFinder, matching: find.byType(CustomPaint)),
+  ) as RenderBox;
 
   final buttonRenderBox = tester.renderObject<RenderBox>(erroredWidgetFinder);
   const borderSize = 5.0;
@@ -146,6 +141,54 @@ String getWidgetLocationDescription(WidgetTester tester, Finder finder) {
     DiagnosticsDebugCreator(debugCreator),
   ]);
   return diagnosticsNodes.map((e) => e.toStringDeep()).join('\n');
+}
+
+/// Returns the diagnostic location of the [RenderObject] that owns a matching
+/// [SemanticsNode] under [finder].
+///
+/// Accessibility checkers log the creator of that render object (for example
+/// an inner `Semantics` in [TextField]), which can differ from the creator of
+/// [finder]'s element render object.
+String getSemanticsCreatorLocationDescription(
+  WidgetTester tester,
+  Finder finder,
+  bool Function(SemanticsData data) matches,
+) {
+  RenderObject? target;
+  void visit(Element element) {
+    if (target != null) return;
+    final renderObject = element.renderObject;
+    final node = renderObject?.debugSemantics;
+    if (node != null &&
+        !node.isMergedIntoParent &&
+        !node.isInvisible &&
+        !node.flagsCollection.isHidden) {
+      final data = node.getSemanticsData();
+      if (matches(data)) {
+        target = renderObject;
+        return;
+      }
+    }
+    element.visitChildren(visit);
+  }
+
+  visit(tester.element(finder));
+  assert(target != null, 'No matching SemanticsNode found under $finder');
+
+  final debugCreator = target!.debugCreator!;
+  final diagnosticsNodes = debugTransformDebugCreator([
+    DiagnosticsDebugCreator(debugCreator),
+  ]);
+  return diagnosticsNodes.map((e) => e.toStringDeep()).join('\n');
+}
+
+/// Convenience for TextField console-log expectations.
+String getTextFieldLocationDescription(WidgetTester tester) {
+  return getSemanticsCreatorLocationDescription(
+    tester,
+    find.byType(TextField),
+    (data) => data.flagsCollection.isTextField,
+  );
 }
 
 /// Records the output of [debugPrint] during the execution of [callback].

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'color_mode_simulation.dart';
 import 'multi_value_toggle.dart';
