@@ -396,9 +396,8 @@ class _CheckerOverlayState extends State<CheckerOverlay> {
             if (showOverlays)
               for (final entry in rects.entries)
                 Positioned.fromRect(
-                  rect: _inflateToMinimumSize(
-                    entry.key,
-                  ).inflate(errorBorderWidth),
+                  rect: _inflateToMinimumSize(entry.key)
+                      .inflate(errorBorderWidth),
                   child: WarningBox(
                     borderWidth: errorBorderWidth,
                     message: entry.value.map((e) => e.message).join('\n\n'),

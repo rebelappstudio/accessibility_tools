@@ -88,8 +88,7 @@ class _TestingToolsPanelState extends State<TestingToolsPanel> {
                   SliderTile(
                     label:
                         '''Text scale: ${textScaleFactor.scale(1.0).toStringAsFixed(1)}''',
-                    info:
-                        '''Change text scaler value to see how layouts behave with different font sizes''',
+                    info: '''Change text scaler value to see how layouts behave with different font sizes''',
                     value: textScaleFactor.scale(1.0),
                     min: widget.configuration.minTextScale,
                     max: widget.configuration.maxTextScale,
@@ -130,8 +129,7 @@ class _TestingToolsPanelState extends State<TestingToolsPanel> {
                   gap,
                   MultiValueToggle(
                     value: targetPlatform,
-                    info:
-                        '''Force a specific target platform. This usually changes scrolling behavior, toolbar back button icon, gesture navigation etc''',
+                    info: '''Force a specific target platform. This usually changes scrolling behavior, toolbar back button icon, gesture navigation etc''',
                     onTap: (value) {
                       targetPlatform = value;
                       _notifyTestEnvironmentChanged();
@@ -143,8 +141,7 @@ class _TestingToolsPanelState extends State<TestingToolsPanel> {
                   gap,
                   MultiValueToggle<VisualDensity>(
                     title: 'Density',
-                    info:
-                        '''Force a specific visual density supported by Flutter. This may change paddings, margins and icons sizes''',
+                    info: '''Force a specific visual density supported by Flutter. This may change paddings, margins and icons sizes''',
                     value: visualDensity,
                     onTap: (value) {
                       visualDensity = value;
@@ -171,8 +168,7 @@ class _TestingToolsPanelState extends State<TestingToolsPanel> {
                   MultiValueToggle<bool?>(
                     value: boldText,
                     title: 'Bold text',
-                    info:
-                        '''Mimic platform's request to draw texts with a bold font weight''',
+                    info: '''Mimic platform's request to draw texts with a bold font weight''',
                     onTap: (value) {
                       boldText = value;
                       _notifyTestEnvironmentChanged();
@@ -183,8 +179,7 @@ class _TestingToolsPanelState extends State<TestingToolsPanel> {
                   gap,
                   MultiValueToggle<ColorModeSimulation?>(
                     title: 'Color mode simulation',
-                    info:
-                        '''Simulate a certain color mode to check contrast and colors accessibility''',
+                    info: '''Simulate a certain color mode to check contrast and colors accessibility''',
                     value: colorModeSimulation,
                     onTap: (value) {
                       colorModeSimulation = value;
@@ -196,8 +191,7 @@ class _TestingToolsPanelState extends State<TestingToolsPanel> {
                   gap,
                   SwitchToggle(
                     title: 'Screen reader mode',
-                    info:
-                        '''Use Semantics Debugger to simulate how the app behaves with screen readers''',
+                    info: '''Use Semantics Debugger to simulate how the app behaves with screen readers''',
                     value: semanticsDebuggerEnabled ?? false,
                     onChanged: (value) {
                       semanticsDebuggerEnabled = value;
