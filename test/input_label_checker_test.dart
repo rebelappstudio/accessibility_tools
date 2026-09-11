@@ -1,7 +1,7 @@
 import 'package:accessibility_tools/accessibility_tools.dart';
 import 'package:accessibility_tools/src/floating_action_buttons.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'test_utils.dart';
 
@@ -317,7 +317,7 @@ ACCESSIBILITY ISSUES FOUND
 
 Accessibility issue 1: Text field is missing a label.
 
-${getWidgetLocationDescription(tester, find.byType(TextField))}
+${getTextFieldLocationDescription(tester)}
 Semantic labels are used by screen readers to enable visually impaired users to
 get spoken feedback about the contents of the screen and interact with the UI.
 

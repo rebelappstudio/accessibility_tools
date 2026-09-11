@@ -1,6 +1,6 @@
 import 'package:accessibility_tools/src/testing_tools/color_mode_simulation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 
 void main() {
   testWidgets('Color mode simulation is applied to a widget', (tester) async {
