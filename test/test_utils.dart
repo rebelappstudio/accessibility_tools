@@ -101,23 +101,18 @@ ${debugWarningBoxesText(tester)}''',
   final buttonRenderBox = tester.renderObject<RenderBox>(erroredWidgetFinder);
   const borderSize = 5.0;
 
-  // Verify size of warning box
-  const delta = Offset(0.001, 0.001);
-  final buttonBox = buttonRenderBox.size + const Offset(borderSize, borderSize);
-  final sizeDiff = warningBox.size - buttonBox;
-  expect(sizeDiff, lessThan(delta));
-
-  final errorBoxPosition = warningBox.localToGlobal(
-    warningBox.size.center(Offset.zero),
+  final warningRect = MatrixUtils.transformRect(
+    warningBox.getTransformTo(null),
+    warningBox.paintBounds,
   );
-
-  final buttonPosition = buttonRenderBox.localToGlobal(
-    warningBox.size.center(Offset.zero),
+  final targetRect = MatrixUtils.transformRect(
+    buttonRenderBox.getTransformTo(null),
+    buttonRenderBox.paintBounds,
   );
 
   expect(
-    errorBoxPosition,
-    buttonPosition - const Offset(borderSize / 2, borderSize / 2),
+    warningRect,
+    rectMoreOrLessEquals(targetRect.inflate(borderSize / 2), epsilon: 0.001),
   );
 }
 

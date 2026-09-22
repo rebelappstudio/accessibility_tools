@@ -362,6 +362,7 @@ class CheckerOverlay extends StatefulWidget {
 }
 
 class _CheckerOverlayState extends State<CheckerOverlay> {
+  final _overlayKey = GlobalKey();
   bool showOverlays = false;
 
   /// Minimum size of the warning box
@@ -385,13 +386,23 @@ class _CheckerOverlayState extends State<CheckerOverlay> {
       animation: widget.checker,
       builder: (context, _) {
         final issues = List<AccessibilityIssue>.of(widget.checker.issues);
-        final rects = issues
-            .where((element) => element.renderObject.attached)
-            .groupListsBy((issue) => issue.renderObject.getGlobalRect());
+        final overlayRenderObject = _overlayKey.currentContext
+            ?.findRenderObject();
+        final rects =
+            overlayRenderObject == null || !overlayRenderObject.attached
+            ? <Rect, List<AccessibilityIssue>>{}
+            : issues
+                  .where((element) => element.renderObject.attached)
+                  .groupListsBy(
+                    (issue) => issue.renderObject.getRectRelativeTo(
+                      overlayRenderObject,
+                    ),
+                  );
 
         const errorBorderWidth = 5.0;
 
         return Stack(
+          key: _overlayKey,
           children: [
             if (showOverlays)
               for (final entry in rects.entries)
